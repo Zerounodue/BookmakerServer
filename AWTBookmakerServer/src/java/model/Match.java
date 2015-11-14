@@ -5,21 +5,22 @@
  */
 package model;
 
-import java.util.List;
+import java.time.LocalTime;
+import java.util.Date;
 
 /**
  *
  * @author bizki
  */
-public class User {
+public class Match {
     private int id;
-    private String name;
-    
-    private double balance;
-    
-    private Role role;
-    
-    private List<Bet> bets;
+    private Date date;
+    private LocalTime time;
+    private boolean finished;
+
+    private Team homeTeam;
+    private Team awayTeam;
+    private Result result;
     
     
 }

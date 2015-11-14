@@ -20,12 +20,7 @@ public class UserBean {
     private User user;
     private String locale;
     
-    
-    
-    
-    
-    
-    
+
     public void setLocale(String locale){
 	this.locale = locale;
     }

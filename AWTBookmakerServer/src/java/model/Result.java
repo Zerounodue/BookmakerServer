@@ -11,15 +11,14 @@ import java.util.List;
  *
  * @author bizki
  */
-public class User {
+public class Result {
     private int id;
     private String name;
+    private boolean occured;
+    private double oddNumerator;
+    private double oddDenominator;
     
-    private double balance;
-    
-    private Role role;
-    
+    private Match match;
     private List<Bet> bets;
-    
     
 }

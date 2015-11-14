@@ -5,21 +5,16 @@
  */
 package model;
 
-import java.util.List;
-
 /**
  *
  * @author bizki
  */
-public class User {
+public class Bet {
     private int id;
-    private String name;
+    private double money;
     
-    private double balance;
-    
-    private Role role;
-    
-    private List<Bet> bets;
+    private User user;
+    private Match match;
     
     
 }
