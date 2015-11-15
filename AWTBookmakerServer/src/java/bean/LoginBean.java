@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package user;
+package bean;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -16,7 +16,7 @@ import model.User;
  */
 @ManagedBean
 @SessionScoped
-public class UserBean {
+public class LoginBean {
     private User user;
     private String locale;
     

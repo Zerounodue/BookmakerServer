@@ -16,7 +16,6 @@ public class Match {
     private int id;
     private Date date;
     private LocalTime time;
-    private boolean finished;
 
     private Team homeTeam;
     private Team awayTeam;

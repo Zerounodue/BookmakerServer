@@ -7,7 +7,7 @@
     <f:loadBundle basename="main.Messages" var="messages" />
     <!--<f:loadBundle basename="resources" var="resources" />-->
 
-    <f:view locale="#{userBean.locale}">
+    <f:view locale="#{loginBean.locale}">
         <h:head>
             <meta charset="UTF-8" />
             <title>#{messages.applicationName}</title>
@@ -26,13 +26,13 @@
                     <h:form id="navLocaleForm" class="navbar-right">
                         <ul class="nav navbar-nav">
                             <li>
-                                <h:commandLink id="en" value="#{messages.english}" action="#{userBean.setLocale('en')}" />
+                                <h:commandLink id="en" value="#{messages.english}" action="#{loginBean.setLocale('en')}" />
                             </li>
                             <li>
-                                <h:commandLink id="de" value="#{messages.german}" action="#{userBean.setLocale('de')}" />
+                                <h:commandLink id="de" value="#{messages.german}" action="#{loginBean.setLocale('de')}" />
                             </li>
                             <li>
-                                <h:commandLink id="fr" value="#{messages.french}" action="#{userBean.setLocale('fr')}" />
+                                <h:commandLink id="fr" value="#{messages.french}" action="#{loginBean.setLocale('fr')}" />
                             </li>
                         </ul>
                     </h:form>
