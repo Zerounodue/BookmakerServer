@@ -16,6 +16,8 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import model.Match;
+import java.sql.Timestamp;
+import model.Team;
 
 /**
  *
@@ -26,15 +28,8 @@ import model.Match;
 public class MatchBean {
 
     public List<Match> getUpcomingMatches() {
-        List<Match> matches = new ArrayList<>();
+        List<Match> matches = null;
 
-        //query to get all matches
-        //"select m.id, m.homeTeam, m.awayTeam, m.date, m.time from Matches m
-        //inner join Teams ht on m.homeTeam = ht.id
-        //inner join Teams at on m.awayTeam = at.id
-        //order by m.date desc
-        //where m.time > [timestamp now]
-        
         //put some place that is more useful
         Connection conn = null;
         try {
@@ -48,29 +43,39 @@ public class MatchBean {
             System.err.println("Cannot connect to database server" + e.toString());
         }
 
-        
-        
         try {
 
             java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
 
             PreparedStatement s;
 
-            String sql = "SELECT `m.id`,` m.homeTeam`, `m.awayTeam`, `m.time`, FROM 'matches' m"
-                    + "INNER JOIN 'teams' ht ON m.homeTeam = ht.id"
-                    + "INNER JOIN 'teams' at ON m.awayTeam = at.id"
-                    + "ORDER BY m.time desc"
-                    + "WHERE m.time > ";
+            String sql = "SELECT m.id, m.homeTeamFK, m.awayTeamFK, m.time FROM matches m "
+                    + "INNER JOIN teams ht ON m.homeTeamFK = ht.id "
+                    + "INNER JOIN teams at ON m.awayTeamFK = at.id "
+                    + "WHERE m.time > '" + currentTimestamp.toString() + "'"
+                    + "ORDER BY m.time asc ";
 
             //String sql = "INSERT INTO `user` (`userID` ,`username` ,`password` )VALUES (NULL , ?, ?)";
             s = conn.prepareStatement(sql);
-            s.executeQuery();
-            
-            ResultSet rs = s.getResultSet();
-            
+            ResultSet rs = s.executeQuery();
+            if (rs != null) {
+                matches = new ArrayList<>();
+
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    int htId = rs.getInt("homeTeamFK");
+                    int atId = rs.getInt("awayTeamFK");
+                    Timestamp ts = rs.getTimestamp("time");
+                    //result will be null by upcoming matches
+                    Match m = new Match(id, ts, new Team(htId), new Team(atId), null);
+
+                    matches.add(m);
+                }
+                rs.close();
+            }
+
             s.close();
-            
-            
+
         } catch (SQLException e) {
             System.out.println(e);
         }

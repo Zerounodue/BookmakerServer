@@ -11,7 +11,6 @@
             <h2>#{messages.loginWelcome}</h2>
             <h:commandButton id="btn_login" action="/login.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.loginLogin}" />
             <h:commandButton id="btn_register" action="/register.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.loginRegister}" />
-            <h:commandButton id="btn_register" action="#{matchBean.upcomingMatches}" class="btn btn-default" value="#{messages.registerBack}" />
         </h:form>
         <ui:include src="/match/matches.xhtml" />
     </ui:define>

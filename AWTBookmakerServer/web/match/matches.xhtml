@@ -10,15 +10,22 @@
     <h:dataTable value="#{matchBean.upcomingMatches}" var="match" class="table table-condensed table-striped">
         <h:column>
             <f:facet name="header">#{messages.matchHomeTeam}</f:facet>
+            #{match.homeTeam.id}
             <!--//#{teams[game.team1.code]}-->
         </h:column>
         <h:column>
             <f:facet name="header">#{messages.matchAwayTeam}</f:facet>
-            <!--#{teams[game.team2.code]}-->
+            #{match.awayTeam.id}
         </h:column>
         <h:column>
             <f:facet name="header">#{messages.matchStartTime}</f:facet>
-            <time datetime="#{match.time}"></time>
+            <h:outputText value="#{match.time}" >
+              <f:convertDateTime pattern="yyyy/MM/dd hh:mm:ss"/>
+           </h:outputText>
+        </h:column>
+        <h:column>
+            <f:facet name="header">#{messages.matchOdds}</f:facet>
+            //TODO add odds ;-)
         </h:column>
         <h:column><!--only display for gambler -->
             <!--<h:outputLink value="game-bet.xhtml?game=#{match.id}">Bets</h:outputLink>-->

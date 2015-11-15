@@ -5,8 +5,7 @@
  */
 package model;
 
-import java.time.LocalTime;
-import java.util.Date;
+import java.sql.Timestamp;
 
 /**
  *
@@ -14,12 +13,88 @@ import java.util.Date;
  */
 public class Match {
     private int id;
-    private Date date;
-    private LocalTime time;
+    private Timestamp time;
 
     private Team homeTeam;
     private Team awayTeam;
     private Result result;
     
+    public Match(int id, Timestamp t, Team ht, Team at, Result r){
+        this.id = id;
+        this.time = t;
+        this.homeTeam = ht;
+        this.awayTeam = at;
+        this.result = r;
+    }
+
+    /**
+     * @return the id
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    /**
+     * @return the time
+     */
+    public Timestamp getTime() {
+        return time;
+    }
+
+    /**
+     * @param time the time to set
+     */
+    public void setTime(Timestamp time) {
+        this.time = time;
+    }
+
+    /**
+     * @return the homeTeam
+     */
+    public Team getHomeTeam() {
+        return homeTeam;
+    }
+
+    /**
+     * @param homeTeam the homeTeam to set
+     */
+    public void setHomeTeam(Team homeTeam) {
+        this.homeTeam = homeTeam;
+    }
+
+    /**
+     * @return the awayTeam
+     */
+    public Team getAwayTeam() {
+        return awayTeam;
+    }
+
+    /**
+     * @param awayTeam the awayTeam to set
+     */
+    public void setAwayTeam(Team awayTeam) {
+        this.awayTeam = awayTeam;
+    }
+
+    /**
+     * @return the result
+     */
+    public Result getResult() {
+        return result;
+    }
+
+    /**
+     * @param result the result to set
+     */
+    public void setResult(Result result) {
+        this.result = result;
+    }
     
 }
