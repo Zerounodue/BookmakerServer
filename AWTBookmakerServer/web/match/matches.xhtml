@@ -10,7 +10,7 @@
     <!--in case no data are available-->
     <h:outputText value="#{messages.matchNoMatches}" rendered="#{empty matchBean.upcomingMatches}" />
     <!--display if data id available-->
-    <h:dataTable value="#{matchBean.upcomingMatches}" var="match" rendered="#{not empty matchBean.upcomingMatches}" class="table table-condensed table-striped">
+    <h:dataTable value="#{matchBean.upcomingMatches}" var="match" rendered="#{not empty matchBean.upcomingMatches}" class="table table-hover table-bordered">
         <h:column>
             <f:facet name="header">#{messages.matchHomeTeam}</f:facet>
                 #{match.homeTeam.id}

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="../template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core" 
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+
+    <ui:define name="content">
+        <h2>#{messages.registerTitle}</h2>
+        <h:form>
+            <h:commandButton id="btn_login" action="login.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.loginLogin}" />
+        </h:form>
+        <h:form>
+            <div class="form-group">
+                <label for="username">#{messages.loginUsername}</label>
+                <h:inputText class="form-control" id="username" >
+                    <f:passThroughAttribute name="required" value="required" />
+                </h:inputText>
+            </div>
+            <div class="form-group">
+                <label for="password">#{messages.loginPassword}</label>
+                <h:inputSecret class="form-control" id="password" >
+                    <f:passThroughAttribute name="required" value="required" />
+                </h:inputSecret>
+            </div>
+                <div class="form-group">
+                <label for="password2">#{messages.loginPassword}</label>
+                <h:inputSecret class="form-control" id="password2" >
+                    <f:passThroughAttribute name="required" value="required" />
+                </h:inputSecret>
+            </div>
+            <button type="submit" class="btn btn-default">#{messages.loginSubmit}</button>
+        </h:form>
+    </ui:define>
+</ui:composition>
