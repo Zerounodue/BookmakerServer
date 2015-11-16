@@ -4,18 +4,18 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <!--might not be needed-->
     <f:loadBundle basename="main.Messages" var="messages" />
-    <!--<f:loadBundle basename="resources" var="resources" />-->
 
     <f:view locale="#{loginBean.locale}">
         <h:head>
             <meta charset="UTF-8" />
             <title>#{messages.applicationName}</title>
-            <!--
-            <h:outputStylesheet library="css" name="bootstrap.min" />
-            <h:outputStylesheet library="css" name="bootstrap-theme.min" />
-            <h:outputScript library="js" name="bootstrap.min" />
-            -->
+            
+            <h:outputStylesheet library="css" name="bootstrap.min.css" />
+            <h:outputStylesheet library="css" name="bootstrap-theme.min.css" />
+            <h:outputScript library="js" name="bootstrap.min.js" />
+            
         </h:head>
         <h:body>
             <header class="navbar navbar-default navbar-fixed-top">
