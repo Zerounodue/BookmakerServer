@@ -3,33 +3,32 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:f="http://java.sun.com/jsf/core" 
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
     xmlns:h="http://java.sun.com/jsf/html">
 
     <h2>#{messages.matchUpcomingMatches}</h2>
-    
-    <h:dataTable value="#{matchBean.upcomingMatches}" var="match" class="table table-condensed table-striped">
+    <!--in case no data are available-->
+    <h:outputText value="#{messages.matchNoMatches}" rendered="#{empty matchBean.upcomingMatches}" />
+    <!--display if data id available-->
+    <h:dataTable value="#{matchBean.upcomingMatches}" var="match" rendered="#{not empty matchBean.upcomingMatches}" class="table table-condensed table-striped">
         <h:column>
             <f:facet name="header">#{messages.matchHomeTeam}</f:facet>
-            #{match.homeTeam.id}
+                #{match.homeTeam.id}
             <!--//#{teams[game.team1.code]}-->
         </h:column>
         <h:column>
             <f:facet name="header">#{messages.matchAwayTeam}</f:facet>
-            #{match.awayTeam.id}
+                #{match.awayTeam.id}
         </h:column>
         <h:column>
             <f:facet name="header">#{messages.matchStartTime}</f:facet>
             <h:outputText value="#{match.time}" >
-              <f:convertDateTime pattern="yyyy/MM/dd hh:mm:ss"/>
-           </h:outputText>
+                <f:convertDateTime pattern="yyyy/MM/dd hh:mm:ss"/>
+            </h:outputText>
         </h:column>
-        <h:column>
-            <f:facet name="header">#{messages.matchOdds}</f:facet>
-            //TODO add odds ;-)
-        </h:column>
-        <h:column><!--only display for gambler -->
-            <!--<h:outputLink value="game-bet.xhtml?game=#{match.id}">Bets</h:outputLink>-->
+        <h:column><!--only display for gambler, maybe -->
+            <h:outputLink value="game-bet.xhtml?game=#{match.id}">Bets</h:outputLink>
         </h:column>
     </h:dataTable>
-
+    
 </ui:composition>

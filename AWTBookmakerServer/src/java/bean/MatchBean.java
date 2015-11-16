@@ -42,7 +42,9 @@ public class MatchBean {
         } catch (Exception e) {
             System.err.println("Cannot connect to database server" + e.toString());
         }
-
+        //TODO find better way
+        if(conn == null) return null;
+        
         try {
 
             java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
