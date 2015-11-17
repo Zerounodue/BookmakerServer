@@ -13,18 +13,18 @@
         </h:form>
         <h:form>
             <div class="form-group">
-                <label for="username">#{messages.loginUsername}</label>
-                <h:inputText class="form-control" id="username" >
+                <h:outputLabel for="username">#{messages.loginUsername}</h:outputLabel>
+                <h:inputText class="form-control" id="userName" value="#{loginBean.userName}">
                     <f:passThroughAttribute name="required" value="required" />
                 </h:inputText>
             </div>
             <div class="form-group">
-                <label for="password">#{messages.loginPassword}</label>
-                <h:inputSecret class="form-control" id="password" >
+                <h:outputLabel for="password">#{messages.loginPassword}</h:outputLabel>
+                <h:inputSecret class="form-control" id="password" value="#{loginBean.password}">
                     <f:passThroughAttribute name="required" value="required" />
                 </h:inputSecret>
             </div>
-            <button type="submit" class="btn btn-default">#{messages.loginSubmit}</button>
+            <h:commandButton id="btn_subLogin" class="btn btn-default" action="#{loginBean.login}" value="#{messages.loginSubmit}" />
         </h:form>
     </ui:define>
 </ui:composition>

@@ -13,24 +13,24 @@
         </h:form>
         <h:form>
             <div class="form-group">
-                <label for="username">#{messages.loginUsername}</label>
-                <h:inputText class="form-control" id="username" >
+                <h:outputLabel for="username">#{messages.loginUsername}</h:outputLabel>
+                <h:inputText class="form-control" id="userName" value="#{loginBean.userName}">
                     <f:passThroughAttribute name="required" value="required" />
                 </h:inputText>
             </div>
             <div class="form-group">
-                <label for="password">#{messages.loginPassword}</label>
-                <h:inputSecret class="form-control" id="password" >
+                <h:outputLabel for="password">#{messages.loginPassword}</h:outputLabel>
+                <h:inputSecret class="form-control" id="password" value="#{loginBean.password}">
                     <f:passThroughAttribute name="required" value="required" />
                 </h:inputSecret>
             </div>
                 <div class="form-group">
-                <label for="password2">#{messages.loginPassword}</label>
+                <h:outputLabel for="password2">#{messages.loginPassword}</h:outputLabel>
                 <h:inputSecret class="form-control" id="password2" >
                     <f:passThroughAttribute name="required" value="required" />
                 </h:inputSecret>
             </div>
-            <button type="submit" class="btn btn-default">#{messages.loginSubmit}</button>
+            <h:commandButton type="submit" id="btn_subRegister" class="btn btn-default" action="#{loginBean.register}" value="#{messages.loginSubmit}" />
         </h:form>
     </ui:define>
 </ui:composition>
