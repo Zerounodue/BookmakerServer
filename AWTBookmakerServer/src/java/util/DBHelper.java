@@ -39,6 +39,34 @@ public class DBHelper {
     
     /**
      * Tries to close the db connection
+     * @param c Connection to close
+     */
+    public static void closeConnection(Connection c){
+        try { if (c != null) c.close(); } catch (Exception e) {}
+    }
+    
+    /**
+     * Tries to close the db connection
+     * @param r Result set to close
+     * @param s Statements to close
+     */
+    public static void closeConnection(ResultSet r, PreparedStatement s){
+        try { if (r != null) r.close(); } catch (Exception e) {}
+        try { if (s != null) s.close(); } catch (Exception e) {}
+    }
+    
+    /**
+     * Tries to close the db connection
+     * @param s Statements to close
+     * @param c Connection to close
+     */
+    public static void closeConnection(PreparedStatement s, Connection c){
+        try { if (s != null) s.close(); } catch (Exception e) {}
+        try { if (c != null) c.close(); } catch (Exception e) {}
+    }
+    
+    /**
+     * Tries to close the db connection
      * @param r Result set to close
      * @param s Statements to close
      * @param c Connection to close
@@ -48,6 +76,8 @@ public class DBHelper {
         try { if (s != null) s.close(); } catch (Exception e) {}
         try { if (c != null) c.close(); } catch (Exception e) {}
     }
+    
+    
     
     
 }
