@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition template="../template.xhtml"
+<ui:composition template="template.xhtml"
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:f="http://java.sun.com/jsf/core" 
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
@@ -8,9 +8,6 @@
 
     <ui:define name="content">
         <h2>#{messages.loginTitle}</h2>
-        <h:form>
-            <h:commandButton id="btn_register" action="register.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.loginRegister}" />
-        </h:form>
         <div>
             <h:messages for="frm_login" globalOnly="true" errorClass="err" warnClass="warn" infoClass="info"></h:messages>
         </div>

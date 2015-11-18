@@ -7,19 +7,7 @@
 
 
     <ui:define name="content">
-        <h:form>
-            <!--guest-->
-            <div rendered="#{loginBean.user == null}">
-                <h2>#{messages.loginWelcome}</h2>
-                <h:commandButton id="btn_login" action="user/login.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.loginLogin}" />
-                <h:commandButton  id="btn_register" action="user/register.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.loginRegister}" />
-            </div>
-            <!--logged in User-->
-            <div rendered="#{not empty loginBean.user}">
-                <h2>#{messages.loginWelcome2}</h2>
-                <h:commandButton id="btn_logout" action="#{loginBean.logout}" class="btn btn-default" value="#{messages.homeLogout}" />
-            </div>
-        </h:form>
+        
         <ui:include src="/match/matches.xhtml" />
     </ui:define>
 </ui:composition>

@@ -32,9 +32,9 @@ public class LoginBean {
     private String password;
     private String password2;
 
-    private final static String LOGIN_SITE = "/user/login.xhtml?faces-redirect=true";
-    private final static String REGISTER_SITE = "/user/register.xhtml?faces-redirect=true";
-    private final static String HOME_SITE = "home.xhtml?faces-redirect=true";
+    private final static String LOGIN_SITE = "/login.xhtml?faces-redirect=true";
+    private final static String REGISTER_SITE = "/register.xhtml?faces-redirect=true";
+    private final static String HOME_SITE = "/home.xhtml?faces-redirect=true";
 
     public void setLocale(String locale) {
         this.locale = locale;
@@ -78,13 +78,14 @@ public class LoginBean {
             }
 
         }
-
+        //login successful
+        this.username = this.password = "";
         return HOME_SITE;
     }
 
     public String logout(){
         this.user = null;
-        
+        this.username = this.password = "";
         return HOME_SITE;
     }
     

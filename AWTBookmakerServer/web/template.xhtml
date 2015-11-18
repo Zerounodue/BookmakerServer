@@ -47,6 +47,17 @@
                     </h:form>
                 </div>
             </header>
+            <!--guest-->
+        <h:form rendered="#{empty loginBean.user}">
+            <h2>#{messages.loginWelcome}</h2>
+            <h:commandButton id="btn_login" action="/login.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.loginLogin}" />
+            <h:commandButton id="btn_register" action="/register.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.loginRegister}" />
+        </h:form>
+        <!--logged in User-->
+        <h:form rendered="#{not empty loginBean.user}"> 
+            <h2>#{messages.loginWelcome2}</h2>
+            <h:commandButton id="btn_logout" action="#{loginBean.logout}" class="btn btn-default" value="#{messages.homeLogout}" />
+        </h:form>
             <ui:insert name="content" />
         </h:body>
     </f:view>

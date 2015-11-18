@@ -13,12 +13,12 @@
     <h:dataTable value="#{matchBean.upcomingMatches}" var="match" rendered="#{not empty matchBean.upcomingMatches}" class="table table-hover table-bordered">
         <h:column>
             <f:facet name="header">#{messages.matchHomeTeam}</f:facet>
-                #{match.homeTeam.id}
+            <h:outputText value="#{match.homeTeam.id}" />
             <!--//#{teams[game.team1.code]}-->
         </h:column>
         <h:column>
             <f:facet name="header">#{messages.matchAwayTeam}</f:facet>
-                #{match.awayTeam.id}
+            <h:outputText value="#{match.awayTeam.id}" />
         </h:column>
         <h:column>
             <f:facet name="header">#{messages.matchStartTime}</f:facet>
@@ -26,8 +26,9 @@
                 <f:convertDateTime pattern="yyyy/MM/dd hh:mm:ss"/>
             </h:outputText>
         </h:column>
-        <h:column><!--only display for gambler, maybe -->
-            <h:outputLink value="game-bet.xhtml?game=#{match.id}">Bets</h:outputLink>
+        <h:column>
+            <f:facet name="header">#{messages.matchBets}</f:facet>
+            <h:outputLink value="match/bets.xhtml?match=#{match.id}">#{messages.matchBets}</h:outputLink>
         </h:column>
     </h:dataTable>
     
