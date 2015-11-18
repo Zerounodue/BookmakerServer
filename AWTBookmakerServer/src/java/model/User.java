@@ -21,5 +21,19 @@ public class User {
     
     private List<Bet> bets;
     
+    public User(int id, String n, double b, Role r){
+        this.id = id;
+        this.name = n;
+        this.balance = b;
+        this.role = r;
+    }
+    
+    public User(int id, String n, double b, Role r, List<Bet> bets){
+        this.id = id;
+        this.name = n;
+        this.balance = b;
+        this.role = r;
+        this.bets = bets;
+    }
     
 }

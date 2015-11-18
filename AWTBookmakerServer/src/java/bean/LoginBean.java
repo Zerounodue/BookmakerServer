@@ -13,6 +13,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import model.Role;
 import model.User;
 import util.DBHelper;
 import util.MessageHelper;
@@ -49,8 +50,7 @@ public class LoginBean {
 
     public String login() {
         //check if user is already logged in
-        
-        
+
         //check user data to make sure they contain values and passwords are equal
         if (username == null || password == null || username.length() == 0 || password.length() == 0) {
             MessageHelper.addMessageToComponent("frm_login", "messages", "loginErrNameOrPasswordEmpty", FacesMessage.SEVERITY_WARN);
@@ -61,7 +61,8 @@ public class LoginBean {
         if (conn != null) {
 
             try {
-                if (!userExists(conn, password)) {
+                this.user = getUserFromDB(conn, true);
+                if (user == null) {
                     //log the user in
                     MessageHelper.addMessageToComponent("frm_login", "messages", "loginUsernameAndPasswordNotFound", FacesMessage.SEVERITY_WARN);
                     return null;
@@ -90,18 +91,18 @@ public class LoginBean {
 
         Connection conn = DBHelper.getDBConnection();
         if (conn != null) {
-            
+
             PreparedStatement s = null;
-            
+
             try {
                 //check if username already exists
-                if (userExists(conn, null)) {
+                if (getUserFromDB(conn, false) != null) {
                     MessageHelper.addMessageToComponent("frm_register", "messages", "registerUserNameExists", FacesMessage.SEVERITY_WARN);
                     return null;
                 }
 
                 int res;
-                
+
                 String sql = "INSERT INTO users (name, password) "
                         + "VALUES (?, ?)";
                 s = conn.prepareStatement(sql);
@@ -129,35 +130,40 @@ public class LoginBean {
         return REGISTER_SITE;
     }
 
-    private boolean userExists(Connection conn, String pw) throws SQLException {
-        boolean exists = true;
+    private User getUserFromDB(Connection conn, boolean withPW) throws SQLException {
+        User u = null;
 
         ResultSet rs = null;
         PreparedStatement s = null;
 
-        String sql = "SELECT count(name) as number FROM users "
+        String sql = "SELECT id, name, balance, roleFK FROM users "
                 + "WHERE name = ?";
-        if(pw != null){
+        if (withPW) {
             sql += " AND password = ?";
         }
 
         s = conn.prepareStatement(sql);
         s.setString(1, username);
-        if(pw != null){
+        if (withPW) {
             s.setString(2, password);
         }
 
         rs = s.executeQuery();
 
         if (rs != null) {
-            rs.next();
-            int num = rs.getInt("number");
-            exists = num > 0;
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                Double balance = rs.getDouble("balance");
+                int role = rs.getInt("roleFK");
+
+                u = new User(id, name, balance, new Role(id));
+            }
         }
 
         DBHelper.closeConnection(rs, s);
 
-        return exists;
+        return u;
     }
 
     /**
