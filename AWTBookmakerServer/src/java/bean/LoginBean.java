@@ -62,10 +62,13 @@ public class LoginBean {
 
             try {
                 this.user = getUserFromDB(conn, true);
-                if (user == null) {
+                if (getUser() == null) {
                     //log the user in
                     MessageHelper.addMessageToComponent("frm_login", "messages", "loginUsernameAndPasswordNotFound", FacesMessage.SEVERITY_WARN);
                     return null;
+                //might want to add the user's bets?
+                }else{
+                    
                 }
             } catch (SQLException e) {
                 MessageHelper.addMessageToComponent("frm_login", "messages", "loginErrDB", FacesMessage.SEVERITY_ERROR);
@@ -79,6 +82,12 @@ public class LoginBean {
         return HOME_SITE;
     }
 
+    public String logout(){
+        this.user = null;
+        
+        return HOME_SITE;
+    }
+    
     public String register() {
         //check user data to make sure they contain values and passwords are equal
         if (username == null || password == null || username.length() == 0 || password.length() == 0) {
@@ -130,6 +139,7 @@ public class LoginBean {
         return REGISTER_SITE;
     }
 
+    //TODO add to db helper?
     private User getUserFromDB(Connection conn, boolean withPW) throws SQLException {
         User u = null;
 
@@ -206,6 +216,13 @@ public class LoginBean {
      */
     public void setPassword2(String password) {
         this.password2 = password;
+    }
+
+    /**
+     * @return the user
+     */
+    public User getUser() {
+        return user;
     }
 
 }
