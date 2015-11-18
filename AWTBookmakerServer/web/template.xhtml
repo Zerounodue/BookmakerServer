@@ -56,7 +56,10 @@
         <!--logged in User-->
         <h:form rendered="#{not empty loginBean.user}"> 
             <h2>#{messages.loginWelcome2}</h2>
-            <h:commandButton id="btn_logout" action="#{loginBean.logout}" class="btn btn-default" value="#{messages.homeLogout}" />
+            <div class="text-right">
+                <h:commandButton id="btn_logout" action="#{loginBean.logout}" class="btn btn-default" value="#{messages.homeLogout}" />
+                <h3 class="text-right">#{messages.userBalance}: #{loginBean.user.balance}</h3>
+            </div>
         </h:form>
             <ui:insert name="content" />
         </h:body>

@@ -34,6 +34,15 @@ public class MatchBean {
             + "INNER JOIN teams ht ON m.homeTeamFK = ht.id "
             + "INNER JOIN teams at ON m.awayTeamFK = at.id ";
 
+    
+    private int matchId;
+    private String homeTeam;
+    private String awayTeam;
+    private Match match;
+    
+    
+    
+    
     /**
      * Gets all matches with a start time > than now
      * @return list of Match objects or null
@@ -78,6 +87,20 @@ public class MatchBean {
         }
 
         return matches;
+    }
+
+    /**
+     * @return the matchId
+     */
+    public int getMatchId() {
+        return matchId;
+    }
+
+    /**
+     * @param matchId the matchId to set
+     */
+    public void setMatchId(int matchId) {
+        this.matchId = matchId;
     }
 
 }

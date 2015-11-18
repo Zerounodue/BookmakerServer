@@ -6,11 +6,14 @@
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
     xmlns:h="http://java.sun.com/jsf/html">
 
+    <f:metadata>
+        <f:viewParam name="matchId" value="#{matchBean.matchId}" />
+    </f:metadata>
     <ui:define name="content">
     
     <h2>#{messages.betBets}</h2>
     <!--see in matches.xhtml how to do stuff-->
-    here will be context...
+    __Here will be details for match no: #{matchBean.matchId}
     
     </ui:define>
 </ui:composition>
