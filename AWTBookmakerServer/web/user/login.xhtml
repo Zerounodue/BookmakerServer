@@ -12,12 +12,12 @@
             <h:commandButton id="btn_register" action="register.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.loginRegister}" />
         </h:form>
         <div>
-            <h:messages for="frm_Login" globalOnly="true" errorClass="err" warnClass="warn" infoClass="info"></h:messages>
+            <h:messages for="frm_login" globalOnly="true" errorClass="err" warnClass="warn" infoClass="info"></h:messages>
         </div>
-        <h:form id="frm_Login">
+        <h:form id="frm_login">
             <div class="form-group">
                 <h:outputLabel for="username">#{messages.loginUsername}</h:outputLabel>
-                <h:inputText class="form-control" id="userName" value="#{loginBean.userName}">
+                <h:inputText class="form-control" id="username" value="#{loginBean.username}">
                     <f:passThroughAttribute name="required" value="required" />
                 </h:inputText>
             </div>

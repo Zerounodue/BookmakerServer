@@ -9,8 +9,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -26,117 +24,154 @@ import util.MessageHelper;
 @ManagedBean
 @SessionScoped
 public class LoginBean {
+
     private User user;
     private String locale;
-    private String userName;
+    private String username;
     private String password;
-    
-    private final static String LOGIN_SITE = "login.xhtml?faces-redirect=true";
-    private final static String REGISTER_SITE = "register.xhtml?faces-redirect=true";
-    private final static String HOME_SITE = "/user/home.xhtml?faces-redirect=true";
+    private String password2;
 
-    public void setLocale(String locale){
-	this.locale = locale;
+    private final static String LOGIN_SITE = "/user/login.xhtml?faces-redirect=true";
+    private final static String REGISTER_SITE = "/user/register.xhtml?faces-redirect=true";
+    private final static String HOME_SITE = "home.xhtml?faces-redirect=true";
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
-    
-    public String getLocale(){
-	if(locale == null){
+
+    public String getLocale() {
+        if (locale == null) {
             FacesContext context = FacesContext.getCurrentInstance();
-            return  context.getViewRoot().getLocale().toString();
-	}
-	return locale;
-    }
-    
-    
-    public String login(){
-        
-        
-        
-        
-        
-        return HOME_SITE;	
+            return context.getViewRoot().getLocale().toString();
+        }
+        return locale;
     }
 
-    public String register(){
+    public String login() {
+        //check if user is already logged in
+        
+        
+        //check user data to make sure they contain values and passwords are equal
+        if (username == null || password == null || username.length() == 0 || password.length() == 0) {
+            MessageHelper.addMessageToComponent("frm_login", "messages", "loginErrNameOrPasswordEmpty", FacesMessage.SEVERITY_WARN);
+            return null;
+        }
+
         Connection conn = DBHelper.getDBConnection();
-        if(conn != null){
-            //check if username already exists
-            if(userNameAlreadyExists(conn)){
-                MessageHelper.addMessageToComponent("frm_Login:message", "Messages", "registerUserNameExists", FacesMessage.SEVERITY_WARN);
-                return LOGIN_SITE;
+        if (conn != null) {
+
+            try {
+                if (!userExists(conn, password)) {
+                    //log the user in
+                    MessageHelper.addMessageToComponent("frm_login", "messages", "loginUsernameAndPasswordNotFound", FacesMessage.SEVERITY_WARN);
+                    return null;
+                }
+            } catch (SQLException e) {
+                MessageHelper.addMessageToComponent("frm_login", "messages", "loginErrDB", FacesMessage.SEVERITY_ERROR);
+                return null;
+            } finally {
+                DBHelper.closeConnection(conn);
             }
+
+        }
+
+        return HOME_SITE;
+    }
+
+    public String register() {
+        //check user data to make sure they contain values and passwords are equal
+        if (username == null || password == null || username.length() == 0 || password.length() == 0) {
+            MessageHelper.addMessageToComponent("frm_register", "messages", "registerErrNameOrPasswordEmpty", FacesMessage.SEVERITY_WARN);
+            return null;
+        } else if (!password.equals(password2)) {
+            MessageHelper.addMessageToComponent("frm_register", "messages", "registerErrPasswordsDoNotMatch", FacesMessage.SEVERITY_WARN);
+            return null;
+        }
+
+        Connection conn = DBHelper.getDBConnection();
+        if (conn != null) {
             
-            int res;
             PreparedStatement s = null;
             
             try {
+                //check if username already exists
+                if (userExists(conn, null)) {
+                    MessageHelper.addMessageToComponent("frm_register", "messages", "registerUserNameExists", FacesMessage.SEVERITY_WARN);
+                    return null;
+                }
+
+                int res;
+                
                 String sql = "INSERT INTO users (name, password) "
-                           + "VALUES (?, ?)";
+                        + "VALUES (?, ?)";
                 s = conn.prepareStatement(sql);
-                
-                s.setString(1, userName);
+
+                s.setString(1, username);
                 s.setString(2, password);
-                
-                res = s.executeUpdate(sql);
+
+                res = s.executeUpdate();
+
                 //error
                 if (res < 0) {
-                    MessageHelper.addMessageToComponent("frm_Login:message", "Messages", "registerErrCreateUser", FacesMessage.SEVERITY_ERROR);
-                    return REGISTER_SITE;
+                    MessageHelper.addMessageToComponent("frm_register", "messages", "registerErrCreateUser", FacesMessage.SEVERITY_ERROR);
+                    return null;
                 }
             } catch (SQLException e) {
-                Logger.getLogger(MatchBean.class.getName()).log(Level.SEVERE, null, e);
-            }finally{
+                MessageHelper.addMessageToComponent("frm_register", "messages", "registerErrDB", FacesMessage.SEVERITY_ERROR);
+                return null;
+            } finally {
                 DBHelper.closeConnection(s, conn);
             }
 
             return LOGIN_SITE;
         }
-        
+
         return REGISTER_SITE;
     }
-    
-    private boolean userNameAlreadyExists(Connection conn){
+
+    private boolean userExists(Connection conn, String pw) throws SQLException {
         boolean exists = true;
-        
+
         ResultSet rs = null;
         PreparedStatement s = null;
-        
+
         String sql = "SELECT count(name) as number FROM users "
-                   + "WHERE name = ?";
-        
-        try {
-            s = conn.prepareStatement(sql);
-            s.setString(1, userName);
-            
-            rs = s.executeQuery();
-            
-            if (rs != null) {
-                rs.next();
-                int num = rs.getInt("number");
-                exists = num > 0;
-            }
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
-        }finally{
-            DBHelper.closeConnection(rs, s);
+                + "WHERE name = ?";
+        if(pw != null){
+            sql += " AND password = ?";
         }
-	
+
+        s = conn.prepareStatement(sql);
+        s.setString(1, username);
+        if(pw != null){
+            s.setString(2, password);
+        }
+
+        rs = s.executeQuery();
+
+        if (rs != null) {
+            rs.next();
+            int num = rs.getInt("number");
+            exists = num > 0;
+        }
+
+        DBHelper.closeConnection(rs, s);
+
         return exists;
-    }
-    
-    /**
-     * @return the userName
-     */
-    public String getUserName() {
-        return userName;
     }
 
     /**
-     * @param userName the userName to set
+     * @return the username
      */
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * @param username the username to set
+     */
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     /**
@@ -152,8 +187,19 @@ public class LoginBean {
     public void setPassword(String password) {
         this.password = password;
     }
-    
-    
-    
-    
+
+    /**
+     * @return the password2
+     */
+    public String getPassword2() {
+        return password2;
+    }
+
+    /**
+     * @param password the password2 to set
+     */
+    public void setPassword2(String password) {
+        this.password2 = password;
+    }
+
 }
