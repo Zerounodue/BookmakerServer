@@ -16,14 +16,18 @@ public class User {
     private String name;
     private double balance;
     private Role role;
+    private boolean isAdmin=false;
     
     private List<Bet> bets;
+    
     
     public User(int id, String n, double b, Role r){
         this.id = id;
         this.name = n;
         this.balance = b;
         this.role = r;
+        // admin role id is 1, do not change it in the database
+        this.isAdmin= (r.getId()==1);
     }
     
     public User(int id, String n, double b, Role r, List<Bet> bets){
@@ -32,6 +36,8 @@ public class User {
         this.balance = b;
         this.role = r;
         this.bets = bets;
+        // admin role id is 1, do not change it in the database
+        this.isAdmin= (r.getId()==1);
     }
 
     /**
@@ -83,11 +89,10 @@ public class User {
         return role;
     }
 
-    /**
-     * @param role the role to set
-     */
-    public void setRole(Role role) {
-        this.role = role;
+    public boolean isAdmin() {
+        return isAdmin;
     }
+
+    
     
 }

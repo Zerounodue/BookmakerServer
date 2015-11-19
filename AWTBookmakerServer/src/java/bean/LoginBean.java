@@ -166,9 +166,9 @@ public class LoginBean {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
                 Double balance = rs.getDouble("balance");
-                int role = rs.getInt("roleFK");
+                int roleId = rs.getInt("roleFK");
 
-                u = new User(id, name, balance, new Role(id));
+                u = new User(id, name, balance, new Role(roleId));
             }
         }
 
