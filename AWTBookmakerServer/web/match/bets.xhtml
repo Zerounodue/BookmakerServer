@@ -7,13 +7,33 @@
     xmlns:h="http://java.sun.com/jsf/html">
 
     <f:metadata>
-        <f:viewParam name="matchId" value="#{matchBean.matchId}" />
+        <f:viewParam name="resultId" value="#{matchBean.resultId}" />
     </f:metadata>
     <ui:define name="content">
-    
-    <h2>#{messages.betBets}</h2>
-    <!--see in matches.xhtml how to do stuff-->
-    __Here will be details for match no: #{matchBean.matchId}
-    
+        <h2>#{messages.betBets}</h2>
+        here will be bets for result with id: #{matchBean.resultId}
+        <c:choose>
+            <c:when test="#{empty matchBean.getBetsByResultId(matchBean.resultId)}">
+                <!--in case no data is available-->
+                <h:outputText value="#{messages.betNoBets}"/>
+            </c:when>
+            <c:otherwise>
+                <!--display if data is available-->
+                <h:dataTable value="#{matchBean.bets}" var="bet" class="table table-hover table-bordered">
+                    <h:column>
+                        <f:facet name="header">#{messages.betResult}</f:facet>
+                        <h:outputText value="#{bet.resultId}" />
+                </h:column>
+                    <h:column>
+                        <f:facet name="header">#{messages.betUser}</f:facet>
+                        <h:outputText value="#{bet.userId}" />
+                </h:column>
+                    <h:column>
+                        <f:facet name="header">#{messages.betAmount}</f:facet>
+                        <h:outputText value="#{bet.amount}" />
+                </h:column>
+                </h:dataTable>
+            </c:otherwise>
+        </c:choose>
     </ui:define>
 </ui:composition>

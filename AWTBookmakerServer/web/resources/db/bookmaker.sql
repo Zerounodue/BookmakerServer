@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 18, 2015 at 09:30 PM
+-- Generation Time: Nov 19, 2015 at 10:48 PM
 -- Server version: 10.1.8-MariaDB
 -- PHP Version: 5.6.14
 
@@ -28,10 +28,21 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `bets` (
   `id` int(11) NOT NULL,
-  `money` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `userFK` int(11) NOT NULL,
-  `matchFK` int(11) NOT NULL
+  `resultFK` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `bets`
+--
+
+INSERT INTO `bets` (`id`, `amount`, `userFK`, `resultFK`) VALUES
+(2, '25.00', 1, 1),
+(3, '5.00', 4, 1),
+(4, '57.00', 3, 1),
+(5, '5.00', 4, 2),
+(6, '5.00', 4, 3);
 
 -- --------------------------------------------------------
 
@@ -43,20 +54,21 @@ CREATE TABLE `matches` (
   `id` int(11) NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `homeTeamFK` int(11) NOT NULL,
-  `awayTeamFK` int(11) NOT NULL
+  `awayTeamFK` int(11) NOT NULL,
+  `finished` bit(1) NOT NULL DEFAULT b'0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `matches`
 --
 
-INSERT INTO `matches` (`id`, `time`, `homeTeamFK`, `awayTeamFK`) VALUES
-(2, '2015-11-15 11:14:34', 3, 4),
-(3, '2016-11-15 11:14:34', 1, 4),
-(4, '2015-09-10 05:33:52', 4, 7),
-(5, '2014-09-10 05:33:52', 1, 7),
-(6, '2016-03-09 21:39:06', 5, 1),
-(7, '2016-01-09 21:39:06', 4, 2);
+INSERT INTO `matches` (`id`, `time`, `homeTeamFK`, `awayTeamFK`, `finished`) VALUES
+(2, '2015-11-15 11:14:34', 3, 4, b'0'),
+(3, '2016-11-15 11:14:34', 1, 4, b'0'),
+(4, '2015-09-10 05:33:52', 4, 7, b'0'),
+(5, '2014-09-10 05:33:52', 1, 7, b'0'),
+(6, '2016-03-09 21:39:06', 5, 1, b'0'),
+(7, '2016-01-09 21:39:06', 4, 2, b'0');
 
 -- --------------------------------------------------------
 
@@ -66,12 +78,21 @@ INSERT INTO `matches` (`id`, `time`, `homeTeamFK`, `awayTeamFK`) VALUES
 
 CREATE TABLE `results` (
   `id` int(11) NOT NULL,
-  `name` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
   `oddNumerator` decimal(12,2) NOT NULL DEFAULT '0.00',
   `oddDenominator` decimal(12,2) NOT NULL DEFAULT '0.00',
   `occured` bit(1) NOT NULL DEFAULT b'0',
   `matchFK` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `results`
+--
+
+INSERT INTO `results` (`id`, `name`, `oddNumerator`, `oddDenominator`, `occured`, `matchFK`) VALUES
+(1, 'Austria 1:0', '5.00', '1.00', b'0', 7),
+(2, 'Austria 2:0', '7.00', '2.00', b'1', 7),
+(3, 'Austria 0:1', '1.00', '200.00', b'1', 7);
 
 -- --------------------------------------------------------
 
@@ -138,7 +159,7 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `name`, `password`, `balance`, `roleFK`) VALUES
 (1, 'a', 'a', '0.00', 2),
 (3, '1', '2', '0.00', 2),
-(4, 'b', 'b', '0.00', 2),
+(4, 'b', 'b', '0.00', 1),
 (5, 'c', 'c', '0.00', 2),
 (6, 'üpoiuzhg', 'kljhh', '0.00', 2),
 (7, '112', '211', '0.00', 2),
@@ -158,7 +179,7 @@ INSERT INTO `users` (`id`, `name`, `password`, `balance`, `roleFK`) VALUES
 --
 ALTER TABLE `bets`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `matchFK` (`matchFK`),
+  ADD KEY `matchFK` (`resultFK`),
   ADD KEY `userFK` (`userFK`);
 
 --
@@ -204,7 +225,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bets`
 --
 ALTER TABLE `bets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `matches`
 --
@@ -214,7 +235,7 @@ ALTER TABLE `matches`
 -- AUTO_INCREMENT for table `results`
 --
 ALTER TABLE `results`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `roles`
 --
@@ -239,7 +260,7 @@ ALTER TABLE `users`
 --
 ALTER TABLE `bets`
   ADD CONSTRAINT `bets_ibfk_1` FOREIGN KEY (`userFK`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `bets_ibfk_2` FOREIGN KEY (`matchFK`) REFERENCES `matches` (`id`);
+  ADD CONSTRAINT `bets_ibfk_2` FOREIGN KEY (`resultFK`) REFERENCES `results` (`id`);
 
 --
 -- Constraints for table `matches`

@@ -14,17 +14,19 @@ import java.sql.Timestamp;
 public class Match {
     private int id;
     private Timestamp time;
-
+    private boolean finished;
+    
     private Team homeTeam;
     private Team awayTeam;
     private Result result;
     
-    public Match(int id, Timestamp t, Team ht, Team at, Result r){
+    public Match(int id, Timestamp t, Team ht, Team at, Result r, boolean finished){
         this.id = id;
         this.time = t;
         this.homeTeam = ht;
         this.awayTeam = at;
         this.result = r;
+        this.finished = finished;
     }
 
     /**
