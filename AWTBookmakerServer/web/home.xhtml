@@ -12,7 +12,7 @@
         
         
         <h:form rendered="#{loginBean.user.admin}">
-            <h:commandButton id="btn_logout" action="#{loginBean.logout}" class="btn btn-default" value="#{messages.homeLogout}" />
+            <h:commandButton id="btn_newMatch" action="newMatch.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeNewMatch}" />
         </h:form>
     </ui:define>
 </ui:composition>
