@@ -9,8 +9,10 @@
     <ui:define name="content">
         
         <ui:include src="/match/matches.xhtml" />
+        
+        
         <h:form rendered="#{loginBean.user.admin}">
-        <h:commandButton id="btn_logout" action="#{loginBean.logout}" class="btn btn-default" value="#{messages.homeLogout}" />
+            <h:commandButton id="btn_logout" action="#{loginBean.logout}" class="btn btn-default" value="#{messages.homeLogout}" />
         </h:form>
     </ui:define>
 </ui:composition>

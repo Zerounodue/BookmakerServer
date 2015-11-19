@@ -5,9 +5,6 @@
  */
 package util;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
