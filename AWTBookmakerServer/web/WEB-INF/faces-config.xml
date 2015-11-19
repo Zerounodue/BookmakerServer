@@ -4,9 +4,15 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
     <application>
+        <locale-config>
+            <default-locale>en</default-locale>
+        </locale-config>
+        
+        <message-bundle>main.Messages</message-bundle>
+        
         <resource-bundle>
             <base-name>main.Messages</base-name>
-                <var>msg</var>
+                <var>messages</var>
         </resource-bundle>
     </application>
 </faces-config>

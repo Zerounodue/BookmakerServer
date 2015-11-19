@@ -22,19 +22,19 @@ public class MessageHelper {
 
         // Bring the error message using the Faces Context
         FacesContext context = FacesContext.getCurrentInstance();
-
-        //Application a = context.getApplication();
-        //ResourceBundle b = ResourceBundle.getBundle(msgBundle, context.getViewRoot().getLocale());
-        //ResourceBundle b = a.getResourceBundle(context, context.getViewRoot().getLocale());
-        //String c = b.getString(msgKey);
-        //String errorMessage = context.getApplication().getResourceBundle(context, msgBundle).getString(msgKey);
-        String errorMessage = "__name already taken";
-
-        // Add View Faces Message
-        FacesMessage message = new FacesMessage(severity, errorMessage, errorMessage);
+        String errorMsg = msgKey;
+        String errorDetail;
+        
+        try{
+            errorMsg = context.getApplication().getResourceBundle(context, msgBundle).getString(msgKey);
+            errorDetail = errorMsg;
+        }catch(Exception e){
+            //do nothing
+            errorDetail = "Could not load error details in your language. Please try again and don't input mistakes.";
+        }
 
         // Add the message into context for a specific component
-        context.addMessage(componentId, message);
+        context.addMessage(componentId, new FacesMessage(severity, errorMsg, errorDetail));
     }
 
 }
