@@ -138,6 +138,15 @@ public class MatchBean {
         return getBets();
     }
     
+    public String bet(int resultId, int userId){
+        
+        
+        
+        
+        
+        return null;
+    }
+    
     public List<Result> getResultsByMatchId(int id){
         results = null;
         

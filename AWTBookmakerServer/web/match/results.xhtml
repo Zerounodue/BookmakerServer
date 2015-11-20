@@ -30,20 +30,35 @@
 
                     <c:choose>
                         <c:when test="#{not empty loginBean.user}">
-                            <!--only for gamblers-->
-                            <h:column rendered="#{not loginBean.user.admin}">
-                                <f:facet name="header">#{messages.resultClickToBet}</f:facet>
-                                <h:outputLink value="bets.xhtml?resultId=#{result.id}">#{messages.resultClickToBet}</h:outputLink>
-                            </h:column>
-                            <!--only for bookmakers-->
-                            <h:column rendered="#{loginBean.user.admin}">
-                                <f:facet name="header">#{messages.resultGain}</f:facet>
-                                <h:outputText value="__TODO" />
-                            </h:column>
-                            <h:column rendered="#{loginBean.user.admin}">
-                                <f:facet name="header">#{messages.resultLoss}</f:facet>
-                                <h:outputText value="__TODO" />
-                            </h:column>
+                            <c:choose>
+                                <c:when test="#{not loginBean.user.admin}">
+                                    <!--only for gamblers-->
+                                    <h:column>
+                                        <f:facet name="header">#{messages.resultClickToBet}</f:facet>
+                                        <!-- TODO link to new .xhtml site
+                                        <h:outputLink value="bets.xhtml?resultId=#{result.id}">#{messages.resultClickToBet}</h:outputLink>
+                                        -->
+                                        <!-- TODO link to new .xhtml file and then use method action="#{matchBean.bet(matchBean.resultId, loginBean.user.id)}" there
+                                        <h:commandButton id="btn_bet" class="btn btn-default" action="#{matchBean.bet(matchBean.resultId, loginBean.user.id)}" value="#{messages.resultClickToBet}" />
+                                        -->
+                                        </h:column>
+                                </c:when>
+                                <c:otherwise>
+                                    <!--only for bookmakers-->
+                                    <h:column rendered="#{loginBean.user.admin}">
+                                        <f:facet name="header">#{messages.resultGain}</f:facet>
+                                        <h:outputText value="__TODO" />
+                                    </h:column>
+                                    <h:column rendered="#{loginBean.user.admin}">
+                                        <f:facet name="header">#{messages.resultLoss}</f:facet>
+                                        <h:outputText value="__TODO" />
+                                    </h:column>
+                                    <h:column rendered="#{loginBean.user.admin}">
+                                        <f:facet name="header">#{messages.resultClickToBet}</f:facet>
+                                        <h:outputLink value="bets.xhtml?resultId=#{result.id}">#{messages.resultClickToBet}</h:outputLink>
+                                    </h:column>
+                                </c:otherwise>
+                            </c:choose>
                         </c:when>
                     </c:choose>
                 </h:dataTable>
