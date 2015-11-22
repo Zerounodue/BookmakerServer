@@ -3,16 +3,30 @@
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:f="http://java.sun.com/jsf/core" 
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
                 xmlns:h="http://java.sun.com/jsf/html">
 
-
-    <ui:define name="content">
-        
-        <ui:include src="/match/matches.xhtml" />
-        
-        
-        <h:form rendered="#{loginBean.user.admin}">
-            <h:commandButton id="btn_newMatch" action="newMatch.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeNewMatch}" />
+    <ui:define name="contentHeader">
+        <h:form>
+            <!--<h:commandButton id="btn_upcomingMatches" action="__TODO" class="btn btn-default" value="#{messages.homeUpcomingMatches}" />-->
+            
+            <h:commandButton id="btn_upcomingMatches" action="/match/upcomingMatches.xhtml" class="btn btn-default" value="#{messages.homeUpcomingMatches}" />
+            <c:if test="#{not empty loginBean.user}">
+                <c:choose>
+                    <!--buttons for bookmaker-->
+                    <c:when test="#{loginBean.user.admin}">
+                        <h:commandButton id="btn_newMatch" action="match/newMatch.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeNewMatch}" />
+                        <h:commandButton id="btn_matchesWithoutResult" action="__TODO" class="btn btn-default" value="#{messages.homeShowMatchesWithoutResult}" />
+                    </c:when>
+                    <!--buttons for gambler-->
+                    <c:otherwise>
+                        <h:commandButton id="btn_pastMatches" action="__TODO" class="btn btn-default" value="#{messages.homePastMatches}" />
+                    </c:otherwise>
+                </c:choose>
+            </c:if>
         </h:form>
     </ui:define>
+    <!--<ui:define name="content">
+        <ui:include src="/match/matches.xhtml" />
+    </ui:define>-->
 </ui:composition>

@@ -22,7 +22,7 @@ import util.MessageHelper;
  *
  * @author bizki
  */
-@ManagedBean
+@ManagedBean(name="loginBean", eager=true)
 @SessionScoped
 public class LoginBean {
 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="../template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core" 
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+<f:metadata>
+    <!--prevent guests from visiting this page-->
+    <c:if test="#{empty loginBean.user}">
+        <f:viewAction action="/home.xhtml?faces-redirect=true" />
+    </c:if>
+    
+</f:metadata>
+
+    <ui:define name="content">
+        <!--TODO add 1 number field and submit, use user bean? account bean?-->
+        TODO add 1 number field and submit, use user bean? account bean?
+    </ui:define>
+</ui:composition>

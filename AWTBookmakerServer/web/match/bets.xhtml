@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition template="../template.xhtml"
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:f="http://java.sun.com/jsf/core" 
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-    xmlns:h="http://java.sun.com/jsf/html">
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core" 
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:h="http://java.sun.com/jsf/html">
 
     <f:metadata>
+        <!--prevent guests from visiting this page-->
+        <c:if test="#{empty loginBean.user}">
+            <f:viewAction action="/home.xhtml?faces-redirect=true" />
+        </c:if>
         <f:viewParam name="resultId" value="#{matchBean.resultId}" />
     </f:metadata>
+    
     <ui:define name="content">
         <h2>#{messages.betBets}</h2>
         here will be bets for result with id: #{matchBean.resultId}
@@ -23,15 +28,15 @@
                     <h:column>
                         <f:facet name="header">#{messages.betResult}</f:facet>
                         <h:outputText value="#{bet.resultId}" />
-                </h:column>
+                    </h:column>
                     <h:column>
                         <f:facet name="header">#{messages.betUser}</f:facet>
                         <h:outputText value="#{bet.userId}" />
-                </h:column>
+                    </h:column>
                     <h:column>
                         <f:facet name="header">#{messages.betAmount}</f:facet>
                         <h:outputText value="#{bet.amount}" />
-                </h:column>
+                    </h:column>
                 </h:dataTable>
             </c:otherwise>
         </c:choose>

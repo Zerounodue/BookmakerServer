@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition template="../template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core" 
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+<f:metadata>
+    <!--prevent guests or gamblers from visiting this page-->
+    <c:if test="#{empty loginBean.user || not loginBean.user.admin}">
+        <f:viewAction action="/home.xhtml?faces-redirect=true" />
+    </c:if>
+    
+</f:metadata>
+    <ui:define name="content">
+        <h2>New Match</h2>
+            <div>
+                <h:messages for="frm_addMatch" globalOnly="true" errorClass="has-error" warnClass="has-warning" infoClass="info" />
+            </div>
+        <h:form id="frm_addMatch">
+            <!--home team-->
+            <div class="form-group">
+                <h:outputLabel for="homeTeam">#{messages.newMatchHomeTeam}</h:outputLabel>
+                <!--use drop down-->
+                <h:inputText class="form-control" id="homeTeam" value="#{matchBean.newMatchHomeTeamId}">
+                    <f:passThroughAttribute name="required" value="required" />
+                </h:inputText>
+            </div>
+            <!--away team-->
+            <div class="form-group">
+                <h:outputLabel for="awayTeam">#{messages.newMatchAwayTeam}</h:outputLabel>
+                <h:inputText class="form-control" id="awayTeam" value="#{matchBean.newMatchAwayTeamId}">
+                    <f:passThroughAttribute name="required" value="required" />
+                </h:inputText>
+            </div>
+            <!--date-->
+            <div class="form-group">
+                <h:outputLabel for="awayTeam">#{messages.newMatchStartTime}</h:outputLabel>
+                <!--TODO add date picker-->
+                <!--<t:inputDate class="form-control" id="time" popupCalendar="true" />-->
+                    <f:passThroughAttribute name="required" value="required" />
+            </div>
+            <!--results-->
+            <!--TODO add possibility to add unlimited results-->
+            
+            <h:commandButton type="submit" id="btn_subNewMatch" class="btn btn-default" action="#{matchBean.addNewMatch()}" value="#{messages.loginSubmit}" />
+        </h:form>
+    </ui:define>
+</ui:composition>

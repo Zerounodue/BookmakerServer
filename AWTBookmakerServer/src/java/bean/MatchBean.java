@@ -18,6 +18,7 @@ import model.Match;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.bean.ManagedProperty;
 import model.Bet;
 import model.Result;
 import model.Team;
@@ -31,6 +32,9 @@ import util.DBHelper;
 @SessionScoped
 public class MatchBean {
 
+    @ManagedProperty(value="#{loginBean}")
+    private LoginBean lbean;
+    
     private final static String SELECT_ALL_FROM_MATCHES
             = "SELECT m.id, m.homeTeamFK, m.awayTeamFK, m.time, m.finished FROM matches m ";
     private final static String SELECT_ALL_FROM_BETS
@@ -43,6 +47,10 @@ public class MatchBean {
     private String homeTeam;
     private String awayTeam;
     private Match match;
+    
+    private int newMatchHomeTeamId;
+    private int newMatchAwayTeamId;
+    private Timestamp newMatchTime;
     
     private List<Result> results = null;
     private List<Bet> bets = null;
@@ -57,7 +65,6 @@ public class MatchBean {
         matches = null;
         //get connection to DB
         Connection conn = DBHelper.getDBConnection();
-        //error connecting to db
         if (conn != null) {
             ResultSet rs = null;
             PreparedStatement s = null;
@@ -66,7 +73,7 @@ public class MatchBean {
                 Timestamp currentTimestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 
                 String sql = SELECT_ALL_FROM_MATCHES
-                        + "WHERE m.time > ? "
+                        + "WHERE m.time > ? AND m.finished = 0 "
                         + "ORDER BY m.time asc ";
 
                 s = conn.prepareStatement(sql);
@@ -81,8 +88,8 @@ public class MatchBean {
                         int atId = rs.getInt("awayTeamFK");
                         Timestamp ts = rs.getTimestamp("time");
                         boolean finished = rs.getBoolean("finished");
-                        //result will be null by upcoming matches
-                        Match m = new Match(id, ts, new Team(htId), new Team(atId), null, finished);
+                        //result will be null by upcoming matches -> set id to 0
+                        Match m = new Match(id, ts, new Team(htId), new Team(atId), 0, finished);
                         getMatches().add(m);
                     }
                 }
@@ -97,6 +104,56 @@ public class MatchBean {
         return getMatches();
     }
 
+    public List<Match> getMatchesWithoutResult(){
+        matches = null;
+        //get connection to DB
+        Connection conn = DBHelper.getDBConnection();
+        if (conn != null) {
+            ResultSet rs = null;
+            PreparedStatement s = null;
+            
+            try {
+                String sql = SELECT_ALL_FROM_MATCHES
+                        + "WHERE m.finished = 0 "
+                        + "ORDER BY m.time asc ";
+
+                s = conn.prepareStatement(sql);
+                rs = s.executeQuery();
+                if (rs != null) {
+                    matches = new ArrayList<>();
+                    
+                    while (rs.next()) {
+                        int id = rs.getInt("id");
+                        int htId = rs.getInt("homeTeamFK");
+                        int atId = rs.getInt("awayTeamFK");
+                        Timestamp ts = rs.getTimestamp("time");
+                        boolean finished = rs.getBoolean("finished");
+                        //result will be null by upcoming matches
+                        Match m = new Match(id, ts, new Team(htId), new Team(atId), 0, finished);
+                        getMatches().add(m);
+                    }
+                    
+                }
+
+            } catch (SQLException e) {
+                
+            }finally{
+                DBHelper.closeConnection(rs, s, conn);
+            }
+            
+        }
+        
+        
+        return getMatches();
+    }
+    
+    public String setResultForMatchByResultId(int id){
+        
+        
+        
+        return null;
+    }
+    
     public List<Bet> getBetsByResultId(int id){
         bets = null;
         
@@ -138,7 +195,9 @@ public class MatchBean {
         return getBets();
     }
     
-    public String bet(int resultId, int userId){
+    
+    
+    public String betForResultByResultId(int resultId){
         
         
         
@@ -197,6 +256,23 @@ public class MatchBean {
     }
     
     /**
+     * adds a new match
+     * @return String to redirect to or null (error message will be set)
+     */
+    public String addNewMatch(){
+        //parameters can be found in variables starting with newMatch
+        
+        //if user is not logged in, redirect to home
+        if(lbean.getUser() == null) return "../home.xhtml?faces-redirect=true";
+        
+        
+        
+        
+        
+        return null;
+    }
+    
+    /**
      * @return the matchId
      */
     public int getMatchId() {
@@ -243,6 +319,62 @@ public class MatchBean {
      */
     public void setResultId(int resultId) {
         this.resultId = resultId;
+    }
+
+    /**
+     * @return the newMatchHomeTeamId
+     */
+    public int getNewMatchHomeTeamId() {
+        return newMatchHomeTeamId;
+    }
+
+    /**
+     * @param newMatchHomeTeamId the newMatchHomeTeamId to set
+     */
+    public void setNewMatchHomeTeamId(int newMatchHomeTeamId) {
+        this.newMatchHomeTeamId = newMatchHomeTeamId;
+    }
+
+    /**
+     * @return the newMatchAwayTeamId
+     */
+    public int getNewMatchAwayTeamId() {
+        return newMatchAwayTeamId;
+    }
+
+    /**
+     * @param newMatchAwayTeamId the newMatchAwayTeamId to set
+     */
+    public void setNewMatchAwayTeamId(int newMatchAwayTeamId) {
+        this.newMatchAwayTeamId = newMatchAwayTeamId;
+    }
+
+    /**
+     * @return the newMatchTime
+     */
+    public Timestamp getNewMatchTime() {
+        return newMatchTime;
+    }
+
+    /**
+     * @param newMatchTime the newMatchTime to set
+     */
+    public void setNewMatchTime(Timestamp newMatchTime) {
+        this.newMatchTime = newMatchTime;
+    }
+
+    /**
+     * @return the lbean
+     */
+    public LoginBean getLbean() {
+        return lbean;
+    }
+
+    /**
+     * @param lbean the lbean to set
+     */
+    public void setLbean(LoginBean lbean) {
+        this.lbean = lbean;
     }
 
 }

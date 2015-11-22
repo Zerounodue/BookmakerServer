@@ -15,10 +15,27 @@ public class Match {
     private int id;
     private Timestamp time;
     private boolean finished;
+    private int resultId;
     
     private Team homeTeam;
     private Team awayTeam;
     private Result result;
+    
+    /**
+     * default constructor, used by "newMatch.xhtml"
+     */
+    public Match(){
+        
+    }
+    
+    public Match(int id, Timestamp t, Team ht, Team at, int r, boolean finished){
+        this.id = id;
+        this.time = t;
+        this.homeTeam = ht;
+        this.awayTeam = at;
+        this.resultId = r;
+        this.finished = finished;
+    }
     
     public Match(int id, Timestamp t, Team ht, Team at, Result r, boolean finished){
         this.id = id;
