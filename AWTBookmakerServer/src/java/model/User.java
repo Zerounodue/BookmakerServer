@@ -5,6 +5,7 @@
  */
 package model;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -14,14 +15,14 @@ import java.util.List;
 public class User {
     private int id;
     private String name;
-    private double balance;
+    private BigDecimal balance;
     private Role role;
     private boolean isAdmin=false;
     
     private List<Bet> bets;
     
     
-    public User(int id, String n, double b, Role r){
+    public User(int id, String n, BigDecimal b, Role r){
         this.id = id;
         this.name = n;
         this.balance = b;
@@ -30,7 +31,7 @@ public class User {
         this.isAdmin= (r.getId()==1);
     }
     
-    public User(int id, String n, double b, Role r, List<Bet> bets){
+    public User(int id, String n, BigDecimal b, Role r, List<Bet> bets){
         this.id = id;
         this.name = n;
         this.balance = b;
@@ -71,14 +72,14 @@ public class User {
     /**
      * @return the balance
      */
-    public double getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
     /**
      * @param balance the balance to set
      */
-    public void setBalance(double balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 

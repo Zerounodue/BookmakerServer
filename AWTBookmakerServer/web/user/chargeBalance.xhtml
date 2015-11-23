@@ -10,11 +10,33 @@
     <c:if test="#{empty loginBean.user}">
         <f:viewAction action="/home.xhtml?faces-redirect=true" />
     </c:if>
-    
 </f:metadata>
 
     <ui:define name="content">
-        <!--TODO add 1 number field and submit, use user bean? account bean?-->
-        TODO add 1 number field and submit, use user bean? account bean?
+        <h2>#{messages.chargeBalanceChargeBalance}</h2>
+        <div>
+            <h:messages for="frm_chargeBalance" globalOnly="true" errorClass="bg-danger" warnClass="text-danger" infoClass="text-info" />
+        </div>
+        <h:form id="frm_chargeBalance">
+            <div class="form-group">
+                <h:outputLabel for="amount">#{messages.chargeBalanceAmount}</h:outputLabel>
+            <h:inputText class="form-control" id="amount" value="#{userBean.amount}" converterMessage="#{messages.chargeBalanceEnterDigitsOnly}">
+                    <f:passThroughAttribute name="required" value="required" />
+            </h:inputText>
+            </div>
+            <div class="form-group">
+                <h:outputLabel for="creditCardNumber">#{messages.chargeBalanceCreditCardNumber}</h:outputLabel>
+                <h:inputText class="form-control" id="creditCardNumber" value="#{userBean.creditCardNumber}">
+                    <f:passThroughAttribute name="required" value="required" />
+            </h:inputText>
+            </div>
+            <div class="form-group">
+                <h:outputLabel for="validationCode">#{messages.chargeBalanceCreditCardNumber}</h:outputLabel>
+                <h:inputText class="form-control" id="validationCode" value="#{userBean.validationCode}">
+                    <f:passThroughAttribute name="required" value="required" />
+            </h:inputText>
+            </div>
+            <h:commandButton id="btn_frmChargeBalance" class="btn btn-default" action="#{userBean.chargeBalance()}" value="#{messages.chargeBalanceCharge}" />
+        </h:form>
     </ui:define>
 </ui:composition>

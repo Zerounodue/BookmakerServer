@@ -5,6 +5,7 @@
  */
 package bean;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -76,11 +77,15 @@ public class LoginBean {
             } finally {
                 DBHelper.closeConnection(conn);
             }
-
-        }
-        //login successful
-        this.username = this.password = "";
-        return HOME_SITE;
+            
+            //login successful
+            this.username = this.password = "";
+            return HOME_SITE;
+        //could not connect to db, user can't be logged in
+        }else{
+            MessageHelper.addMessageToComponent("frm_login", "messages", "loginErrDB", FacesMessage.SEVERITY_ERROR);
+            return null;
+        } 
     }
 
     public String logout(){
@@ -165,7 +170,7 @@ public class LoginBean {
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
-                Double balance = rs.getDouble("balance");
+                BigDecimal balance = rs.getBigDecimal("balance");
                 int roleId = rs.getInt("roleFK");
 
                 u = new User(id, name, balance, new Role(roleId));
