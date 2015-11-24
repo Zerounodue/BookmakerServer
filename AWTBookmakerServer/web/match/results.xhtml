@@ -27,40 +27,36 @@
                         <f:facet name="header">#{messages.resultOdds}</f:facet>
                         <h:outputText value="#{result.oddNumerator} : #{result.oddDenominator}" />
                     </h:column>
-
-                    <c:choose>
-                        <c:when test="#{not empty loginBean.user}">
-                            <c:choose>
-                                <c:when test="#{not loginBean.user.admin}">
-                                    <!--only for gamblers-->
-                                    <h:column>
-                                        <f:facet name="header">#{messages.resultClickToBet}</f:facet>
-                                        <!-- TODO link to new .xhtml site
-                                        <h:outputLink value="bets.xhtml?resultId=#{result.id}">#{messages.resultClickToBet}</h:outputLink>
-                                        -->
-                                        <!-- TODO link to new .xhtml file and then use method action="#{matchBean.betForResultByResultId(matchBean.resultId)}" there
-                                        <h:commandButton id="btn_bet" class="btn btn-default" action="#{matchBean.betForResultByResultId(matchBean.resultId)}" value="#{messages.resultClickToBet}" />
-                                        -->
-                                        </h:column>
-                                </c:when>
-                                <c:otherwise>
-                                    <!--only for bookmakers-->
-                                    <h:column rendered="#{loginBean.user.admin}">
-                                        <f:facet name="header">#{messages.resultGain}</f:facet>
-                                        <h:outputText value="__TODO" />
-                                    </h:column>
-                                    <h:column rendered="#{loginBean.user.admin}">
-                                        <f:facet name="header">#{messages.resultLoss}</f:facet>
-                                        <h:outputText value="__TODO" />
-                                    </h:column>
-                                    <h:column rendered="#{loginBean.user.admin}">
-                                        <f:facet name="header">#{messages.resultClickToBet}</f:facet>
-                                        <h:outputLink value="bets.xhtml?resultId=#{result.id}">#{messages.resultSetOccured}</h:outputLink>
-                                    </h:column>
-                                </c:otherwise>
-                            </c:choose>
-                        </c:when>
-                    </c:choose>
+                    <!--only for logged in users-->
+                    <c:if test="#{not empty loginBean.user}">
+                        <c:choose>
+                            <c:when test="#{not loginBean.user.admin}">
+                                <!--only for gamblers-->
+                                <h:column>
+                                    <f:facet name="header">#{messages.resultClickToBet}</f:facet>
+                                    <!--TODO check if user already placed a bet and allow to change-->
+                                    <!--TODO or just hide the link to place a bet-->
+                                    <!--TODO just leave it... no refund, several bets, yaaaaay-->
+                                    <h:outputLink value="../user/bet.xhtml?resultId=#{result.id}&amp;resultName=#{result.name}">#{messages.resultClickToBet}</h:outputLink>
+                                </h:column>
+                            </c:when>
+                            <c:otherwise>
+                                <!--only for bookmakers-->
+                                <h:column rendered="#{loginBean.user.admin}">
+                                    <f:facet name="header">#{messages.resultGain}</f:facet>
+                                    <h:outputText value="__TODO" />
+                                </h:column>
+                                <h:column rendered="#{loginBean.user.admin}">
+                                    <f:facet name="header">#{messages.resultLoss}</f:facet>
+                                    <h:outputText value="__TODO" />
+                                </h:column>
+                                <h:column rendered="#{loginBean.user.admin}">
+                                    <f:facet name="header">#{messages.resultClickToBet}</f:facet>
+                                    <h:outputLink value="bets.xhtml?resultId=#{result.id}">#{messages.resultSetOccured}</h:outputLink>
+                                </h:column>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:if>
                 </h:dataTable>
             </c:otherwise>
         </c:choose>

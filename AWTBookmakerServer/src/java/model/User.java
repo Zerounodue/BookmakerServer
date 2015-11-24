@@ -17,7 +17,7 @@ public class User {
     private String name;
     private BigDecimal balance;
     private Role role;
-    private boolean isAdmin=false;
+    private boolean isAdmin = false;
     
     private List<Bet> bets;
     

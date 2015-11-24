@@ -7,8 +7,8 @@
                 xmlns:h="http://java.sun.com/jsf/html">
 
     <f:metadata>
-        <!--prevent guests from visiting this page-->
-        <c:if test="#{empty loginBean.user}">
+        <!--prevent guests or gamblers from visiting this page-->
+        <c:if test="#{empty loginBean.user || not loginBean.user.admin}">
             <f:viewAction action="/home.xhtml?faces-redirect=true" />
         </c:if>
         <f:viewParam name="resultId" value="#{matchBean.resultId}" />
@@ -16,7 +16,7 @@
     
     <ui:define name="content">
         <h2>#{messages.betBets}</h2>
-        here will be bets for result with id: #{matchBean.resultId}
+        TODO: remove; here will be bets for result with id: #{matchBean.resultId}
         <c:choose>
             <c:when test="#{empty matchBean.getBetsByResultId(matchBean.resultId)}">
                 <!--in case no data is available-->

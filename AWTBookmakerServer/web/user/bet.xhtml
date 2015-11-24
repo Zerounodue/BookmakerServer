@@ -5,16 +5,30 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
                 xmlns:h="http://java.sun.com/jsf/html">
-<f:metadata>
-    <!--prevent guests from visiting this page-->
-    <c:if test="#{empty loginBean.user}">
-        <f:viewAction action="/home.xhtml?faces-redirect=true" />
-    </c:if>
-    <!--id of result to bet-->
-</f:metadata>
+    <f:metadata>
+        <!--prevent guests from visiting this page-->
+        <c:if test="#{empty loginBean.user}">
+            <f:viewAction action="/home.xhtml?faces-redirect=true" />
+        </c:if>
+        <!--get parameters-->
+        <f:viewParam name="resultId" value="#{userBean.resultId}" />
+        <f:viewParam name="resultName" value="#{userBean.resultName}" />
+        <f:viewParam name="betAmount" value="#{userBean.betAmount}" />
+    </f:metadata>
 
     <ui:define name="content">
-        <!--TODO add 1 number field and submit, use bet bean?-->
-        TODO add 1 number field and submit, use bet bean?
+        <h2>#{messages.betBetForResult}: #{userBean.resultName}</h2>
+        <div>
+            <h:messages for="frm_bet" globalOnly="true" errorClass="bg-danger" warnClass="text-danger" infoClass="text-info" />
+        </div>
+        <h:form id="frm_bet">
+            <div class="form-group">
+                <h:outputLabel for="betAmount">#{messages.betAmount}</h:outputLabel>
+                <h:inputText class="form-control" id="betAmount" value="#{userBean.betAmount}" converterMessage="#{messages.betAmountMustBeANumber}">
+                    <f:passThroughAttribute name="required" value="required" />
+                </h:inputText>
+            </div>
+            <h:commandButton id="btn_frmChargeBalance" class="btn btn-default" action="#{userBean.bet()}" value="#{messages.betBetForResult}" />
+        </h:form>
     </ui:define>
 </ui:composition>

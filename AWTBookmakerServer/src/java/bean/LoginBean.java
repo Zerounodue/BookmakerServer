@@ -128,7 +128,7 @@ public class LoginBean {
                 res = s.executeUpdate();
 
                 //error
-                if (res < 0) {
+                if (res < 1) {
                     MessageHelper.addMessageToComponent("frm_register", "messages", "registerErrCreateUser", FacesMessage.SEVERITY_ERROR);
                     return null;
                 }

@@ -41,6 +41,8 @@ public class MatchBean {
             = "SELECT b.id, b.amount, b.userFK, b.resultFK FROM bets b ";
     private final static String SELECT_ALL_FROM_RESULTS
             = "SELECT r.id, r.name, r.oddNumerator, r.oddDenominator, r.occured, r.matchFK FROM results r ";
+    private final static String SELECT_ALL_FROM_TEAMS
+            = "Select t.id, t.name from teams t";
     
     private int matchId;
     private int resultId;
@@ -55,6 +57,7 @@ public class MatchBean {
     private List<Result> results = null;
     private List<Bet> bets = null;
     private List<Match> matches = null;
+    private List<Team> teams = null;
     
     
     /**
@@ -220,6 +223,8 @@ public class MatchBean {
                 
                 String sql = SELECT_ALL_FROM_RESULTS
                         + "INNER JOIN matches m ON r.matchFK = m.id "
+                        //if user is logged in get his bets too
+                        //+ "INNER JOIN bets b ON r.id=b.resultFK"
                         //make sure only matches that are not already finished will be displayed
                         + "WHERE r.matchFK = ? AND m.time > ?";
                 
