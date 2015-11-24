@@ -12,6 +12,8 @@
         </c:if>
         <!--if redirected from bet, fill in amount automatically-->
         <f:viewParam name="amount" value="#{userBean.amount}" />
+        <!--reset message param if charge button was pressed-->
+        <f:viewParam name="showMessage" value="#{userBean.showNeedToChargeBalanceToBetMessage}" />
     </f:metadata>
 
     <ui:define name="content">
@@ -19,6 +21,7 @@
         <div>
             <h:messages for="frm_chargeBalance" globalOnly="true" errorClass="bg-danger" warnClass="text-danger" infoClass="text-info" />
         </div>
+        <!--display message when redirected from bet.xhtml-->
         <h:outputText class="bg-info" rendered="#{userBean.showNeedToChargeBalanceToBetMessage}" value="#{messages.chargeBalanceShowNeedToChargeBalanceToBetMessage}" />
         <h:form id="frm_chargeBalance">
             <div class="form-group">

@@ -159,9 +159,9 @@ public class UserBean {
         BigDecimal newBalance = lbean.getUser().getBalance().subtract(betAmount);
         if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
             //store parameters and make sure user gets redirected here
-            betParams = "&resultId=" + resultId + "&resultName=" + resultName + "&betAmount" + betAmount;
+            betParams = "&resultId=" + resultId + "&resultName=" + resultName + "&betAmount=" + betAmount;
             //store message to display when user cannot bet because the balance is too low
-            showNeedToChargeBalanceToBetMessage = true;
+            setShowNeedToChargeBalanceToBetMessage(true);
             return CHARGE_BALANCE_SITE + "&amount=" + newBalance.negate();
         }
 
@@ -344,14 +344,14 @@ public class UserBean {
      * @return the showNeedToChargeBalanceToBetMessage
      */
     public boolean isShowNeedToChargeBalanceToBetMessage() {
-        //make sure field is set to false after the value was checked once from a website
-        if (showNeedToChargeBalanceToBetMessage) {
-            showNeedToChargeBalanceToBetMessage = false;
-            return !showNeedToChargeBalanceToBetMessage;
-        } else {
-            return showNeedToChargeBalanceToBetMessage;
-        }
+        return showNeedToChargeBalanceToBetMessage;
+    }
 
+    /**
+     * @param showNeedToChargeBalanceToBetMessage the showNeedToChargeBalanceToBetMessage to set
+     */
+    public void setShowNeedToChargeBalanceToBetMessage(boolean showNeedToChargeBalanceToBetMessage) {
+        this.showNeedToChargeBalanceToBetMessage = showNeedToChargeBalanceToBetMessage;
     }
 
 }

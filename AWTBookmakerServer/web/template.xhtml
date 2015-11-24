@@ -65,7 +65,7 @@
                 <h:commandButton id="btn_logout" action="#{loginBean.logout}" class="btn btn-default" value="#{messages.homeLogout}" />
                 <h3 class="text-right">#{messages.userBalance}: #{loginBean.user.balance}</h3>
                 <!--make visible only for gambler?-->
-                <h:commandButton id="btn_chargeBalance" action="user/chargeBalance.xhtml" class="btn btn-default" value="#{messages.homeCharge}" />
+                <h:commandButton id="btn_chargeBalance" action="user/chargeBalance.xhtml?faces-redirect=true&amp;showMessage=false" class="btn btn-default" value="#{messages.homeCharge}" />
             </div>
         </h:form>
             <ui:insert name="contentHeader" />
