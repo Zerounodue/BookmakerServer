@@ -35,8 +35,8 @@ public class MatchBean {
     @ManagedProperty(value="#{loginBean}")
     private LoginBean lbean;
     
-    private final static String SELECT_ALL_FROM_MATCHES
-            = "SELECT m.id, m.homeTeamFK, m.awayTeamFK, m.time, m.finished FROM matches m ";
+    private final static String SELECT_ALL_FROM_MATCHES_AND_TEAM_NAME
+            = "SELECT m.id, m.homeTeamFK, m.awayTeamFK, m.time, m.finished, ht.name as homeTeamName, at.name as awayTeamName FROM matches m ";
     private final static String SELECT_ALL_FROM_BETS
             = "SELECT b.id, b.amount, b.userFK, b.resultFK FROM bets b ";
     private final static String SELECT_ALL_FROM_RESULTS
@@ -75,7 +75,9 @@ public class MatchBean {
             try {
                 Timestamp currentTimestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 
-                String sql = SELECT_ALL_FROM_MATCHES
+                String sql = SELECT_ALL_FROM_MATCHES_AND_TEAM_NAME
+                        + "INNER JOIN teams ht ON m.homeTeamFK=ht.id "
+                        + "INNER JOIN teams at ON m.awayTeamFK=at.id "
                         + "WHERE m.time > ? AND m.finished = 0 "
                         + "ORDER BY m.time asc ";
 
@@ -88,11 +90,13 @@ public class MatchBean {
                     while (rs.next()) {
                         int id = rs.getInt("id");
                         int htId = rs.getInt("homeTeamFK");
+                        String htName = rs.getString("homeTeamName");
                         int atId = rs.getInt("awayTeamFK");
+                        String atName = rs.getString("awayTeamName");
                         Timestamp ts = rs.getTimestamp("time");
                         boolean finished = rs.getBoolean("finished");
                         //result will be null by upcoming matches -> set id to 0
-                        Match m = new Match(id, ts, new Team(htId), new Team(atId), 0, finished);
+                        Match m = new Match(id, ts, new Team(htId, htName), new Team(atId, atName), 0, finished);
                         getMatches().add(m);
                     }
                 }
@@ -116,7 +120,9 @@ public class MatchBean {
             PreparedStatement s = null;
             
             try {
-                String sql = SELECT_ALL_FROM_MATCHES
+                String sql = SELECT_ALL_FROM_MATCHES_AND_TEAM_NAME
+                        + "INNER JOIN teams ht ON m.homeTeamFK=ht.id "
+                        + "INNER JOIN teams at ON m.awayTeamFK=at.id "
                         + "WHERE m.finished = 0 "
                         + "ORDER BY m.time asc ";
 
@@ -128,11 +134,13 @@ public class MatchBean {
                     while (rs.next()) {
                         int id = rs.getInt("id");
                         int htId = rs.getInt("homeTeamFK");
+                        String htName = rs.getString("homeTeamName");
                         int atId = rs.getInt("awayTeamFK");
+                        String atName = rs.getString("awayTeamName");
                         Timestamp ts = rs.getTimestamp("time");
                         boolean finished = rs.getBoolean("finished");
                         //result will be null by upcoming matches
-                        Match m = new Match(id, ts, new Team(htId), new Team(atId), 0, finished);
+                        Match m = new Match(id, ts, new Team(htId, htName), new Team(atId, atName), 0, finished);
                         getMatches().add(m);
                     }
                     

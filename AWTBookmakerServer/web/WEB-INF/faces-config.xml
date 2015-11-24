@@ -14,5 +14,9 @@
             <base-name>main.Messages</base-name>
                 <var>messages</var>
         </resource-bundle>
+        <resource-bundle>
+            <base-name>main.Teams</base-name>
+            <var>teams</var>
+        </resource-bundle>
     </application>
 </faces-config>

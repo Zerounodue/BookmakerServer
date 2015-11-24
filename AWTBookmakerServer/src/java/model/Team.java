@@ -11,15 +11,15 @@ package model;
  */
 public class Team {
     private int id;
-    //could be deleted... maybe
     private String name;
     
-    
-    public Team(int id){
-        this.id = id;
-        //TODO get name from ressources or do in matches.xhtml
-    }
 
+
+    public Team(int id, String name){
+        this.id = id;
+        this.name = name;
+    }
+    
     /**
      * @return the id
      */
@@ -27,4 +27,10 @@ public class Team {
         return id;
     }
     
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 }
