@@ -18,11 +18,13 @@ import model.Match;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedProperty;
 import model.Bet;
 import model.Result;
 import model.Team;
 import util.DBHelper;
+import util.MessageHelper;
 
 /**
  *
@@ -35,6 +37,7 @@ public class MatchBean {
     @ManagedProperty(value="#{loginBean}")
     private LoginBean lbean;
     
+    //sql queries
     private final static String SELECT_ALL_FROM_MATCHES_AND_TEAM_NAME
             = "SELECT m.id, m.homeTeamFK, m.awayTeamFK, m.time, m.finished, ht.name as homeTeamName, at.name as awayTeamName FROM matches m ";
     private final static String SELECT_ALL_FROM_BETS
@@ -42,7 +45,12 @@ public class MatchBean {
     private final static String SELECT_ALL_FROM_RESULTS
             = "SELECT r.id, r.name, r.oddNumerator, r.oddDenominator, r.occured, r.matchFK FROM results r ";
     private final static String SELECT_ALL_FROM_TEAMS
-            = "Select t.id, t.name from teams t";
+            = "Select t.id, t.name from teams t ";
+    
+    //forms
+    private final static String FORM_NEW_MATCH = "frm_newMatch";
+    
+    private final static String MESSAGES_BUNDLE = "messages";
     
     private int matchId;
     private int resultId;
@@ -50,6 +58,7 @@ public class MatchBean {
     private String awayTeam;
     private Match match;
     
+    //values for newMatch form
     private int newMatchHomeTeamId;
     private int newMatchAwayTeamId;
     private Timestamp newMatchTime;
@@ -254,32 +263,76 @@ public class MatchBean {
                         Result r = new Result(rId, name, oddN, oddD, occured, mId);
                         getResults().add(r);
                     }
-                    
                 }
-
             }catch(SQLException e){
                 Logger.getLogger(MatchBean.class.getName()).log(Level.SEVERE, null, e);
             }finally{
                 DBHelper.closeConnection(rs, s, conn);
             }
-            
         }
 
         return getResults();
     }
     
     /**
+     * selects all teams from the database and returns a list of Team objects
+     * will only query the teams once, then store them in a variable and return the variable
+     * @return List<Team> a list of Team objects from the database
+     */
+    public List<Team> getAllTeams(){
+        //load teams only once
+        if(teams != null) return teams;
+        
+        Connection conn = DBHelper.getDBConnection();
+        
+        if(conn != null){
+            
+            ResultSet rs = null;
+            PreparedStatement s = null;
+            
+            try{
+                String sql = SELECT_ALL_FROM_TEAMS;
+                s = conn.prepareStatement(sql);
+                
+                rs = s.executeQuery();
+                if (rs != null) {
+                    teams = new ArrayList<>();
+                    
+                    while (rs.next()) {
+                        int tId = rs.getInt("id");
+                        String tName = rs.getString("name");
+                        
+                        Team t = new Team(tId, tName);
+                        
+                        teams.add(t);
+                    }
+                }
+            }catch(SQLException e){
+                Logger.getLogger(MatchBean.class.getName()).log(Level.SEVERE, null, e);
+            }finally{
+                DBHelper.closeConnection(rs, s, conn);
+            } 
+        }
+
+        return teams;
+    }
+    
+    /**
      * adds a new match
      * @return String to redirect to or null (error message will be set)
      */
-    public String addNewMatch(){
+    public String newMatch(){
         //parameters can be found in variables starting with newMatch
-        
+
         //if user is not logged in, redirect to home
         if(lbean.getUser() == null) return "../home.xhtml?faces-redirect=true";
         
         
-        
+        //must not select the same teams
+        if(newMatchHomeTeamId == newMatchAwayTeamId){
+            MessageHelper.addMessageToComponent(FORM_NEW_MATCH, MESSAGES_BUNDLE, "newMatchHomeAwayTeamMustBeDifferent", FacesMessage.SEVERITY_WARN);
+            return null;
+        }
         
         
         return null;
