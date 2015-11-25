@@ -276,7 +276,8 @@ public class UserBean {
 
             try {
                 String sql = SELECT_BETS_WITH_RESULT_TEAMS_MATCH
-                        + "WHERE b.userFK = ? ";
+                        + "WHERE b.userFK = ? "
+                        + "ORDER BY m.finished, r.occured ";
                 
                 s = conn.prepareStatement(sql);
                 s.setInt(1, userId);
