@@ -16,13 +16,29 @@ public class Bet {
     private int userId;
     private int resultId;
     
+    private Result result;
+    
+    /**
+     * constructor used to when displaying bets
+     * @param id id of bet
+     * @param amount amount for bet
+     * @param userId id of user who placed this bet
+     * @param r result object to which this bet belongs
+     */
+    public Bet(int id, double amount, int userId, Result r){
+        this.id = id;
+        this.amount = amount;
+        this.userId = userId;
+        this.result  = r;
+    }
+
     public Bet(int id, double amount, int userId, int resultId){
         this.id = id;
         this.amount = amount;
         this.userId = userId;
         this.resultId = resultId;
     }
-
+    
     /**
      * @return the id
      */
@@ -49,6 +65,13 @@ public class Bet {
      */
     public int getUserId() {
         return userId;
+    }
+
+    /**
+     * @return the result
+     */
+    public Result getResult() {
+        return result;
     }
     
 }

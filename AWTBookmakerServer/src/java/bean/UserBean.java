@@ -8,13 +8,23 @@ package bean;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import model.Bet;
+import model.Match;
+import model.Result;
+import model.Team;
 import util.DBHelper;
 import util.MessageHelper;
+import java.sql.Timestamp;
 
 /**
  *
@@ -32,6 +42,17 @@ public class UserBean {
     private final static String CHARGE_BALANCE_SITE = "/user/chargeBalance.xhtml?faces-redirect=true";
     private final static String BET_SITE = "/user/bet.xhtml?faces-redirect=true";
 
+    //queries
+    private final static String SELECT_BETS_WITH_RESULT_TEAMS_MATCH = "SELECT b.id as betId, b.amount, b.userFK, b.resultFK, "
+                        +   "r.name as rName, r.occured as rOccured, r.oddNumerator as rOddN, r.oddDenominator as rOddD, "
+                        +   "ht.id as htId, ht.name as htName, at.id as atId, at.name as atName, "
+                        +   "m.id as mId, m.time as mTime, m.finished as mFinished "
+                        + "FROM bets b "
+                        + "INNER JOIN results r ON b.resultFK=r.id "
+                        + "INNER JOIN matches m ON r.matchFK = m.id "
+                        + "INNER JOIN teams ht ON m.homeTeamFK=ht.id "
+                        + "INNER JOIN teams at ON m.awayTeamFK=at.id ";
+    
     private final static String FORM_CHARGE_BALANCE = "frm_chargeBalance";
     private final static String FORM_BET = "frm_bet";
     private final static String MESSAGES_BUNDLE = "messages";
@@ -48,6 +69,8 @@ public class UserBean {
     private int resultId;
     private String resultName;
     private BigDecimal betAmount;
+
+    private List<Bet> bets;
 
     //make sure redirect from bet to charge balance to bet workd
     private String betParams = null;
@@ -170,33 +193,33 @@ public class UserBean {
         if (conn != null) {
 
             PreparedStatement s = null;
-            
+
             try {
                 //will change table bets and users, therefore make a transaction
                 conn.setAutoCommit(false);
 
                 int res;
-                
+
                 //create new bet
                 String sql = "INSERT INTO bets (amount, userFK, resultFK) "
                         + "VALUES (?, ?, ?)";
-                        
+
                 s = conn.prepareStatement(sql);
                 s.setBigDecimal(1, betAmount);
                 s.setInt(2, lbean.getUser().getId());
                 //might not be correct id, taken from get params...
                 s.setInt(3, resultId);
-                
+
                 res = s.executeUpdate();
-                
-                if(res < 1){
+
+                if (res < 1) {
                     conn.rollback();
                     MessageHelper.addMessageToComponent(FORM_BET, MESSAGES_BUNDLE, "betErrBet", FacesMessage.SEVERITY_ERROR);
                     return null;
                 }
-                
+
                 res = 0;
-                
+
                 //update user balance
                 sql = "UPDATE users "
                         + "SET balance = ? "
@@ -207,13 +230,13 @@ public class UserBean {
                 s.setInt(2, userId);
 
                 res = s.executeUpdate();
-                
-                if(res < 1){
+
+                if (res < 1) {
                     conn.rollback();
                     MessageHelper.addMessageToComponent(FORM_BET, MESSAGES_BUNDLE, "betErrBet", FacesMessage.SEVERITY_ERROR);
                     return null;
                 }
-                
+
                 conn.commit();
             } catch (SQLException e) {
                 try {
@@ -223,10 +246,10 @@ public class UserBean {
             } finally {
                 DBHelper.closeConnection(s, conn);
             }
-            
+
             //everything went ok, update user balance
             lbean.getUser().setBalance(newBalance);
-            
+
             resetVariables();
             //TODO CHANGE to results of match
             return HOME_SITE;
@@ -234,6 +257,76 @@ public class UserBean {
             MessageHelper.addMessageToComponent(FORM_BET, MESSAGES_BUNDLE, "betErrDB", FacesMessage.SEVERITY_ERROR);
             return null;
         }
+    }
+
+    public List<Bet> getBetsForUser() {
+        bets = null;
+        //check if user is logged in, if not no results will be returned
+        if (lbean.getUser() == null) {
+            return null;
+        }
+
+        int userId = lbean.getUser().getId();
+
+        //get connection to DB
+        Connection conn = DBHelper.getDBConnection();
+        if (conn != null) {
+            ResultSet rs = null;
+            PreparedStatement s = null;
+
+            try {
+                String sql = SELECT_BETS_WITH_RESULT_TEAMS_MATCH
+                        + "WHERE b.userFK = ? ";
+                
+                s = conn.prepareStatement(sql);
+                s.setInt(1, userId);
+                rs = s.executeQuery();
+                if (rs != null) {
+                    bets = new ArrayList<>();
+
+                    while (rs.next()) {
+                        //bet
+                        int betId = rs.getInt("betId");
+                        double amount = rs.getDouble("amount");
+                        int uId = rs.getInt("userFK");
+                        int rId = rs.getInt("resultFK");
+                        //result
+                        String rName = rs.getString("rName");
+                        boolean rOccured = rs.getBoolean("rOccured");
+                        double rOddN = rs.getDouble("rOddN");
+                        double rOddD = rs.getDouble("rOddD");
+                        //match
+                        int mId = rs.getInt("mId");
+                        Timestamp ts = rs.getTimestamp("mTime");
+                        boolean mFinished = rs.getBoolean("mFinished");
+                        
+                        //home team
+                        int htId = rs.getInt("htId");
+                        String htName = rs.getString("htName");
+                        //away Team
+                        int atId = rs.getInt("atId");
+                        String atName = rs.getString("atName");
+                        
+                        Team ht = new Team(htId, htName);
+                        Team at = new Team(atId, atName);
+                        
+                        Match m = new Match(mId, ts, ht, at, rId, mFinished);
+                        
+                        Result r = new Result(rId, rName, rOddN, rOddD, rOccured, m);
+                        Bet b = new Bet(betId, amount, uId, r);
+
+                        bets.add(b);
+                    }
+                }
+
+            } catch (SQLException e) {
+                Logger.getLogger(MatchBean.class.getName()).log(Level.SEVERE, null, e);
+            } finally {
+                DBHelper.closeConnection(rs, s, conn);
+            }
+        }
+
+        return getBets();
     }
 
     private void resetVariables() {
@@ -348,10 +441,18 @@ public class UserBean {
     }
 
     /**
-     * @param showNeedToChargeBalanceToBetMessage the showNeedToChargeBalanceToBetMessage to set
+     * @param showNeedToChargeBalanceToBetMessage the
+     * showNeedToChargeBalanceToBetMessage to set
      */
     public void setShowNeedToChargeBalanceToBetMessage(boolean showNeedToChargeBalanceToBetMessage) {
         this.showNeedToChargeBalanceToBetMessage = showNeedToChargeBalanceToBetMessage;
+    }
+
+    /**
+     * @return the bets
+     */
+    public List<Bet> getBets() {
+        return bets;
     }
 
 }

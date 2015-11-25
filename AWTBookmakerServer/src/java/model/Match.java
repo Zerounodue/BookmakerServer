@@ -115,5 +115,19 @@ public class Match {
     public void setResult(Result result) {
         this.result = result;
     }
+
+    /**
+     * @return the finished
+     */
+    public boolean isFinished() {
+        return finished;
+    }
+
+    /**
+     * @return the resultId
+     */
+    public int getResultId() {
+        return resultId;
+    }
     
 }

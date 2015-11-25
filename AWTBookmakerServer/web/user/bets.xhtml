@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="../template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core" 
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+    <f:metadata>
+        <!--prevent guests from visiting this page-->
+        <c:if test="#{empty loginBean.user}">
+            <f:viewAction action="/home.xhtml?faces-redirect=true" />
+        </c:if>
+    </f:metadata>
+
+    <ui:define name="content">
+        <h2>#{messages.betMyBets}</h2>
+        <c:choose>
+            <c:when test="#{empty userBean.betsForUser}">
+                <!--in case no data is available-->
+                <h:outputText value="#{messages.betNoBets}"/>
+            </c:when>
+            <c:otherwise>
+                <h:dataTable value="#{userBean.bets}" var="bet" class="table table-hover table-bordered">
+                <!--rowClasses="#{bet.result.occured ? 'success' : ''}" rowStyleClass="">-->
+                    <h:column>
+                        <f:facet name="header">#{messages.betHomeTeam}</f:facet>
+                        <h:outputText value="#{teams[bet.result.match.homeTeam.name]}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{messages.betAwayTeam}</f:facet>
+                        <h:outputText value="#{teams[bet.result.match.awayTeam.name]}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{messages.betFinished}</f:facet>
+                        <h:outputText value="#{messages[bet.result.match.finished]}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{messages.betResult}</f:facet>
+                        <h:outputText value="#{bet.result.name}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{messages.betOdds}</f:facet>
+                        <h:outputText value="#{bet.result.oddNumerator} : #{bet.result.oddDenominator}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{messages.betAmount}</f:facet>
+                        <h:outputText value="#{bet.amount}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{messages.betOccured}</f:facet>
+                        <h:outputText value="#{messages[bet.result.occured]}" />
+                    </h:column>
+                </h:dataTable>
+            </c:otherwise>
+        </c:choose>
+    </ui:define>
+</ui:composition>

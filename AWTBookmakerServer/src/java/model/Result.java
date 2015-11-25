@@ -22,11 +22,18 @@ public class Result {
     private double totalGain;
     private double totalLoss;
     
-    //ids might be enough
-    //private Match match;
+    private Match match;
     //private List<Bet> bets;
     
-    
+    /**
+     * Constructor 
+     * @param id id of result
+     * @param name name of result
+     * @param oddN odd numerator of result
+     * @param oddD odd denumerator of result
+     * @param occ true if this particulaar result occured
+     * @param mId id of match this result belongs to
+     */
     public Result(int id, String name, double oddN, double oddD, boolean occ, int mId){
         this.id = id;
         this.name = name;
@@ -36,6 +43,24 @@ public class Result {
         this.matchId = mId;
     }
 
+    /**
+     * constructor used to display all matches
+     * @param id id of result
+     * @param name name of result
+     * @param oddN odd numerator of result
+     * @param oddD odd denumerator of result
+     * @param occ true if this particulaar result occured
+     * @param m match the result belongs to
+     */
+    public Result(int id, String name, double oddN, double oddD, boolean occ, Match m){
+        this.id = id;
+        this.name = name;
+        this.oddNumerator = oddN;
+        this.oddDenominator = oddD;
+        this.occured = occ;
+        this.match = m;
+    }
+    
     /**
      * @return the id
      */
@@ -111,6 +136,13 @@ public class Result {
      */
     public void setTotalLoss(double totalLoss) {
         this.totalLoss = totalLoss;
+    }
+
+    /**
+     * @return the match
+     */
+    public Match getMatch() {
+        return match;
     }
 
     
