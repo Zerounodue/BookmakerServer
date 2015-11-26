@@ -6,7 +6,6 @@
 package bean;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,6 +16,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import model.Match;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
@@ -38,6 +39,9 @@ public class MatchBean {
     @ManagedProperty(value="#{loginBean}")
     private LoginBean lbean;
     
+    //websites
+    private final static String HOME_SITE = "/home.xhtml?faces-redirect=true";
+    
     //sql queries
     private final static String SELECT_ALL_FROM_MATCHES_AND_TEAM_NAME
             = "SELECT m.id, m.homeTeamFK, m.awayTeamFK, m.time, m.finished, ht.name as homeTeamName, at.name as awayTeamName FROM matches m ";
@@ -50,6 +54,7 @@ public class MatchBean {
     
     //forms
     private final static String FORM_NEW_MATCH = "frm_newMatch";
+    private final static String FORM_NEW_RESULT = "frm_newResult";
     
     private final static String MESSAGES_BUNDLE = "messages";
     
@@ -63,16 +68,18 @@ public class MatchBean {
     private int newMatchHomeTeamId;
     private int newMatchAwayTeamId;
     private Timestamp newMatchTime;
-    //private Date newMatchDate;
-    private java.util.Date newMatchDate;
+    private Date newMatchDate;
     private int newMatchHours;
     private int newMatchMinutes;
+    private Result newMatchResult = new Result();
+    private List<Result> newMatchResults;
     
     private List<Result> results = null;
     private List<Bet> bets = null;
     private List<Match> matches = null;
     private List<Team> teams = null;
     
+    private final DecimalFormat df = new DecimalFormat("#.00"); 
     
     /**
      * Gets all matches with a start time > than now
@@ -364,7 +371,58 @@ public class MatchBean {
             return null;
         }
         
+        //check if at least 1 result has been added
+        if(newMatchResults == null || newMatchResults.isEmpty()){
+            MessageHelper.addMessageToComponent(FORM_NEW_MATCH, MESSAGES_BUNDLE, "newMatchNeedToAddAtLeastOneResult", FacesMessage.SEVERITY_WARN);
+            return null;
+        }
+        
+        //everything should be fine, try writing data to db
+        //return HOME_SITE;
         return null;
+    }
+    
+    public void addResultToNewMatch(){
+        if(newMatchResults == null) newMatchResults = new ArrayList<>();
+        
+        //check if fields are empty
+        if(newMatchResult.getName().length() == 0){
+            MessageHelper.addMessageToComponent(FORM_NEW_RESULT, MESSAGES_BUNDLE, "newMatchFieldsNotEmpty", FacesMessage.SEVERITY_WARN);
+            return;
+        }
+        
+        //check if odds are greater than zero           
+        if(!(newMatchResult.getOddNumerator() > 0) || !(newMatchResult.getOddDenominator() > 0)){
+            MessageHelper.addMessageToComponent(FORM_NEW_RESULT, MESSAGES_BUNDLE, "newMatchNumbersGreaterThanZero", FacesMessage.SEVERITY_WARN);
+            return;
+        }
+        
+        //check if oddn and oddd are the same number, necessary?
+
+        Result nr = new Result(0, newMatchResult.getName(), newMatchResult.getOddNumerator(), newMatchResult.getOddDenominator(), false, 0);
+        
+        String newOddN = df.format(newMatchResult.getOddNumerator());
+        String newOddD = df.format(newMatchResult.getOddDenominator());
+        
+        //check if same the item has already been added
+        if(newMatchResults.stream().filter(r -> r.getName().equals(nr.getName()) && df.format(r.getOddNumerator()).equals(newOddN) && df.format(r.getOddDenominator()).equals(newOddD)).findFirst().isPresent()){
+            MessageHelper.addMessageToComponent(FORM_NEW_RESULT, MESSAGES_BUNDLE, "newMatchSameResultAlreadyAdded", FacesMessage.SEVERITY_WARN);
+            return;
+        }
+        
+        nr.setOddNumerator(Double.parseDouble(newOddN));
+        nr.setOddDenominator(Double.parseDouble(newOddD));
+        
+        newMatchResults.add(nr);
+    }
+    
+    /**
+     * removes a match item from the list which is displayed on the client
+     * this method is only called via ajax
+     * @param r Result to remove
+     */
+    public void removeResultFromNewMatch(Result r){
+        if(newMatchResults != null) newMatchResults.remove(r);
     }
     
     /**
@@ -503,15 +561,43 @@ public class MatchBean {
     /**
      * @return the newMatchDate
      */
-    public java.util.Date getNewMatchDate() {
+    public Date getNewMatchDate() {
         return newMatchDate;
     }
 
     /**
      * @param newMatchDate the newMatchDate to set
      */
-    public void setNewMatchDate(java.util.Date newMatchDate) {
+    public void setNewMatchDate(Date newMatchDate) {
         this.newMatchDate = newMatchDate;
+    }
+
+    /**
+     * @return the newMatchResults
+     */
+    public List<Result> getNewMatchResults() {
+        return newMatchResults;
+    }
+
+    /**
+     * @param newMatchResults the newMatchResults to set
+     */
+    public void setNewMatchResults(List<Result> newMatchResults) {
+        this.newMatchResults = newMatchResults;
+    }
+
+    /**
+     * @return the newMatchResult
+     */
+    public Result getNewMatchResult() {
+        return newMatchResult;
+    }
+
+    /**
+     * @param newMatchResult the newMatchResult to set
+     */
+    public void setNewMatchResult(Result newMatchResult) {
+        this.newMatchResult = newMatchResult;
     }
 
 }

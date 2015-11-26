@@ -25,6 +25,10 @@ public class Result {
     private Match match;
     //private List<Bet> bets;
     
+    public Result(){
+        
+    }
+    
     /**
      * Constructor 
      * @param id id of result
@@ -143,6 +147,48 @@ public class Result {
      */
     public Match getMatch() {
         return match;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @param oddNumerator the oddNumerator to set
+     */
+    public void setOddNumerator(double oddNumerator) {
+        this.oddNumerator = oddNumerator;
+    }
+
+    /**
+     * @param oddDenominator the oddDenominator to set
+     */
+    public void setOddDenominator(double oddDenominator) {
+        this.oddDenominator = oddDenominator;
+    }
+
+    /**
+     * @param matchId the matchId to set
+     */
+    public void setMatchId(int matchId) {
+        this.matchId = matchId;
+    }
+
+    /**
+     * @param match the match to set
+     */
+    public void setMatch(Match match) {
+        this.match = match;
     }
 
     

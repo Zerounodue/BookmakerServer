@@ -24,12 +24,14 @@ and open the template in the editor.
     <ui:define name="content">
         <h2>New Match</h2>
         <div>
-            <h:messages for="frm_addMatch" globalOnly="true" errorClass="has-error" warnClass="has-warning" infoClass="info" />
+            <h:messages for="frm_newMatch" globalOnly="true" errorClass="has-error" warnClass="has-warning" infoClass="info" />
         </div>
         <h:form id="frm_newMatch">
             <div class="panel panel-default">
                 <div class="panel-heading">#{messages.newMatchMatch}</div>
+                <!--match-->
                 <div class="panel-body">
+                    <!--teams-->
                     <div class="row">
                         <div class="col-lg-4">
                             <!--home team-->
@@ -47,16 +49,16 @@ and open the template in the editor.
                                 </h:selectOneMenu>
                             </div>
                         </div>
+                        <!--date-->
                         <div class="col-lg-4">
-                            <!--date-->
                             <div class="input-group">
                                 <h:outputLabel for="time" value="#{messages.newMatchStartDate}" />
                                 <b:datepicker id="time" value="#{matchBean.newMatchDate}" numberOfMonths="3" lang="#{loginBean.locale}" mode="popup-icon" />
                                 <f:passThroughAttribute name="required" value="required" />
                             </div>
                         </div>
+                        <!--time-->
                         <div class="col-lg-4">
-                            <!--time-->
                             <div class="form-group">
                                 <b:row>
                                     <b:column>
@@ -73,21 +75,58 @@ and open the template in the editor.
                     </div>
                 </div>
             </div>
-            <div class="panel panel-default">
+            <h:commandButton type="submit"  id="btn_subNewMatch" class="btn btn-default" action="#{matchBean.newMatch()}" value="#{messages.loginSubmit}" />
+        </h:form>
+        <!--results-->
+        <div class="panel panel-default">
+            <h:form id="frm_newResult">
                 <div class="panel-heading">#{messages.newMatchResults}</div>
                 <div class="panel-body">
-                    <!--results-->
-                    <!--TODO add possibility to add unlimited results-->
-                    <!--
-                    <div class="form-group">
-                        <form id="frm_newResult">
-                            <h:commandButton type="submit" id="btn_subNewResult" class="btn btn-default" action="#{matchBean.newMatch()}" value="#{messages.loginSubmit}" />
-                        </form>
-                    </div>
-                    -->
+                    <h:dataTable id="dt_results" value="#{matchBean.newMatchResults}" var="result" class="table table-hover table-bordered">
+                        <h:column>
+                            <f:facet name="header">#{messages.newMatchName}</f:facet>
+                            <h:outputText value="#{result.name}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{messages.newMatchOddNumerator}</f:facet>
+                            <h:outputText value="#{result.oddNumerator}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{messages.newMatchOddDenominator}</f:facet>
+                            <h:outputText value="#{result.oddDenominator}" />
+                        </h:column>
+                        <h:column>
+                            <h:commandButton value="#{messages.newMatchRemove}" class="btn btn-default">
+                                <f:ajax listener="#{matchBean.removeResultFromNewMatch(result)}" execute="frm_newResult" render="frm_newResult" /> 
+                            </h:commandButton>
+                        </h:column>
+                    </h:dataTable>
                 </div>
-            </div>
-            <h:commandButton type="submit" id="btn_subNewMatch" class="btn btn-default" action="#{matchBean.newMatch()}" value="#{messages.loginSubmit}" />
-        </h:form>
+                <div class="panel-footer">
+                    <h:outputLabel for="name" value="#{messages.newMatchName}" />
+                    <h:inputText id="name" value="#{matchBean.newMatchResult.name}" >
+                        <f:passThroughAttribute name="required" value="required" />
+                    </h:inputText>
+                    <h:outputLabel for="oddNumerator" value="#{messages.newMatchOddNumerator}" />
+                    <h:inputText id="oddNumerator" value="#{matchBean.newMatchResult.oddNumerator}" converterMessage="#{messages.newMatchOddNEnterDigitsOnly}">
+                        <f:passThroughAttribute name="required" value="required" />
+                    </h:inputText>
+                    <h:outputLabel for="oddDenominator" value="#{messages.newMatchOddDenominator}" />
+                    <h:inputText id="oddDenominator" value="#{matchBean.newMatchResult.oddDenominator}" converterMessage="#{messages.newMatchOddDEnterDigitsOnly}">
+                        <f:passThroughAttribute name="required" value="required" />
+                    </h:inputText>
+                    <h:commandButton value="#{messages.newMatchAddNewResult}" class="btn btn-default">
+                        <f:ajax listener="#{matchBean.addResultToNewMatch()}" execute="frm_newResult" render="frm_newResult frm_newResultMessage msg_oddN msg_oddD" /> <!--render="dt_results" /> -->
+                    </h:commandButton>
+                </div>
+            </h:form>
+        </div>
+        <div>
+            <h:messages id="frm_newResultMessage" for="frm_newResult" errorClass="has-error" warnClass="has-warning" infoClass="info" />
+            <br />
+            <h:message id="msg_oddN" for="oddNumerator" errorClass="has-error" warnClass="has-warning" infoClass="info"/>
+            <br />
+            <h:message id="msg_oddD" for="oddDenominator" errorClass="has-error" warnClass="has-warning" infoClass="info"/>
+        </div>
     </ui:define>
 </ui:composition>
