@@ -6,6 +6,7 @@
 package bean;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -62,6 +63,10 @@ public class MatchBean {
     private int newMatchHomeTeamId;
     private int newMatchAwayTeamId;
     private Timestamp newMatchTime;
+    //private Date newMatchDate;
+    private java.util.Date newMatchDate;
+    private int newMatchHours;
+    private int newMatchMinutes;
     
     private List<Result> results = null;
     private List<Bet> bets = null;
@@ -327,6 +332,11 @@ public class MatchBean {
         //if user is not logged in, redirect to home
         if(lbean.getUser() == null) return "../home.xhtml?faces-redirect=true";
         
+        //check if fields are empty
+        if(newMatchDate == null){
+            MessageHelper.addMessageToComponent(FORM_NEW_MATCH, MESSAGES_BUNDLE, "newMatchFieldsNotEmpty", FacesMessage.SEVERITY_WARN);
+            return null;
+        }
         
         //must not select the same teams
         if(newMatchHomeTeamId == newMatchAwayTeamId){
@@ -334,6 +344,25 @@ public class MatchBean {
             return null;
         }
         
+        //store user's date
+        Calendar c = Calendar.getInstance(); 
+        c.setTime(newMatchDate);
+        c.set(Calendar.HOUR_OF_DAY, newMatchHours);
+        c.set(Calendar.MINUTE, newMatchMinutes);
+        c.set(Calendar.SECOND, 0);
+        newMatchTime = new Timestamp(c.getTimeInMillis());
+        
+        //get a time that is 1 day in the future
+        Calendar now = Calendar.getInstance();
+        now.add(Calendar.DAY_OF_MONTH, 1);
+        Timestamp currentTimestamp = new Timestamp(now.getTime().getTime());
+        
+        //check if selected date is at least 1 day in the future
+        int test = newMatchTime.compareTo(currentTimestamp);
+        if(newMatchTime.compareTo(currentTimestamp) < 0){
+            MessageHelper.addMessageToComponent(FORM_NEW_MATCH, MESSAGES_BUNDLE, "newMatchDateMustBeOneDayAhead", FacesMessage.SEVERITY_WARN);
+            return null;
+        }
         
         return null;
     }
@@ -441,6 +470,48 @@ public class MatchBean {
      */
     public void setLbean(LoginBean lbean) {
         this.lbean = lbean;
+    }
+
+    /**
+     * @return the newMatchHours
+     */
+    public int getNewMatchHours() {
+        return newMatchHours;
+    }
+
+    /**
+     * @param newMatchHours the newMatchHours to set
+     */
+    public void setNewMatchHours(int newMatchHours) {
+        this.newMatchHours = newMatchHours;
+    }
+
+    /**
+     * @return the newMatchMinutes
+     */
+    public int getNewMatchMinutes() {
+        return newMatchMinutes;
+    }
+
+    /**
+     * @param newMatchMinutes the newMatchMinutes to set
+     */
+    public void setNewMatchMinutes(int newMatchMinutes) {
+        this.newMatchMinutes = newMatchMinutes;
+    }
+
+    /**
+     * @return the newMatchDate
+     */
+    public java.util.Date getNewMatchDate() {
+        return newMatchDate;
+    }
+
+    /**
+     * @param newMatchDate the newMatchDate to set
+     */
+    public void setNewMatchDate(java.util.Date newMatchDate) {
+        this.newMatchDate = newMatchDate;
     }
 
 }

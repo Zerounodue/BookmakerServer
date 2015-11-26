@@ -11,6 +11,7 @@ and open the template in the editor.
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
                 xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:b="http://bootsfaces.net/ui"
                 xmlns:h="http://java.sun.com/jsf/html">
 
     <f:metadata>
@@ -26,30 +27,66 @@ and open the template in the editor.
             <h:messages for="frm_addMatch" globalOnly="true" errorClass="has-error" warnClass="has-warning" infoClass="info" />
         </div>
         <h:form id="frm_newMatch">
-            <!--home team-->
-            <div class="form-group">
-                <h:outputLabel for="som_homeTeam" value="#{messages.newMatchHomeTeam}" />
-                <h:selectOneMenu id="som_homeTeam" value="#{matchBean.newMatchHomeTeamId}" >
-                    <f:selectItems value="#{matchBean.allTeams}" var="t" itemLabel="#{teams[t.name]}" itemValue="#{t.id}" />
-                </h:selectOneMenu>
+            <div class="panel panel-default">
+                <div class="panel-heading">#{messages.newMatchMatch}</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <!--home team-->
+                            <div class="input-group left">
+                                <h:outputLabel for="som_homeTeam" value="#{messages.newMatchHomeTeam}" />
+                                <h:selectOneMenu id="som_homeTeam" value="#{matchBean.newMatchHomeTeamId}" class="form-control">
+                                    <f:selectItems value="#{matchBean.allTeams}" var="t" itemLabel="#{teams[t.name]}" itemValue="#{t.id}" />
+                                </h:selectOneMenu>
+                            </div>
+                            <!--away team-->
+                            <div class="input-group right">
+                                <h:outputLabel for="som_awayTeam" value="#{messages.newMatchAwayTeam}" />
+                                <h:selectOneMenu id="som_awayTeam" value="#{matchBean.newMatchAwayTeamId}" class="form-control">
+                                    <f:selectItems value="#{matchBean.allTeams}" var="t" itemLabel="#{teams[t.name]}" itemValue="#{t.id}" />
+                                </h:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <!--date-->
+                            <div class="input-group">
+                                <h:outputLabel for="time" value="#{messages.newMatchStartDate}" />
+                                <b:datepicker id="time" value="#{matchBean.newMatchDate}" numberOfMonths="3" lang="#{loginBean.locale}" mode="popup-icon" />
+                                <f:passThroughAttribute name="required" value="required" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <!--time-->
+                            <div class="form-group">
+                                <b:row>
+                                    <b:column>
+                                        <b:slider min="0" max="23" value="#{matchBean.newMatchHours}" label="#{messages.newMatchHours}"/>
+                                    </b:column>
+                                </b:row>
+                                <b:row>
+                                    <b:column>
+                                        <b:slider min="0" max="59" step="1" value="#{matchBean.newMatchMinutes}" label="#{messages.newMatchMinutes}"/>
+                                    </b:column>
+                                </b:row>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <!--away team-->
-            <div class="form-group">
-                <h:outputLabel for="som_awayTeam" value="#{messages.newMatchAwayTeam}" />
-                <h:selectOneMenu id="som_awayTeam" value="#{matchBean.newMatchAwayTeamId}" >
-                    <f:selectItems value="#{matchBean.allTeams}" var="t" itemLabel="#{teams[t.name]}" itemValue="#{t.id}" />
-                </h:selectOneMenu>
+            <div class="panel panel-default">
+                <div class="panel-heading">#{messages.newMatchResults}</div>
+                <div class="panel-body">
+                    <!--results-->
+                    <!--TODO add possibility to add unlimited results-->
+                    <!--
+                    <div class="form-group">
+                        <form id="frm_newResult">
+                            <h:commandButton type="submit" id="btn_subNewResult" class="btn btn-default" action="#{matchBean.newMatch()}" value="#{messages.loginSubmit}" />
+                        </form>
+                    </div>
+                    -->
+                </div>
             </div>
-            <!--date-->
-            <div class="form-group">
-                <h:outputLabel for="awayTeam">#{messages.newMatchStartTime}</h:outputLabel>
-                <!--TODO add date picker-->
-                <!--<t:inputDate class="form-control" id="time" popupCalendar="true" />-->
-                <f:passThroughAttribute name="required" value="required" />
-            </div>
-            <!--results-->
-            <!--TODO add possibility to add unlimited results-->
-
             <h:commandButton type="submit" id="btn_subNewMatch" class="btn btn-default" action="#{matchBean.newMatch()}" value="#{messages.loginSubmit}" />
         </h:form>
     </ui:define>
