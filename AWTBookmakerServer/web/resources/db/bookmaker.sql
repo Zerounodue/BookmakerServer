@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 19, 2015 at 10:48 PM
+-- Generation Time: Nov 27, 2015 at 10:24 AM
 -- Server version: 10.1.8-MariaDB
 -- PHP Version: 5.6.14
 
@@ -42,7 +42,11 @@ INSERT INTO `bets` (`id`, `amount`, `userFK`, `resultFK`) VALUES
 (3, '5.00', 4, 1),
 (4, '57.00', 3, 1),
 (5, '5.00', 4, 2),
-(6, '5.00', 4, 3);
+(6, '5.00', 4, 3),
+(7, '5.00', 1, 1),
+(8, '2.00', 1, 2),
+(9, '113.00', 1, 1),
+(10, '11.00', 1, 2);
 
 -- --------------------------------------------------------
 
@@ -68,7 +72,8 @@ INSERT INTO `matches` (`id`, `time`, `homeTeamFK`, `awayTeamFK`, `finished`) VAL
 (4, '2015-09-10 05:33:52', 4, 7, b'0'),
 (5, '2014-09-10 05:33:52', 1, 7, b'0'),
 (6, '2016-03-09 21:39:06', 5, 1, b'0'),
-(7, '2016-01-09 21:39:06', 4, 2, b'0');
+(7, '2016-01-09 21:39:06', 4, 2, b'0'),
+(11, '2016-06-08 18:25:00', 1, 7, b'0');
 
 -- --------------------------------------------------------
 
@@ -92,7 +97,10 @@ CREATE TABLE `results` (
 INSERT INTO `results` (`id`, `name`, `oddNumerator`, `oddDenominator`, `occured`, `matchFK`) VALUES
 (1, 'Austria 1:0', '5.00', '1.00', b'0', 7),
 (2, 'Austria 2:0', '7.00', '2.00', b'1', 7),
-(3, 'Austria 0:1', '1.00', '200.00', b'1', 7);
+(3, 'Austria 0:1', '1.00', '200.00', b'1', 7),
+(5, 'Switzerland 1:0', '5.00', '1.00', b'0', 11),
+(6, 'Switzerland 2:0', '7.00', '1.00', b'0', 11),
+(7, 'Switzerland 2:1', '7.00', '3.00', b'0', 11);
 
 -- --------------------------------------------------------
 
@@ -159,7 +167,7 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `name`, `password`, `balance`, `roleFK`) VALUES
 (1, 'a', 'a', '0.00', 2),
 (3, '1', '2', '0.00', 2),
-(4, 'b', 'b', '0.00', 1),
+(4, 'b', 'b', '9999999999.99', 1),
 (5, 'c', 'c', '0.00', 2),
 (6, 'üpoiuzhg', 'kljhh', '0.00', 2),
 (7, '112', '211', '0.00', 2),
@@ -225,17 +233,17 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bets`
 --
 ALTER TABLE `bets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT for table `matches`
 --
 ALTER TABLE `matches`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
 -- AUTO_INCREMENT for table `results`
 --
 ALTER TABLE `results`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT for table `roles`
 --

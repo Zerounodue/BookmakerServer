@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -36,12 +37,12 @@ import util.MessageHelper;
 @SessionScoped
 public class MatchBean {
 
-    @ManagedProperty(value="#{loginBean}")
+    @ManagedProperty(value = "#{loginBean}")
     private LoginBean lbean;
-    
+
     //websites
     private final static String HOME_SITE = "/home.xhtml?faces-redirect=true";
-    
+
     //sql queries
     private final static String SELECT_ALL_FROM_MATCHES_AND_TEAM_NAME
             = "SELECT m.id, m.homeTeamFK, m.awayTeamFK, m.time, m.finished, ht.name as homeTeamName, at.name as awayTeamName FROM matches m ";
@@ -51,19 +52,19 @@ public class MatchBean {
             = "SELECT r.id, r.name, r.oddNumerator, r.oddDenominator, r.occured, r.matchFK FROM results r ";
     private final static String SELECT_ALL_FROM_TEAMS
             = "Select t.id, t.name from teams t ";
-    
+
     //forms
     private final static String FORM_NEW_MATCH = "frm_newMatch";
     private final static String FORM_NEW_RESULT = "frm_newResult";
-    
+
     private final static String MESSAGES_BUNDLE = "messages";
-    
+
     private int matchId;
     private int resultId;
     private String homeTeam;
     private String awayTeam;
     private Match match;
-    
+
     //values for newMatch form
     private int newMatchHomeTeamId;
     private int newMatchAwayTeamId;
@@ -73,16 +74,17 @@ public class MatchBean {
     private int newMatchMinutes;
     private Result newMatchResult = new Result();
     private List<Result> newMatchResults;
-    
+
     private List<Result> results = null;
     private List<Bet> bets = null;
     private List<Match> matches = null;
     private List<Team> teams = null;
-    
-    private final DecimalFormat df = new DecimalFormat("#.00"); 
-    
+
+    private final DecimalFormat df = new DecimalFormat("#.00");
+
     /**
      * Gets all matches with a start time > than now
+     *
      * @return list of Match objects or null
      */
     public List<Match> getUpcomingMatches() {
@@ -132,14 +134,14 @@ public class MatchBean {
         return getMatches();
     }
 
-    public List<Match> getMatchesWithoutResult(){
+    public List<Match> getMatchesWithoutResult() {
         matches = null;
         //get connection to DB
         Connection conn = DBHelper.getDBConnection();
         if (conn != null) {
             ResultSet rs = null;
             PreparedStatement s = null;
-            
+
             try {
                 String sql = SELECT_ALL_FROM_MATCHES_AND_TEAM_NAME
                         + "INNER JOIN teams ht ON m.homeTeamFK=ht.id "
@@ -151,7 +153,7 @@ public class MatchBean {
                 rs = s.executeQuery();
                 if (rs != null) {
                     matches = new ArrayList<>();
-                    
+
                     while (rs.next()) {
                         int id = rs.getInt("id");
                         int htId = rs.getInt("homeTeamFK");
@@ -164,42 +166,39 @@ public class MatchBean {
                         Match m = new Match(id, ts, new Team(htId, htName), new Team(atId, atName), 0, finished);
                         getMatches().add(m);
                     }
-                    
+
                 }
 
             } catch (SQLException e) {
-                
-            }finally{
+
+            } finally {
                 DBHelper.closeConnection(rs, s, conn);
             }
-            
+
         }
-        
-        
+
         return getMatches();
     }
-    
-    public String setResultForMatchByResultId(int id){
-        
-        
-        
+
+    public String setResultForMatchByResultId(int id) {
+
         return null;
     }
-    
-    public List<Bet> getBetsByResultId(int id){
+
+    public List<Bet> getBetsByResultId(int id) {
         bets = null;
-        
+
         Connection conn = DBHelper.getDBConnection();
-        
+
         if (conn != null) {
             ResultSet rs = null;
             PreparedStatement s = null;
-        
-            try{
+
+            try {
                 String sql = SELECT_ALL_FROM_BETS
                         + "WHERE b.resultFK = ? "
                         + "ORDER BY b.userFK";
-                
+
                 s = conn.prepareStatement(sql);
                 s.setInt(1, id);
                 rs = s.executeQuery();
@@ -211,52 +210,46 @@ public class MatchBean {
                         double amount = rs.getDouble("amount");
                         int userId = rs.getInt("userFK");
                         int resultFK = rs.getInt("resultFK");
-                        
+
                         Bet b = new Bet(betId, amount, userId, resultFK);
                         getBets().add(b);
                     }
                 }
-                
-            }catch(SQLException e){
+
+            } catch (SQLException e) {
                 Logger.getLogger(MatchBean.class.getName()).log(Level.SEVERE, null, e);
-            }finally{
+            } finally {
                 DBHelper.closeConnection(rs, s, conn);
             }
         }
 
         return getBets();
     }
-    
-    
-    
-    public String betForResultByResultId(int resultId){
-        
-        
-        
-        
-        
+
+    public String betForResultByResultId(int resultId) {
+
         return null;
     }
-    
-    public List<Result> getResultsByMatchId(int id){
+
+    public List<Result> getResultsByMatchId(int id) {
         results = null;
-        
+
         Connection conn = DBHelper.getDBConnection();
-        
+
         if (conn != null) {
             ResultSet rs = null;
             PreparedStatement s = null;
-            
-            try{
+
+            try {
                 Timestamp currentTimestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
-                
+
                 String sql = SELECT_ALL_FROM_RESULTS
                         + "INNER JOIN matches m ON r.matchFK = m.id "
                         //if user is logged in get his bets too
                         //+ "INNER JOIN bets b ON r.id=b.resultFK"
                         //make sure only matches that are not already finished will be displayed
                         + "WHERE r.matchFK = ? AND m.time > ?";
-                
+
                 s = conn.prepareStatement(sql);
                 s.setInt(1, id);
                 s.setTimestamp(2, currentTimestamp);
@@ -271,160 +264,262 @@ public class MatchBean {
                         double oddD = rs.getDouble("oddDenominator");
                         boolean occured = rs.getBoolean("occured");
                         int mId = rs.getInt("matchFK");
-                        
+
                         Result r = new Result(rId, name, oddN, oddD, occured, mId);
                         getResults().add(r);
                     }
                 }
-            }catch(SQLException e){
+            } catch (SQLException e) {
                 Logger.getLogger(MatchBean.class.getName()).log(Level.SEVERE, null, e);
-            }finally{
+            } finally {
                 DBHelper.closeConnection(rs, s, conn);
             }
         }
 
         return getResults();
     }
-    
+
     /**
      * selects all teams from the database and returns a list of Team objects
-     * will only query the teams once, then store them in a variable and return the variable
+     * will only query the teams once, then store them in a variable and return
+     * the variable
+     *
      * @return List<Team> a list of Team objects from the database
      */
-    public List<Team> getAllTeams(){
+    public List<Team> getAllTeams() {
         //load teams only once
-        if(teams != null) return teams;
-        
+        if (teams != null) {
+            return teams;
+        }
+
         Connection conn = DBHelper.getDBConnection();
-        
-        if(conn != null){
-            
+
+        if (conn != null) {
+
             ResultSet rs = null;
             PreparedStatement s = null;
-            
-            try{
+
+            try {
                 String sql = SELECT_ALL_FROM_TEAMS;
                 s = conn.prepareStatement(sql);
-                
+
                 rs = s.executeQuery();
                 if (rs != null) {
                     teams = new ArrayList<>();
-                    
+
                     while (rs.next()) {
                         int tId = rs.getInt("id");
                         String tName = rs.getString("name");
-                        
+
                         Team t = new Team(tId, tName);
-                        
+
                         teams.add(t);
                     }
                 }
-            }catch(SQLException e){
+            } catch (SQLException e) {
                 Logger.getLogger(MatchBean.class.getName()).log(Level.SEVERE, null, e);
-            }finally{
+            } finally {
                 DBHelper.closeConnection(rs, s, conn);
-            } 
+            }
         }
 
         return teams;
     }
-    
+
     /**
      * adds a new match
+     *
      * @return String to redirect to or null (error message will be set)
      */
-    public String newMatch(){
+    public String newMatch() {
         //parameters can be found in variables starting with newMatch
 
         //if user is not logged in, redirect to home
-        if(lbean.getUser() == null) return "../home.xhtml?faces-redirect=true";
-        
+        if (lbean.getUser() == null) {
+            return "../home.xhtml?faces-redirect=true";
+        }
+
         //check if fields are empty
-        if(newMatchDate == null){
+        if (newMatchDate == null) {
             MessageHelper.addMessageToComponent(FORM_NEW_MATCH, MESSAGES_BUNDLE, "newMatchFieldsNotEmpty", FacesMessage.SEVERITY_WARN);
             return null;
         }
-        
+
         //must not select the same teams
-        if(newMatchHomeTeamId == newMatchAwayTeamId){
+        if (newMatchHomeTeamId == newMatchAwayTeamId) {
             MessageHelper.addMessageToComponent(FORM_NEW_MATCH, MESSAGES_BUNDLE, "newMatchHomeAwayTeamMustBeDifferent", FacesMessage.SEVERITY_WARN);
             return null;
         }
-        
+
         //store user's date
-        Calendar c = Calendar.getInstance(); 
+        Calendar c = Calendar.getInstance();
         c.setTime(newMatchDate);
         c.set(Calendar.HOUR_OF_DAY, newMatchHours);
         c.set(Calendar.MINUTE, newMatchMinutes);
         c.set(Calendar.SECOND, 0);
         newMatchTime = new Timestamp(c.getTimeInMillis());
-        
+
         //get a time that is 1 day in the future
         Calendar now = Calendar.getInstance();
         now.add(Calendar.DAY_OF_MONTH, 1);
         Timestamp currentTimestamp = new Timestamp(now.getTime().getTime());
-        
+
         //check if selected date is at least 1 day in the future
-        int test = newMatchTime.compareTo(currentTimestamp);
-        if(newMatchTime.compareTo(currentTimestamp) < 0){
+        if (newMatchTime.compareTo(currentTimestamp) < 0) {
             MessageHelper.addMessageToComponent(FORM_NEW_MATCH, MESSAGES_BUNDLE, "newMatchDateMustBeOneDayAhead", FacesMessage.SEVERITY_WARN);
             return null;
         }
-        
+
         //check if at least 1 result has been added
-        if(newMatchResults == null || newMatchResults.isEmpty()){
+        if (newMatchResults == null || newMatchResults.isEmpty()) {
             MessageHelper.addMessageToComponent(FORM_NEW_MATCH, MESSAGES_BUNDLE, "newMatchNeedToAddAtLeastOneResult", FacesMessage.SEVERITY_WARN);
             return null;
         }
-        
-        //everything should be fine, try writing data to db
-        //return HOME_SITE;
-        return null;
+
+        //presumably correct data from correct user, try to change balance
+        Connection conn = DBHelper.getDBConnection();
+        if (conn != null) {
+
+            PreparedStatement s = null;
+            int res;
+
+            try {
+                //will update more than one table -> transaction needed
+                conn.setAutoCommit(false);
+
+                //first create a new match
+                String sql = "INSERT INTO matches "
+                        + "(time, homeTeamFK, awayTeamFK) "
+                        + "VALUES(?, ?, ?)";
+
+                s = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                s.setTimestamp(1, newMatchTime);
+                s.setInt(2, newMatchHomeTeamId);
+                s.setInt(3, newMatchAwayTeamId);
+                res = s.executeUpdate();
+
+                if (res < 1) {
+                    conn.rollback();
+                    MessageHelper.addMessageToComponent(FORM_NEW_MATCH, MESSAGES_BUNDLE, "newMatchErrDB", FacesMessage.SEVERITY_ERROR);
+                    return null;
+                }
+
+                //store the id of the created match
+                int nMatchId;
+
+                //try to get the id of the created match
+                try (ResultSet generatedKeys = s.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        nMatchId = generatedKeys.getInt(1);
+                    } else {
+                        throw new SQLException("Creating failed, no ID obtained.");
+                    }
+                } catch (SQLException e) {
+                    conn.rollback();
+                    MessageHelper.addMessageToComponent(FORM_NEW_MATCH, MESSAGES_BUNDLE, "newMatchErrDB", FacesMessage.SEVERITY_ERROR);
+                    return null;
+                }
+
+                sql = "INSERT INTO results "
+                        + "(name, oddNumerator, oddDenominator, matchFK) "
+                        + "VALUES(?, ?, ?, ?)";
+
+                //insert each result
+                for (Result r : newMatchResults) {
+                    s = conn.prepareStatement(sql);
+                    s.setString(1, r.getName());
+                    s.setDouble(2, r.getOddNumerator());
+                    s.setDouble(3, r.getOddDenominator());
+                    s.setInt(4, nMatchId);
+
+                    res = s.executeUpdate();
+
+                    if (res < 1) {
+                        conn.rollback();
+                        MessageHelper.addMessageToComponent(FORM_NEW_MATCH, MESSAGES_BUNDLE, "newMatchErrDB", FacesMessage.SEVERITY_ERROR);
+                        return null;
+                    }
+                }
+
+                //everything ok -> commit
+                conn.commit();
+
+            } catch (SQLException e) {
+                MessageHelper.addMessageToComponent(FORM_NEW_MATCH, MESSAGES_BUNDLE, "newMatchErrDB", FacesMessage.SEVERITY_ERROR);
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    Logger.getLogger(MatchBean.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                return null;
+            } finally {
+                DBHelper.closeConnection(s, conn);
+            }
+
+            //everything was fine, reset form
+            resetVariables();
+            return HOME_SITE;
+        } else {
+            MessageHelper.addMessageToComponent(FORM_NEW_MATCH, MESSAGES_BUNDLE, "newMatchErrDB", FacesMessage.SEVERITY_ERROR);
+            return null;
+        }
     }
-    
-    public void addResultToNewMatch(){
-        if(newMatchResults == null) newMatchResults = new ArrayList<>();
-        
+
+    public void addResultToNewMatch() {
+        if (newMatchResults == null) {
+            newMatchResults = new ArrayList<>();
+        }
+
         //check if fields are empty
-        if(newMatchResult.getName().length() == 0){
+        if (newMatchResult.getName().length() == 0) {
             MessageHelper.addMessageToComponent(FORM_NEW_RESULT, MESSAGES_BUNDLE, "newMatchFieldsNotEmpty", FacesMessage.SEVERITY_WARN);
             return;
         }
-        
+
         //check if odds are greater than zero           
-        if(!(newMatchResult.getOddNumerator() > 0) || !(newMatchResult.getOddDenominator() > 0)){
+        if (!(newMatchResult.getOddNumerator() > 0) || !(newMatchResult.getOddDenominator() > 0)) {
             MessageHelper.addMessageToComponent(FORM_NEW_RESULT, MESSAGES_BUNDLE, "newMatchNumbersGreaterThanZero", FacesMessage.SEVERITY_WARN);
             return;
         }
-        
-        //check if oddn and oddd are the same number, necessary?
 
+        //check if oddn and oddd are the same number, necessary?
         Result nr = new Result(0, newMatchResult.getName(), newMatchResult.getOddNumerator(), newMatchResult.getOddDenominator(), false, 0);
-        
+
         String newOddN = df.format(newMatchResult.getOddNumerator());
         String newOddD = df.format(newMatchResult.getOddDenominator());
-        
+
         //check if same the item has already been added
-        if(newMatchResults.stream().filter(r -> r.getName().equals(nr.getName()) && df.format(r.getOddNumerator()).equals(newOddN) && df.format(r.getOddDenominator()).equals(newOddD)).findFirst().isPresent()){
+        if (newMatchResults.stream().filter(r -> r.getName().equals(nr.getName()) && df.format(r.getOddNumerator()).equals(newOddN) && df.format(r.getOddDenominator()).equals(newOddD)).findFirst().isPresent()) {
             MessageHelper.addMessageToComponent(FORM_NEW_RESULT, MESSAGES_BUNDLE, "newMatchSameResultAlreadyAdded", FacesMessage.SEVERITY_WARN);
             return;
         }
-        
+
         nr.setOddNumerator(Double.parseDouble(newOddN));
         nr.setOddDenominator(Double.parseDouble(newOddD));
-        
+
         newMatchResults.add(nr);
     }
-    
+
     /**
-     * removes a match item from the list which is displayed on the client
-     * this method is only called via ajax
+     * removes a match item from the list which is displayed on the client this
+     * method is only called via ajax
+     *
      * @param r Result to remove
      */
-    public void removeResultFromNewMatch(Result r){
-        if(newMatchResults != null) newMatchResults.remove(r);
+    public void removeResultFromNewMatch(Result r) {
+        if (newMatchResults != null) {
+            newMatchResults.remove(r);
+        }
     }
-    
+
+    private void resetVariables() {
+        newMatchResults = null;
+        newMatchResult = null;
+        newMatchAwayTeamId = newMatchHomeTeamId = newMatchHours = newMatchMinutes = 0;
+        newMatchDate = null;
+        newMatchTime = null;
+    }
+
     /**
      * @return the matchId
      */
@@ -438,7 +533,7 @@ public class MatchBean {
     public int getResultId() {
         return resultId;
     }
-    
+
     /**
      * @param matchId the matchId to set
      */
