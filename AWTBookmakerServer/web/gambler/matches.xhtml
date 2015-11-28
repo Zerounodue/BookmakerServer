@@ -6,6 +6,13 @@
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
     xmlns:h="http://java.sun.com/jsf/html">
 
+    <f:metadata>
+        <!--prevent guests from visiting this page-->
+        <c:if test="#{empty loginBean.user}">
+            <f:viewAction action="/home.xhtml?faces-redirect=true" />
+        </c:if>
+    </f:metadata>
+    
     <ui:define name="content">
         <h2>#{messages.matchUpcomingMatches}</h2>
         <c:choose>
@@ -32,7 +39,7 @@
                     </h:column>
                     <h:column>
                         <f:facet name="header">#{messages.matchBets}</f:facet>
-                        <h:outputLink value="match/results.xhtml?matchId=#{match.id}">#{messages.matchBets}</h:outputLink>
+                        <h:outputLink value="gambler/results.xhtml?matchId=#{match.id}">#{messages.matchBets}</h:outputLink>
                     </h:column>
                 </h:dataTable>
             </c:otherwise>

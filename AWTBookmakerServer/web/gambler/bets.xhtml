@@ -6,8 +6,8 @@
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
                 xmlns:h="http://java.sun.com/jsf/html">
     <f:metadata>
-        <!--prevent guests from visiting this page-->
-        <c:if test="#{empty loginBean.user}">
+        <!--prevent guests or bookmakers from visiting this page-->
+        <c:if test="#{empty loginBean.user || loginBean.user.admin}">
             <f:viewAction action="/home.xhtml?faces-redirect=true" />
         </c:if>
     </f:metadata>
@@ -47,7 +47,8 @@
                         <h:outputText value="#{bet.amount}" />
                     </h:column>
                     <h:column>
-                        <f:facet name="header">#{messages.betOccured}</f:facet>
+                        <f:facet name="header">#{messages.betWon}</f:facet>
+                        <!--does not work with different colours...-->
                         <h:outputText value="#{messages[bet.result.occured]}" />
                     </h:column>
                 </h:dataTable>

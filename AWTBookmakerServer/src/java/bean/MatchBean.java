@@ -45,7 +45,9 @@ public class MatchBean {
 
     //sql queries
     private final static String SELECT_ALL_FROM_MATCHES_AND_TEAM_NAME
-            = "SELECT m.id, m.homeTeamFK, m.awayTeamFK, m.time, m.finished, ht.name as homeTeamName, at.name as awayTeamName FROM matches m ";
+            = "SELECT m.id, m.homeTeamFK, m.awayTeamFK, m.time, m.finished, ht.name as homeTeamName, at.name as awayTeamName FROM matches m "
+            + "INNER JOIN teams ht ON m.homeTeamFK=ht.id "
+            + "INNER JOIN teams at ON m.awayTeamFK=at.id ";
     private final static String SELECT_ALL_FROM_BETS
             = "SELECT b.id, b.amount, b.userFK, b.resultFK FROM bets b ";
     private final static String SELECT_ALL_FROM_RESULTS
@@ -99,8 +101,7 @@ public class MatchBean {
                 Timestamp currentTimestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 
                 String sql = SELECT_ALL_FROM_MATCHES_AND_TEAM_NAME
-                        + "INNER JOIN teams ht ON m.homeTeamFK=ht.id "
-                        + "INNER JOIN teams at ON m.awayTeamFK=at.id "
+                        
                         + "WHERE m.time > ? AND m.finished = 0 "
                         + "ORDER BY m.time asc ";
 
@@ -144,8 +145,7 @@ public class MatchBean {
 
             try {
                 String sql = SELECT_ALL_FROM_MATCHES_AND_TEAM_NAME
-                        + "INNER JOIN teams ht ON m.homeTeamFK=ht.id "
-                        + "INNER JOIN teams at ON m.awayTeamFK=at.id "
+                        
                         + "WHERE m.finished = 0 "
                         + "ORDER BY m.time asc ";
 
@@ -226,11 +226,6 @@ public class MatchBean {
         return getBets();
     }
 
-    public String betForResultByResultId(int resultId) {
-
-        return null;
-    }
-
     public List<Result> getResultsByMatchId(int id) {
         results = null;
 
@@ -279,6 +274,26 @@ public class MatchBean {
         return getResults();
     }
 
+    /**
+     * checks if the current list of results contains a result that occured
+     * @return true if a result occured, false otherwise
+     */
+    public boolean anyResultOccured(){
+        //not sure that to do...
+        if(results == null) return false;
+        
+        boolean a = results.stream().anyMatch(r -> r.isOccured());
+        
+        return results.stream().anyMatch(r -> r.isOccured());
+    }
+    
+    public List<Result> getResultsWithTotalOddsByMatchId(int id){
+        //results = null;
+        //TODO get data from view
+        
+        return getResults();
+    }
+    
     /**
      * selects all teams from the database and returns a list of Team objects
      * will only query the teams once, then store them in a variable and return
@@ -465,6 +480,11 @@ public class MatchBean {
         }
     }
 
+    /**
+     * adds a new result object to the new match
+     * uses the parameters of the newMatchResult object 
+     * method is only called via ajax
+     */
     public void addResultToNewMatch() {
         if (newMatchResults == null) {
             newMatchResults = new ArrayList<>();

@@ -39,8 +39,8 @@ public class UserBean {
 
     //websites
     private final static String HOME_SITE = "/home.xhtml?faces-redirect=true";
-    private final static String CHARGE_BALANCE_SITE = "/user/chargeBalance.xhtml?faces-redirect=true";
-    private final static String BET_SITE = "/user/bet.xhtml?faces-redirect=true";
+    private final static String CHARGE_BALANCE_SITE = "/gambler/chargeBalance.xhtml?faces-redirect=true";
+    private final static String BET_SITE = "/gambler/bet.xhtml?faces-redirect=true";
 
     //queries
     private final static String SELECT_BETS_WITH_RESULT_TEAMS_MATCH = "SELECT b.id as betId, b.amount, b.userFK, b.resultFK, "
