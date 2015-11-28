@@ -233,8 +233,6 @@ public class UserBean {
                     return null;
                 }
 
-                res = 0;
-
                 //update user balance
                 sql = "UPDATE users "
                         + "SET balance = ? "
@@ -346,6 +344,26 @@ public class UserBean {
         return getBets();
     }
 
+    /**
+     * calculates the total gain for the list of bets currently used
+     * @return double summed gain
+     */
+    public double getTotalUserGainForBets(){
+        if(bets == null) return 0;
+        //sums userGain of all bets in list
+        return bets.stream().mapToDouble(b -> b.getUserGain()).sum();
+    }
+    
+    /**
+     * calculates the total amount for the list of bets currently used
+     * @return double summed amount
+     */
+    public double getTotalUserAmountForBets(){
+        if(bets == null) return 0;
+        //sums amount of all bets in list
+        return bets.stream().mapToDouble(b -> b.getAmount()).sum();
+    }
+    
     private void resetVariables() {
         amount = betAmount = null;
         creditCardNumber = validationCode = resultName = betParams = null;

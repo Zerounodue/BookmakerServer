@@ -20,7 +20,7 @@
                 <h:outputText value="#{messages.betNoBets}"/>
             </c:when>
             <c:otherwise>
-                <h:dataTable value="#{userBean.bets}" var="bet" class="table table-hover table-bordered">
+                <h:dataTable value="#{userBean.bets}" var="bet" class="table table-hover ">
                 <!--rowClasses="#{bet.result.occured ? 'success' : ''}" rowStyleClass="">-->
                     <h:column>
                         <f:facet name="header">#{messages.betHomeTeam}</f:facet>
@@ -45,6 +45,7 @@
                     <h:column>
                         <f:facet name="header">#{messages.betInvested}</f:facet>
                         <h:outputText value="#{bet.amount}" />
+                        <f:facet name="footer"><strong>#{userBean.totalUserAmountForBets}</strong></f:facet>
                     </h:column>
                     <h:column>
                         <f:facet name="header">#{messages.betOccured}</f:facet>
@@ -54,6 +55,7 @@
                         <f:facet name="header">#{messages.betGain}</f:facet>
                         <!--does not work with different colours...-->
                         <h:outputText value="#{bet.userGain}" />
+                        <f:facet name="footer" ><strong>#{userBean.totalUserGainForBets}</strong></f:facet>
                     </h:column>
                 </h:dataTable>
             </c:otherwise>

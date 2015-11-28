@@ -589,7 +589,7 @@ public class MatchBean {
             newMatchResults.remove(r);
         }
     }
-
+    
     private void resetVariables() {
         newMatchResults = null;
         newMatchResult = null;
