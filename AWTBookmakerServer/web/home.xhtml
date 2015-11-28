@@ -14,12 +14,10 @@
                         <!--buttons for bookmaker-->
                         <c:when test="#{loginBean.user.admin}">
                             <h:commandButton id="btn_newMatch" action="bookmaker/newMatch.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeNewMatch}" />
-                            <!--<h:commandButton id="btn_matchesWithoutResult" action="__TODO" class="btn btn-default" value="#{messages.homeShowMatchesWithoutResult}" />-->
                             <h:commandButton id="btn_upcomingMatches" action="/bookmaker/matches.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeShowMatches}" />
                         </c:when>
                         <!--buttons for gambler-->
                         <c:otherwise>
-                            <!--<h:commandButton id="btn_pastMatches" action="__TODO" class="btn btn-default" value="#{messages.homePastMatches}" />-->
                             <h:commandButton id="btn_ownBets" action="gambler/bets.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeOwnBets}" />
                             <h:commandButton id="btn_upcomingMatches" action="/gambler/matches.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeShowMatches}" />
                         </c:otherwise>

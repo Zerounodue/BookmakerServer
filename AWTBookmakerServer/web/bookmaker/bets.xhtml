@@ -16,7 +16,6 @@
     
     <ui:define name="content">
         <h2>#{messages.betBets}</h2>
-        TODO: remove; here will be bets for result with id: #{matchBean.resultId}
         <c:choose>
             <c:when test="#{empty matchBean.getBetsByResultId(matchBean.resultId)}">
                 <!--in case no data is available-->

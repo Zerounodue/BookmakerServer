@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition template="../template.xhtml"
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:f="http://java.sun.com/jsf/core" 
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-    xmlns:h="http://java.sun.com/jsf/html">
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core" 
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:h="http://java.sun.com/jsf/html">
 
     <f:metadata>
         <!--prevent guests from visiting this page-->
@@ -12,37 +12,54 @@
             <f:viewAction action="/home.xhtml?faces-redirect=true" />
         </c:if>
     </f:metadata>
-    
-    <ui:define name="content">
-        <h2>#{messages.matchUpcomingMatches}</h2>
-        <c:choose>
-            <c:when test="#{empty matchBean.upcomingMatches}">
-                <!--in case no data is available-->
-                <h:outputText value="#{messages.matchNoMatches}"/>
-            </c:when>
-            <c:otherwise>
-                <!--display if data is available-->
-                <h:dataTable value="#{matchBean.matches}" var="match" class="table table-hover table-bordered">
-                    <h:column>
-                        <f:facet name="header">#{messages.matchHomeTeam}</f:facet>
-                        <h:outputText value="#{teams[match.homeTeam.name]}" />
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">#{messages.matchAwayTeam}</f:facet>
-                        <h:outputText value="#{teams[match.awayTeam.name]}" />
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">#{messages.matchStartTime}</f:facet>
-                        <h:outputText value="#{match.time}" >
-                            <f:convertDateTime pattern="yyyy/MM/dd hh:mm:ss"/>
-                        </h:outputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">#{messages.matchBets}</f:facet>
-                        <h:outputLink value="bookmaker/results.xhtml?matchId=#{match.id}">#{messages.matchBets}</h:outputLink>
-                    </h:column>
-                </h:dataTable>
-            </c:otherwise>
-        </c:choose>
+
+    <ui:define name="content" id="content_bMatches">
+        <!--buttons to display different kinds of matches-->
+        <h:form id="frm_bMatches">
+            <h:commandButton value="#{messages.matchAllMatches}" class="btn btn-default">
+                <f:ajax listener="#{matchBean.getAllMatches()}" execute="@this" render="pnl_bMatches" />
+            </h:commandButton>
+            <h:commandButton value="#{messages.matchUpcomingMatches}" class="btn btn-default">
+                <f:ajax listener="#{matchBean.getUpcomingMatches()}" execute="@this" render="pnl_bMatches" />
+            </h:commandButton>
+            <h:commandButton value="#{messages.matchMatchesWithoutResult}" class="btn btn-default">
+                <f:ajax  listener="#{matchBean.getMatchesWithoutResult()}" execute="@this" render="pnl_bMatches" />
+            </h:commandButton>
+            <h:commandButton action="newMatch.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeNewMatch}" />
+        </h:form>
+        
+            <h:panelGroup id="pnl_bMatches">
+            <h2>#{messages.matchUpcomingMatches}</h2>
+            <c:choose>
+                <c:when test="#{empty matchBean.matches}">
+                    <!--in case no data is available-->
+                    <h:outputText value="#{messages.matchNoMatches}"/>
+                </c:when>
+                <c:otherwise>
+                    <!--display if data is available-->
+                    <h:dataTable value="#{matchBean.matches}" var="match" class="table table-hover table-bordered">
+                        <h:column>
+                            <f:facet name="header">#{messages.matchHomeTeam}</f:facet>
+                            <h:outputText value="#{teams[match.homeTeam.name]}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{messages.matchAwayTeam}</f:facet>
+                            <h:outputText value="#{teams[match.awayTeam.name]}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{messages.matchStartTime}</f:facet>
+                            <h:outputText value="#{match.time}" >
+                                <f:convertDateTime pattern="yyyy/MM/dd hh:mm:ss"/>
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{messages.matchBets}</f:facet>
+                            <h:outputLink value="results.xhtml?matchId=#{match.id}">#{messages.matchBets}</h:outputLink>
+                        </h:column>
+                    </h:dataTable>
+                </c:otherwise>
+            </c:choose>
+                </h:panelGroup>
+
     </ui:define>
 </ui:composition>

@@ -14,6 +14,8 @@
     </f:metadata>
     
     <ui:define name="content">
+        <!--might add buttons to display different kinds of matches-->
+        
         <h2>#{messages.matchUpcomingMatches}</h2>
         <c:choose>
             <c:when test="#{empty matchBean.upcomingMatches}">
@@ -39,7 +41,7 @@
                     </h:column>
                     <h:column>
                         <f:facet name="header">#{messages.matchBets}</f:facet>
-                        <h:outputLink value="gambler/results.xhtml?matchId=#{match.id}">#{messages.matchBets}</h:outputLink>
+                        <h:outputLink value="results.xhtml?matchId=#{match.id}">#{messages.matchBets}</h:outputLink>
                     </h:column>
                 </h:dataTable>
             </c:otherwise>

@@ -85,6 +85,58 @@ public class MatchBean {
     private final DecimalFormat df = new DecimalFormat("#.00");
 
     /**
+     * Gets all matches
+     * @return List of Match
+     */
+    public List<Match> getAllMatches(){
+        matches = null;
+        
+        //check if user is bookmaker
+        if(lbean.getUser() == null || !lbean.getUser().isAdmin()){
+            return null;
+        }
+        
+        //get connection to DB
+        Connection conn = DBHelper.getDBConnection();
+        if (conn != null) {
+            ResultSet rs = null;
+            PreparedStatement s = null;
+
+            try {
+                String sql = SELECT_ALL_FROM_MATCHES_AND_TEAM_NAME
+                        + "ORDER BY m.time asc ";
+
+                s = conn.prepareStatement(sql);
+                rs = s.executeQuery();
+                if (rs != null) {
+                    matches = new ArrayList<>();
+
+                    while (rs.next()) {
+                        int id = rs.getInt("id");
+                        int htId = rs.getInt("homeTeamFK");
+                        String htName = rs.getString("homeTeamName");
+                        int atId = rs.getInt("awayTeamFK");
+                        String atName = rs.getString("awayTeamName");
+                        Timestamp ts = rs.getTimestamp("time");
+                        boolean finished = rs.getBoolean("finished");
+                        //result will be null by upcoming matches -> set id to 0
+                        Match m = new Match(id, ts, new Team(htId, htName), new Team(atId, atName), 0, finished);
+                        getMatches().add(m);
+                    }
+                }
+
+            } catch (SQLException e) {
+                matches = null;
+                Logger.getLogger(MatchBean.class.getName()).log(Level.SEVERE, null, e);
+            } finally {
+                DBHelper.closeConnection(rs, s, conn);
+            }
+        }
+        
+        return getMatches();
+    }
+    
+    /**
      * Gets all matches with a start time > than now
      *
      * @return list of Match objects or null
@@ -101,7 +153,6 @@ public class MatchBean {
                 Timestamp currentTimestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 
                 String sql = SELECT_ALL_FROM_MATCHES_AND_TEAM_NAME
-                        
                         + "WHERE m.time > ? AND m.finished = 0 "
                         + "ORDER BY m.time asc ";
 
@@ -126,6 +177,7 @@ public class MatchBean {
                 }
 
             } catch (SQLException e) {
+                matches = null;
                 Logger.getLogger(MatchBean.class.getName()).log(Level.SEVERE, null, e);
             } finally {
                 DBHelper.closeConnection(rs, s, conn);
@@ -145,7 +197,6 @@ public class MatchBean {
 
             try {
                 String sql = SELECT_ALL_FROM_MATCHES_AND_TEAM_NAME
-                        
                         + "WHERE m.finished = 0 "
                         + "ORDER BY m.time asc ";
 
@@ -170,7 +221,7 @@ public class MatchBean {
                 }
 
             } catch (SQLException e) {
-
+                matches = null;
             } finally {
                 DBHelper.closeConnection(rs, s, conn);
             }
@@ -181,8 +232,15 @@ public class MatchBean {
     }
 
     public String setResultForMatchByResultId(int id) {
-
-        return null;
+        //check if user is admin
+        if(lbean.getUser() == null || !lbean.getUser().isAdmin()){
+            return HOME_SITE;
+        }
+        
+        
+        
+        return "__TODO";
+        //return null;
     }
 
     public List<Bet> getBetsByResultId(int id) {
@@ -288,7 +346,7 @@ public class MatchBean {
     }
     
     public List<Result> getResultsWithTotalOddsByMatchId(int id){
-        //results = null;
+        results = null;
         //TODO get data from view
         
         return getResults();

@@ -75,7 +75,7 @@ and open the template in the editor.
                     </div>
                 </div>
             </div>
-            <h:commandButton type="submit"  id="btn_subNewMatch" class="btn btn-default" action="#{matchBean.newMatch()}" value="#{messages.loginSubmit}" />
+            <h:commandButton type="submit"  id="btn_subNewMatch" class="btn btn-default" action="#{matchBean.newMatch()}" value="#{messages.newMatchCreateNewMatch}" />
         </h:form>
         <!--results-->
         <div class="panel panel-default">
@@ -116,7 +116,7 @@ and open the template in the editor.
                         <f:passThroughAttribute name="required" value="required" />
                     </h:inputText>
                     <h:commandButton value="#{messages.newMatchAddNewResult}" class="btn btn-default">
-                        <f:ajax listener="#{matchBean.addResultToNewMatch()}" execute="frm_newResult" render="frm_newResult frm_newResultMessage msg_oddN msg_oddD" /> <!--render="dt_results" /> -->
+                        <f:ajax listener="#{matchBean.addResultToNewMatch()}" execute="frm_newResult" render="frm_newResult frm_newResultMessage msg_oddN msg_oddD" />
                     </h:commandButton>
                 </div>
             </h:form>

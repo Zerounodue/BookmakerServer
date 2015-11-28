@@ -59,7 +59,7 @@
                                 <c:otherwise>
                                     <h:column>
                                         <f:facet name="header">#{messages.resultSetOccured}</f:facet>
-                                        <h:outputLink value="__TODO">#{messages.resultSetOccured}</h:outputLink>
+                                        <h:commandButton id="btn_setResultForMatch" class="btn btn-default" action="#{matchBean.setResultForMatchByResultId(result.id)}" value="#{messages.resultSetOccured}" />
                                     </h:column>
                                 </c:otherwise>
                             </c:choose>
