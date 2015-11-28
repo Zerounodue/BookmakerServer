@@ -43,13 +43,17 @@
                         <h:outputText value="#{bet.result.oddNumerator} : #{bet.result.oddDenominator}" />
                     </h:column>
                     <h:column>
-                        <f:facet name="header">#{messages.betAmount}</f:facet>
+                        <f:facet name="header">#{messages.betInvested}</f:facet>
                         <h:outputText value="#{bet.amount}" />
                     </h:column>
                     <h:column>
-                        <f:facet name="header">#{messages.betWon}</f:facet>
-                        <!--does not work with different colours...-->
+                        <f:facet name="header">#{messages.betOccured}</f:facet>
                         <h:outputText value="#{messages[bet.result.occured]}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{messages.betGain}</f:facet>
+                        <!--does not work with different colours...-->
+                        <h:outputText value="#{bet.userGain}" />
                     </h:column>
                 </h:dataTable>
             </c:otherwise>

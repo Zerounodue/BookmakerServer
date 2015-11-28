@@ -15,21 +15,24 @@ public class Bet {
     //better use objects?
     private int userId;
     private int resultId;
+    private double userGain;
     
     private Result result;
     
     /**
-     * constructor used to when displaying bets
+     * constructor used to when displaying bets for a user
      * @param id id of bet
      * @param amount amount for bet
      * @param userId id of user who placed this bet
      * @param r result object to which this bet belongs
+     * @param gain how much money the user won with this bet
      */
-    public Bet(int id, double amount, int userId, Result r){
+    public Bet(int id, double amount, int userId, Result r, double gain){
         this.id = id;
         this.amount = amount;
         this.userId = userId;
         this.result  = r;
+        this.userGain = gain;
     }
 
     public Bet(int id, double amount, int userId, int resultId){
@@ -72,6 +75,13 @@ public class Bet {
      */
     public Result getResult() {
         return result;
+    }
+
+    /**
+     * @return the userGain
+     */
+    public double getUserGain() {
+        return userGain;
     }
     
 }

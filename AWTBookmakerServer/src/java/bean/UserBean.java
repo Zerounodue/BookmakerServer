@@ -43,10 +43,25 @@ public class UserBean {
     private final static String BET_SITE = "/gambler/bet.xhtml?faces-redirect=true";
 
     //queries
-    private final static String SELECT_BETS_WITH_RESULT_TEAMS_MATCH = "SELECT b.id as betId, b.amount, b.userFK, b.resultFK, "
+    /*
+    SELECT b.id as betId, b.amount, b.userFK, b.resultFK, 
+                        r.name as rName, r.occured as rOccured, r.oddNumerator as rOddN, r.oddDenominator as rOddD, 
+                        ht.id as htId, ht.name as htName, at.id as atId, at.name as atName, 
+                        m.id as mId, m.time as mTime, m.finished as mFinished, 
+                        IF(r.occured = 1, ROUND(((r.oddNumerator / r.oddDenominator) * b.amount),2), 0) as win
+                        
+                        FROM bets b 
+                        INNER JOIN results r ON b.resultFK=r.id 
+                        INNER JOIN matches m ON r.matchFK = m.id 
+                        INNER JOIN teams ht ON m.homeTeamFK=ht.id 
+                        INNER JOIN teams at ON m.awayTeamFK=at.id
+    */
+    private final static String SELECT_BETS_WITH_RESULT_TEAMS_MATCH_AND_CALCULATED_WIN_LOSS = "SELECT b.id as betId, b.amount, b.userFK, b.resultFK, "
                         +   "r.name as rName, r.occured as rOccured, r.oddNumerator as rOddN, r.oddDenominator as rOddD, "
                         +   "ht.id as htId, ht.name as htName, at.id as atId, at.name as atName, "
-                        +   "m.id as mId, m.time as mTime, m.finished as mFinished "
+                        +   "m.id as mId, m.time as mTime, m.finished as mFinished, "
+                            //calculates the gain
+                        +   "IF(r.occured = 1, ROUND(((r.oddNumerator / r.oddDenominator) * b.amount),2), 0) as gain "
                         + "FROM bets b "
                         + "INNER JOIN results r ON b.resultFK=r.id "
                         + "INNER JOIN matches m ON r.matchFK = m.id "
@@ -275,7 +290,7 @@ public class UserBean {
             PreparedStatement s = null;
 
             try {
-                String sql = SELECT_BETS_WITH_RESULT_TEAMS_MATCH
+                String sql = SELECT_BETS_WITH_RESULT_TEAMS_MATCH_AND_CALCULATED_WIN_LOSS
                         + "WHERE b.userFK = ? "
                         + "ORDER BY m.finished, r.occured ";
                 
@@ -288,9 +303,10 @@ public class UserBean {
                     while (rs.next()) {
                         //bet
                         int betId = rs.getInt("betId");
-                        double amount = rs.getDouble("amount");
+                        double betA = rs.getDouble("amount");
                         int uId = rs.getInt("userFK");
                         int rId = rs.getInt("resultFK");
+                        double gain = rs.getDouble("gain");
                         //result
                         String rName = rs.getString("rName");
                         boolean rOccured = rs.getBoolean("rOccured");
@@ -314,7 +330,7 @@ public class UserBean {
                         Match m = new Match(mId, ts, ht, at, rId, mFinished);
                         
                         Result r = new Result(rId, rName, rOddN, rOddD, rOccured, m);
-                        Bet b = new Bet(betId, amount, uId, r);
+                        Bet b = new Bet(betId, betA, uId, r, gain);
 
                         bets.add(b);
                     }
