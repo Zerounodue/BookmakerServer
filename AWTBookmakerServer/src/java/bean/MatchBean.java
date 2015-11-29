@@ -54,6 +54,27 @@ public class MatchBean {
             = "SELECT r.id, r.name, r.oddNumerator, r.oddDenominator, r.occured, r.matchFK FROM results r ";
     private final static String SELECT_ALL_FROM_TEAMS
             = "Select t.id, t.name from teams t ";
+    private final static String UPDATE_USER_BALANCE_FOR_RESULT_ID =
+            //create a temporary table, query proofed to be too difficult otherwise...
+            "CREATE TEMPORARY TABLE tmp "
+            + "("
+                + "Select DISTINCT "
+                    + "("
+                        + "SELECT SUM(ROUND(((res.oddNumerator / res.oddDenominator) * bet.amount),2)) as gain "
+                        + "FROM results res "
+                        + "INNER JOIN bets bet ON res.id = bet.resultFK "
+                        + "INNER JOIN users usr ON bet.userFK = usr.id "
+                        + "WHERE res.id = r.id AND usr.id = u.id "
+                    + ") AS gain, "
+                    + "u.id as uID "
+                + "FROM results r "
+                + "INNER JOIN bets b ON r.id = b.resultFK "
+                + "INNER JOIN users u ON b.userFK = u.id "
+                + "WHERE r.id = ? "
+            + "); "
+            + "UPDATE users u, tmp t "
+            + "SET u.balance = (u.balance + t.gain) "
+            + "WHERE u.id = t.uID ";
 
     //forms
     private final static String FORM_NEW_MATCH = "frm_newMatch";
@@ -86,16 +107,17 @@ public class MatchBean {
 
     /**
      * Gets all matches
+     *
      * @return List of Match
      */
-    public List<Match> getAllMatches(){
+    public List<Match> getAllMatches() {
         matches = null;
-        
+
         //check if user is bookmaker
-        if(lbean.getUser() == null || !lbean.getUser().isAdmin()){
+        if (lbean.getUser() == null || !lbean.getUser().isAdmin()) {
             return null;
         }
-        
+
         //get connection to DB
         Connection conn = DBHelper.getDBConnection();
         if (conn != null) {
@@ -132,10 +154,10 @@ public class MatchBean {
                 DBHelper.closeConnection(rs, s, conn);
             }
         }
-        
+
         return getMatches();
     }
-    
+
     /**
      * Gets all matches with a start time > than now
      *
@@ -233,9 +255,14 @@ public class MatchBean {
 
     public String setResultForMatchByResultId(int id) {
         //check if user is admin
-        if(lbean.getUser() == null || !lbean.getUser().isAdmin()){
+        if (lbean.getUser() == null || !lbean.getUser().isAdmin()) {
             return HOME_SITE;
         }
+
+        //TODO transaction for tables match, result, user
+        //set match belonging to "id" to finished = true
+        //set result with id "id" to occured = true
+        //use this query UPDATE_USER_BALANCE_FOR_RESULT_ID, it will update the balance of the users who placed a bet on this result
         
         
         
@@ -334,24 +361,27 @@ public class MatchBean {
 
     /**
      * checks if the current list of results contains a result that occured
+     *
      * @return true if a result occured, false otherwise
      */
-    public boolean anyResultOccured(){
+    public boolean anyResultOccured() {
         //not sure that to do...
-        if(results == null) return false;
-        
+        if (results == null) {
+            return false;
+        }
+
         boolean a = results.stream().anyMatch(r -> r.isOccured());
-        
+
         return results.stream().anyMatch(r -> r.isOccured());
     }
-    
-    public List<Result> getResultsWithTotalOddsByMatchId(int id){
+
+    public List<Result> getResultsWithTotalOddsByMatchId(int id) {
         results = null;
         //TODO get data from view
-        
+
         return getResults();
     }
-    
+
     /**
      * selects all teams from the database and returns a list of Team objects
      * will only query the teams once, then store them in a variable and return
@@ -539,9 +569,8 @@ public class MatchBean {
     }
 
     /**
-     * adds a new result object to the new match
-     * uses the parameters of the newMatchResult object 
-     * method is only called via ajax
+     * adds a new result object to the new match uses the parameters of the
+     * newMatchResult object method is only called via ajax
      */
     public void addResultToNewMatch() {
         if (newMatchResults == null) {
@@ -589,7 +618,7 @@ public class MatchBean {
             newMatchResults.remove(r);
         }
     }
-    
+
     private void resetVariables() {
         newMatchResults = null;
         newMatchResult = null;

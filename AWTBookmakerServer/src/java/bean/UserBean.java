@@ -43,19 +43,6 @@ public class UserBean {
     private final static String BET_SITE = "/gambler/bet.xhtml?faces-redirect=true";
 
     //queries
-    /*
-    SELECT b.id as betId, b.amount, b.userFK, b.resultFK, 
-                        r.name as rName, r.occured as rOccured, r.oddNumerator as rOddN, r.oddDenominator as rOddD, 
-                        ht.id as htId, ht.name as htName, at.id as atId, at.name as atName, 
-                        m.id as mId, m.time as mTime, m.finished as mFinished, 
-                        IF(r.occured = 1, ROUND(((r.oddNumerator / r.oddDenominator) * b.amount),2), 0) as win
-                        
-                        FROM bets b 
-                        INNER JOIN results r ON b.resultFK=r.id 
-                        INNER JOIN matches m ON r.matchFK = m.id 
-                        INNER JOIN teams ht ON m.homeTeamFK=ht.id 
-                        INNER JOIN teams at ON m.awayTeamFK=at.id
-    */
     private final static String SELECT_BETS_WITH_RESULT_TEAMS_MATCH_AND_CALCULATED_WIN_LOSS = "SELECT b.id as betId, b.amount, b.userFK, b.resultFK, "
                         +   "r.name as rName, r.occured as rOccured, r.oddNumerator as rOddN, r.oddDenominator as rOddD, "
                         +   "ht.id as htId, ht.name as htName, at.id as atId, at.name as atName, "
