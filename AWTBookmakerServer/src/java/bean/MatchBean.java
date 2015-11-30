@@ -55,8 +55,9 @@ public class MatchBean {
     private final static String SELECT_ALL_FROM_TEAMS
             = "Select t.id, t.name from teams t ";
     private final static String UPDATE_USER_BALANCE_FOR_RESULT_ID =
-            //create a temporary table, query proofed to be too difficult otherwise...
-            "CREATE TEMPORARY TABLE tmp "
+            "UPDATE users u "
+            //join table that contains total gain for all users who placed a bet for this result
+            + "INNER JOIN "
             + "("
                 + "Select DISTINCT "
                     + "("
@@ -71,10 +72,9 @@ public class MatchBean {
                 + "INNER JOIN bets b ON r.id = b.resultFK "
                 + "INNER JOIN users u ON b.userFK = u.id "
                 + "WHERE r.id = ? "
-            + "); "
-            + "UPDATE users u, tmp t "
-            + "SET u.balance = (u.balance + t.gain) "
-            + "WHERE u.id = t.uID ";
+            + ") userGain "
+            + "SET u.balance = (u.balance + userGain.gain) "
+            + "WHERE u.id = userGain.uID ";
 
     //forms
     private final static String FORM_NEW_MATCH = "frm_newMatch";
