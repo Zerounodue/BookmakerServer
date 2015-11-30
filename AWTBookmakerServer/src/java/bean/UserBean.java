@@ -239,10 +239,13 @@ public class UserBean {
 
                 conn.commit();
             } catch (SQLException e) {
+                MessageHelper.addMessageToComponent(FORM_BET, MESSAGES_BUNDLE, "betErrBet", FacesMessage.SEVERITY_ERROR);
                 try {
                     conn.rollback();
                 } catch (SQLException ex) {
+                    return null;
                 }
+                return null;
             } finally {
                 DBHelper.closeConnection(s, conn);
             }

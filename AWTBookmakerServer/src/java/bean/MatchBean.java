@@ -42,7 +42,13 @@ public class MatchBean {
 
     //websites
     private final static String HOME_SITE = "/home.xhtml?faces-redirect=true";
+    private final static String BOOKMAKER_RESULTS_SITE = "/bookmaker/results.xhtml?faces-redirect=true";
 
+    //components to display error messages
+    private final static String TABLE_BOOKMAKER_RESULTS = "tbl_bResults";
+    
+    private final static String MESSAGES_BUNDLE = "messages";
+    
     //sql queries
     private final static String SELECT_ALL_FROM_MATCHES_AND_TEAM_NAME
             = "SELECT m.id, m.homeTeamFK, m.awayTeamFK, m.time, m.finished, ht.name as homeTeamName, at.name as awayTeamName FROM matches m "
@@ -79,8 +85,6 @@ public class MatchBean {
     //forms
     private final static String FORM_NEW_MATCH = "frm_newMatch";
     private final static String FORM_NEW_RESULT = "frm_newResult";
-
-    private final static String MESSAGES_BUNDLE = "messages";
 
     private int matchId;
     private int resultId;
@@ -254,20 +258,96 @@ public class MatchBean {
     }
 
     public String setResultForMatchByResultId(int id) {
+        //check if id smaller 1
+        if (id < 1) {
+            return HOME_SITE;
+        }
+
         //check if user is admin
         if (lbean.getUser() == null || !lbean.getUser().isAdmin()) {
             return HOME_SITE;
         }
 
-        //TODO transaction for tables match, result, user
-        //set match belonging to "id" to finished = true
-        //set result with id "id" to occured = true
-        //use this query UPDATE_USER_BALANCE_FOR_RESULT_ID, it will update the balance of the users who placed a bet on this result
-        
-        
-        
-        return "__TODO";
-        //return null;
+        Connection conn = DBHelper.getDBConnection();
+        if (conn != null) {
+            
+            int res;
+            PreparedStatement s = null;
+
+            try {
+                //TODO check if this result already contains a result set to occured
+                //if so, display message and do nothing
+                //need to add resultset and close it in finally clause
+                
+                
+                //will change more than one table
+                conn.setAutoCommit(false);
+
+                //-----update match
+                String sql = "UPDATE matches m "
+                        + "INNER JOIN results r ON m.id=r.matchFK "
+                        + "SET m.finished = 1 "
+                        + "WHERE r.id = ?";
+
+                s = conn.prepareStatement(sql);
+                s.setInt(1, id);
+                res = s.executeUpdate();
+                
+                if (res < 1) {
+                    conn.rollback();
+                    MessageHelper.addMessageToComponent(TABLE_BOOKMAKER_RESULTS, MESSAGES_BUNDLE, "resultErrDB", FacesMessage.SEVERITY_ERROR);
+                    return null;
+                }
+                
+                //-----update result
+                sql = "UPDATE results r SET r.occured = 1 WHERE r.id = ?";
+                
+                s = conn.prepareStatement(sql);
+                s.setInt(1, id);
+                res = s.executeUpdate();
+                
+                if (res < 1) {
+                    conn.rollback();
+                    MessageHelper.addMessageToComponent(TABLE_BOOKMAKER_RESULTS, MESSAGES_BUNDLE, "resultErrDB", FacesMessage.SEVERITY_ERROR);
+                    return null;
+                }
+                
+                //-----update users                
+                sql = UPDATE_USER_BALANCE_FOR_RESULT_ID;
+                
+                s = conn.prepareStatement(sql);
+                s.setInt(1, id);
+                res = s.executeUpdate();
+                
+                if (res < 1) {
+                    conn.rollback();
+                    MessageHelper.addMessageToComponent(TABLE_BOOKMAKER_RESULTS, MESSAGES_BUNDLE, "resultErrDB", FacesMessage.SEVERITY_ERROR);
+                    return null;
+                }
+                
+                //everything ok
+                conn.commit();
+            } catch (SQLException e) {
+                MessageHelper.addMessageToComponent(TABLE_BOOKMAKER_RESULTS, MESSAGES_BUNDLE, "resultErrDB", FacesMessage.SEVERITY_ERROR);
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    Logger.getLogger(MatchBean.class.getName()).log(Level.SEVERE, null, ex);
+                    return null;
+                }
+                return null;
+            } finally {
+                DBHelper.closeConnection(s, conn);
+            }
+
+            //everything was ok, display the same page again
+            return BOOKMAKER_RESULTS_SITE + "&matchId=" + matchId;
+
+        } else {
+            MessageHelper.addMessageToComponent(TABLE_BOOKMAKER_RESULTS, MESSAGES_BUNDLE, "resultErrDB", FacesMessage.SEVERITY_ERROR);
+            return null;
+        }
+
     }
 
     public List<Bet> getBetsByResultId(int id) {

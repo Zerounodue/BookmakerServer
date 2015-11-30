@@ -21,8 +21,11 @@
                 <h:outputText value="#{messages.resultNoResults}"  />
             </c:when>
             <c:otherwise>
+                <div>
+                    <h:messages for="tbl_bResults" globalOnly="true" errorClass="has-error" warnClass="has-warning" infoClass="info" />
+                </div>
                 <!--display if data is available-->
-                <h:dataTable value="#{matchBean.results}" var="result" class="table table-hover table-bordered">
+                <h:dataTable id="tbl_bResults" value="#{matchBean.results}" var="result" class="table table-hover table-bordered">
                     <h:column>
                         <f:facet name="header">#{messages.resultDescription}</f:facet>
                         <h:outputText value="#{result.name}" />
@@ -52,7 +55,7 @@
                                 <c:when test="#{matchBean.anyResultOccured()}">
                                     <h:column>
                                         <f:facet name="header">#{messages.resultOccured}</f:facet>
-                                            <h:outputText value="#{messages[result.occured]}" />
+                                        <h:outputText value="#{messages[result.occured]}" />
                                     </h:column>
                                 </c:when>
                                 <!--no result occured, can be set-->
