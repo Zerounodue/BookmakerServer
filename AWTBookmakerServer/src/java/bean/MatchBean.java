@@ -115,9 +115,8 @@ public class MatchBean {
     private final DecimalFormat df = new DecimalFormat("#.00");
 
     /**
-     * Gets all matches
-     *
-     * @return List of Match
+     * Returns all matches, including the teams for a match
+     * @return List of Match objects or null
      */
     public List<Match> getAllMatches() {
         matches = null;
@@ -169,7 +168,6 @@ public class MatchBean {
 
     /**
      * Gets all matches with a start time > than now
-     *
      * @return list of Match objects or null
      */
     public List<Match> getUpcomingMatches() {
@@ -218,6 +216,10 @@ public class MatchBean {
         return getMatches();
     }
 
+    /**
+     * Gets all matches where finished is set to 0
+     * @return List or Match object or null
+     */
     public List<Match> getMatchesWithoutResult() {
         matches = null;
         //get connection to DB
@@ -262,6 +264,15 @@ public class MatchBean {
         return getMatches();
     }
 
+    /**
+     * Sets the result by a given result id.
+     * Will set the match to finished = 1
+     * Will set the result to occured = 1
+     * Will update all the user's balance who placed a bet on this result
+     * @param id id of the result to set
+     * @return String Website to redirect to or null
+     * if null is returned, an error message is displayed on the website
+     */
     public String setResultForMatchByResultId(int id) {
         //check if id smaller 1
         if (id < 1) {
@@ -373,6 +384,11 @@ public class MatchBean {
 
     }
 
+    /**
+     * Gets all bets placed on the specified result
+     * @param id id for which the bets should be loaded
+     * @return List of Bet objects or null
+     */
     public List<Bet> getBetsByResultId(int id) {
         bets = null;
 
@@ -424,6 +440,11 @@ public class MatchBean {
         return bets.stream().mapToDouble(b -> b.getAmount()).sum();
     }
     
+    /**
+     * Gets all results for the specified match id
+     * @param id id of the match for which the results should be loaded
+     * @return List of Result objects
+     */
     public List<Result> getResultsByMatchId(int id) {
         results = null;
 
@@ -488,6 +509,11 @@ public class MatchBean {
         return results.stream().anyMatch(r -> r.isOccured());
     }
 
+    /**
+     * Gets all results for the specified match id, including the total gain and loss
+     * @param id id of the match for which the results should be loaded
+     * @return List of Result objects
+     */
     public List<Result> getResultsWithTotalOddsByMatchId(int id) {
         results = null;
         //TODO get data from view
@@ -732,6 +758,9 @@ public class MatchBean {
         }
     }
 
+    /**
+     * resets all variables to their default values
+     */
     private void resetVariables() {
         newMatchResults = null;
         newMatchResult = null;

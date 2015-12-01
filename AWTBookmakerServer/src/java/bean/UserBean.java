@@ -79,6 +79,11 @@ public class UserBean {
     //if redirected from bet to chargeBalance, show a message
     private boolean showNeedToChargeBalanceToBetMessage = false;
 
+    /**
+     * charges the user's balance
+     * @return String Website to redirect to or null
+     * if null is returned, an error message is displayed on the website
+     */
     public String chargeBalance() {
         //check if user is logged in, else redirect to home
         if (lbean.getUser() == null) {
@@ -156,6 +161,11 @@ public class UserBean {
         }
     }
 
+    /**
+     * lets the user place a bet on a result
+     * @return String Website to redirect to or null
+     * if null is returned, an error message is displayed on the website
+     */
     public String bet() {
         //check if user is logged in
         //check if user is logged in, else redirect to home
@@ -262,6 +272,10 @@ public class UserBean {
         }
     }
 
+    /**
+     * gets all bets for the currently logged in user
+     * @return List of Bet objects or null
+     */
     public List<Bet> getBetsForUser() {
         bets = null;
         //check if user is logged in, if not no results will be returned
@@ -354,6 +368,9 @@ public class UserBean {
         return bets.stream().mapToDouble(b -> b.getAmount()).sum();
     }
     
+    /**
+     * resets all variables back to their default values
+     */
     private void resetVariables() {
         amount = betAmount = null;
         creditCardNumber = validationCode = resultName = betParams = null;

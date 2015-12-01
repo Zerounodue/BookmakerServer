@@ -37,10 +37,18 @@ public class LoginBean {
     private final static String REGISTER_SITE = "/register.xhtml?faces-redirect=true";
     private final static String HOME_SITE = "/home.xhtml?faces-redirect=true";
 
+    /**
+     * sets the locale
+     * @param locale locale to set
+     */
     public void setLocale(String locale) {
         this.locale = locale;
     }
 
+    /**
+     * gets the current locale
+     * @return locale
+     */
     public String getLocale() {
         if (locale == null) {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -49,6 +57,11 @@ public class LoginBean {
         return locale;
     }
 
+    /**
+     * Tries to log the user in
+     * @return String Website to redirect to or null
+     * if null is returned, an error message is displayed on the website
+     */
     public String login() {
         //check if user is already logged in
 
@@ -88,12 +101,22 @@ public class LoginBean {
         } 
     }
 
+    /**
+     * logs the user out
+     * @return String Website to redirect to or null
+     * if null is returned, an error message is displayed on the website
+     */
     public String logout(){
         this.user = null;
         this.username = this.password = "";
         return HOME_SITE;
     }
     
+    /**
+     * Tries to create a new user
+     * @return String Website to redirect to or null
+     * if null is returned, an error message is displayed on the website
+     */
     public String register() {
         //check user data to make sure they contain values and passwords are equal
         if (username == null || password == null || username.length() == 0 || password.length() == 0) {
@@ -145,7 +168,13 @@ public class LoginBean {
         return REGISTER_SITE;
     }
 
-    //TODO add to db helper?
+    /**
+     * loads the specified user from the db (and checks if the entered password is correct)
+     * @param conn connection to the database
+     * @param withPW true if a password check should be checked as well
+     * @return User object or null
+     * @throws SQLException 
+     */
     private User getUserFromDB(Connection conn, boolean withPW) throws SQLException {
         User u = null;
 
