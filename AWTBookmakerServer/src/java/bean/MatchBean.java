@@ -81,7 +81,12 @@ public class MatchBean {
             + ") userGain "
             + "SET u.balance = (u.balance + userGain.gain) "
             + "WHERE u.id = userGain.uID ";
-
+    private final static String SELECT_COUNT_IF_MATCH_STARTED = "SELECT COUNT(m.id) as started "
+            + "FROM results r "
+            + "INNER JOIN matches m ON r.matchFK = m.id "
+            + "WHERE r.id = 1 "
+            + "AND m.time < ? ";
+    
     //forms
     private final static String FORM_NEW_MATCH = "frm_newMatch";
     private final static String FORM_NEW_RESULT = "frm_newResult";
@@ -273,13 +278,36 @@ public class MatchBean {
             
             int res;
             PreparedStatement s = null;
+            ResultSet rs = null;
 
             try {
+                //TODO check if match already started...
+                String sql = SELECT_COUNT_IF_MATCH_STARTED;
+                Timestamp currentTimestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
+                
+                s = conn.prepareStatement(sql);
+                s.setTimestamp(1, currentTimestamp);
+                rs = s.executeQuery();
+                
+                int started = 0;
+                
+                if (rs != null) {
+                    while(rs.next()){
+                        started = rs.getInt("started");
+                    }
+                }
+                
+                if(started < 1){
+                    MessageHelper.addMessageToComponent(TABLE_BOOKMAKER_RESULTS, MESSAGES_BUNDLE, "resultMatchDidNotYetStart", FacesMessage.SEVERITY_WARN);
+                    return null;
+                }
+                
+                
                 //will change more than one table
                 conn.setAutoCommit(false);
 
                 //-----update match
-                String sql = "UPDATE matches m "
+                sql = "UPDATE matches m "
                         + "INNER JOIN results r ON m.id=r.matchFK "
                         + "SET m.finished = 1 "
                         + "WHERE r.id = ?";
@@ -332,7 +360,7 @@ public class MatchBean {
                 }
                 return null;
             } finally {
-                DBHelper.closeConnection(s, conn);
+                DBHelper.closeConnection(rs, s, conn);
             }
 
             //everything was ok, display the same page again
