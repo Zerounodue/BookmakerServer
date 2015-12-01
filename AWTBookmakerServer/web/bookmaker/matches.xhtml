@@ -53,9 +53,14 @@
                             </h:outputText>
                         </h:column>
                         <h:column>
+                            <f:facet name="header">#{messages.matchFinished}</f:facet>
+                            <h:outputText value="#{messages[match.finished]}" />
+                        </h:column>
+                        <h:column>
                             <f:facet name="header">#{messages.matchBets}</f:facet>
                             <h:outputLink value="results.xhtml?matchId=#{match.id}">#{messages.matchBets}</h:outputLink>
                         </h:column>
+                        
                     </h:dataTable>
                 </c:otherwise>
             </c:choose>

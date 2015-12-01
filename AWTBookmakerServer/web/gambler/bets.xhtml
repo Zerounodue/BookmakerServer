@@ -21,7 +21,6 @@
             </c:when>
             <c:otherwise>
                 <h:dataTable value="#{userBean.bets}" var="bet" class="table table-hover ">
-                <!--rowClasses="#{bet.result.occured ? 'success' : ''}" rowStyleClass="">-->
                     <h:column>
                         <f:facet name="header">#{messages.betHomeTeam}</f:facet>
                         <h:outputText value="#{teams[bet.result.match.homeTeam.name]}" />

@@ -23,7 +23,7 @@
             </c:when>
             <c:otherwise>
                 <!--display if data is available-->
-                <h:dataTable value="#{matchBean.bets}" var="bet" class="table table-hover table-bordered">
+                <h:dataTable value="#{matchBean.bets}" var="bet" class="table table-hover">
                     <h:column>
                         <f:facet name="header">#{messages.betResult}</f:facet>
                         <h:outputText value="#{bet.resultId}" />
@@ -35,6 +35,7 @@
                     <h:column>
                         <f:facet name="header">#{messages.betAmount}</f:facet>
                         <h:outputText value="#{bet.amount}" />
+                        <f:facet name="footer" ><strong>#{matchBean.totalAmountOfBets}</strong></f:facet>
                     </h:column>
                 </h:dataTable>
             </c:otherwise>

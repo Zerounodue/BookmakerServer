@@ -275,11 +275,6 @@ public class MatchBean {
             PreparedStatement s = null;
 
             try {
-                //TODO check if this result already contains a result set to occured
-                //if so, display message and do nothing
-                //need to add resultset and close it in finally clause
-                
-                
                 //will change more than one table
                 conn.setAutoCommit(false);
 
@@ -391,6 +386,16 @@ public class MatchBean {
         return getBets();
     }
 
+    /**
+     * calculates the total gain for the list of bets currently used
+     * @return double summed gain
+     */
+    public double getTotalAmountOfBets(){
+        if(bets == null) return 0;
+        //sums userGain of all bets in list
+        return bets.stream().mapToDouble(b -> b.getAmount()).sum();
+    }
+    
     public List<Result> getResultsByMatchId(int id) {
         results = null;
 
@@ -459,7 +464,7 @@ public class MatchBean {
         results = null;
         //TODO get data from view
 
-        return getResults();
+        return getResultsByMatchId(id);
     }
 
     /**
