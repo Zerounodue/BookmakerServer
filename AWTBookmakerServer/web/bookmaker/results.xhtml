@@ -25,7 +25,7 @@
                     <h:messages for="tbl_bResults" globalOnly="true" errorClass="has-error" warnClass="has-warning" infoClass="info" />
                 </div>
                 <!--display if data is available-->
-                <h:dataTable id="tbl_bResults" value="#{matchBean.results}" var="result" class="table table-hover table-bordered">
+                <h:dataTable id="tbl_bResults" value="#{matchBean.results}" var="result" class="table table-hover">
                     <h:column>
                         <f:facet name="header">#{messages.resultDescription}</f:facet>
                         <h:outputText value="#{result.name}" />
@@ -40,11 +40,14 @@
                             <!--only for bookmakers-->
                             <h:column>
                                 <f:facet name="header">#{messages.resultGain}</f:facet>
-                                <h:outputText value="__TODO" />
+                                <h:outputText value="#{result.totalGain}" />
+                                <f:facet name="footer" ><strong>#{matchBean.totalGainForResults}</strong></f:facet>
                             </h:column>
                             <h:column>
                                 <f:facet name="header">#{messages.resultLoss}</f:facet>
-                                <h:outputText value="__TODO" />
+                                <!--<h:outputText value="#{matchBean.getLoss(result.matchId, result.id)}" />-->
+                                <h:outputText value="#{result.totalLoss}" />
+                                <f:facet name="footer" ><strong>#{matchBean.totalLossForResults}</strong></f:facet>
                             </h:column>
                             <h:column>
                                 <f:facet name="header">#{messages.resultShowBetDetails}</f:facet>

@@ -51,13 +51,15 @@ public class MatchBean {
     
     //sql queries
     private final static String SELECT_ALL_FROM_MATCHES_AND_TEAM_NAME
-            = "SELECT m.id, m.homeTeamFK, m.awayTeamFK, m.time, m.finished, ht.name as homeTeamName, at.name as awayTeamName FROM matches m "
+            = "SELECT m.id, m.homeTeamFK, m.awayTeamFK, m.time, m.finished, ht.name as homeTeamName, at.name as awayTeamName, "
+                + "(SELECT totalGain from totalgainlossview WHERE mid = m.id) as totalGain, "
+                + "(SELECT totalLoss from totalgainlossview WHERE mid = m.id) as totalLoss FROM matches m "
             + "INNER JOIN teams ht ON m.homeTeamFK=ht.id "
             + "INNER JOIN teams at ON m.awayTeamFK=at.id ";
     private final static String SELECT_ALL_FROM_BETS
             = "SELECT b.id, b.amount, b.userFK, b.resultFK FROM bets b ";
-    private final static String SELECT_ALL_FROM_RESULTS
-            = "SELECT r.id, r.name, r.oddNumerator, r.oddDenominator, r.occured, r.matchFK FROM results r ";
+    private final static String SELECT_ALL_FROM_RESULTS_AND_AMOUNT_SUM
+            = "SELECT r.id, r.name, r.oddNumerator, r.oddDenominator, r.occured, r.matchFK, (SELECT sum(bets.amount) FROM bets INNER JOIN results ON bets.resultFK = results.id where results.id =r.id ) as amountSum FROM results r ";
     private final static String SELECT_ALL_FROM_TEAMS
             = "Select t.id, t.name from teams t ";
     private final static String UPDATE_USER_BALANCE_FOR_RESULT_ID =
@@ -149,8 +151,13 @@ public class MatchBean {
                         String atName = rs.getString("awayTeamName");
                         Timestamp ts = rs.getTimestamp("time");
                         boolean finished = rs.getBoolean("finished");
+                        double totalGain = rs.getDouble("totalGain");
+                        double totalLoss = rs.getDouble("totalLoss");
+                        
                         //result will be null by upcoming matches -> set id to 0
                         Match m = new Match(id, ts, new Team(htId, htName), new Team(atId, atName), 0, finished);
+                        m.setTotalGain(totalGain);
+                        m.setTotalLoss(totalLoss);
                         getMatches().add(m);
                     }
                 }
@@ -199,8 +206,12 @@ public class MatchBean {
                         String atName = rs.getString("awayTeamName");
                         Timestamp ts = rs.getTimestamp("time");
                         boolean finished = rs.getBoolean("finished");
+                        double totalGain = rs.getDouble("totalGain");
+                        double totalLoss = rs.getDouble("totalLoss");
                         //result will be null by upcoming matches -> set id to 0
                         Match m = new Match(id, ts, new Team(htId, htName), new Team(atId, atName), 0, finished);
+                        m.setTotalGain(totalGain);
+                        m.setTotalLoss(totalLoss);
                         getMatches().add(m);
                     }
                 }
@@ -246,8 +257,12 @@ public class MatchBean {
                         String atName = rs.getString("awayTeamName");
                         Timestamp ts = rs.getTimestamp("time");
                         boolean finished = rs.getBoolean("finished");
+                        double totalGain = rs.getDouble("totalGain");
+                        double totalLoss = rs.getDouble("totalLoss");
                         //result will be null by upcoming matches
                         Match m = new Match(id, ts, new Team(htId, htName), new Team(atId, atName), 0, finished);
+                        m.setTotalGain(totalGain);
+                        m.setTotalLoss(totalLoss);
                         getMatches().add(m);
                     }
 
@@ -447,7 +462,8 @@ public class MatchBean {
      */
     public List<Result> getResultsByMatchId(int id) {
         results = null;
-
+ 
+        
         Connection conn = DBHelper.getDBConnection();
 
         if (conn != null) {
@@ -457,7 +473,7 @@ public class MatchBean {
             try {
                 Timestamp currentTimestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 
-                String sql = SELECT_ALL_FROM_RESULTS
+                String sql = SELECT_ALL_FROM_RESULTS_AND_AMOUNT_SUM
                         + "INNER JOIN matches m ON r.matchFK = m.id "
                         //if user is logged in get his bets too
                         //+ "INNER JOIN bets b ON r.id=b.resultFK"
@@ -478,8 +494,13 @@ public class MatchBean {
                         double oddD = rs.getDouble("oddDenominator");
                         boolean occured = rs.getBoolean("occured");
                         int mId = rs.getInt("matchFK");
+                        double amountSum = rs.getDouble("amountSum");
 
                         Result r = new Result(rId, name, oddN, oddD, occured, mId);
+                        
+                        
+                        r.setTotalGain(amountSum);
+                        r.setTotalLoss((amountSum*oddN )/oddD);
                         getResults().add(r);
                     }
                 }
@@ -517,7 +538,35 @@ public class MatchBean {
     public List<Result> getResultsWithTotalOddsByMatchId(int id) {
         results = null;
         //TODO get data from view
+        
+        /*
+        double gain = 0.0;
 
+        //get connection to DB
+        Connection conn = DBHelper.getDBConnection();
+        if (conn != null) {
+            ResultSet rs = null;
+            PreparedStatement s = null;
+
+            try {
+               
+                String sql = "SELECT SUM(amount) as gain FROM gainview WHERE matchID = "+matchID+" AND resultID = "+resultID;
+
+                s = conn.prepareStatement(sql);
+                rs = s.executeQuery();
+                if (rs != null) {
+                    while (rs.next()) {
+                         gain = rs.getDouble("gain"); 
+                    }
+                }
+            } catch (SQLException e) {
+                Logger.getLogger(MatchBean.class.getName()).log(Level.SEVERE, null, e);
+            } finally {
+                DBHelper.closeConnection(rs, s, conn);
+            }
+        }
+        return gain;
+        */
         return getResultsByMatchId(id);
     }
 
@@ -711,7 +760,7 @@ public class MatchBean {
      * adds a new result object to the new match uses the parameters of the
      * newMatchResult object method is only called via ajax
      */
-    public void addResultToNewMatch() {
+        public void addResultToNewMatch() {
         if (newMatchResults == null) {
             newMatchResults = new ArrayList<>();
         }
@@ -942,6 +991,124 @@ public class MatchBean {
      */
     public void setNewMatchResult(Result newMatchResult) {
         this.newMatchResult = newMatchResult;
+    }
+    
+
+    /**
+     * calculates the possible gain if a given result happen
+     * called from results.xhtml
+     * 
+     * @param matchID the match id to get the gains
+     * @param resultID the result id to get the gains
+     * @return  the gain for this result
+     */
+    /*
+    public double getBetAmount(int matchID, int resultID) {
+        
+        double gain = 0.0;
+
+        //get connection to DB
+        Connection conn = DBHelper.getDBConnection();
+        if (conn != null) {
+            ResultSet rs = null;
+            PreparedStatement s = null;
+
+            try {
+               
+                String sql = "SELECT amount) as gain FROM gainview WHERE matchID = "+matchID+" AND resultID = "+resultID;
+
+                s = conn.prepareStatement(sql);
+                rs = s.executeQuery();
+                if (rs != null) {
+                    while (rs.next()) {
+                         gain = rs.getDouble("gain"); 
+                    }
+                }
+            } catch (SQLException e) {
+                Logger.getLogger(MatchBean.class.getName()).log(Level.SEVERE, null, e);
+            } finally {
+                DBHelper.closeConnection(rs, s, conn);
+            }
+        }
+        return gain;
+    }
+    /**
+     * calculates the possible loss if a given result happen
+     * called from results.xhtml
+     * 
+     * @param matchID the match id to get the gains
+     * @param resultID the result id to get the gains
+     * @return  the loss for this result
+     */
+    /*
+    public double getLoss(int matchID, int resultID) {
+        double loss = 0.0;
+        
+        //get connection to DB
+        Connection conn = DBHelper.getDBConnection();
+        if (conn != null) {
+            ResultSet rs = null;
+            PreparedStatement s = null;
+
+            try {
+                String sql = "SELECT SUM(((amount * oddNumerator) / oddDenominator)) AS loss FROM lossview WHERE matchID = "+matchID+" AND resultID = "+resultID;
+
+                s = conn.prepareStatement(sql);
+                rs = s.executeQuery();
+                if (rs != null) {
+                    while (rs.next()) {
+                         loss = rs.getDouble("loss");   
+                    }
+                }
+
+            } catch (SQLException e) {
+                matches = null;
+                Logger.getLogger(MatchBean.class.getName()).log(Level.SEVERE, null, e);
+            } finally {
+                DBHelper.closeConnection(rs, s, conn);
+            }
+        }
+        return loss;
+    }
+    */
+    
+    
+    /**
+     * calculates the total gain for the list of match currently used
+     * @return double summed gain
+     */
+    public double getTotalGainForMatches(){
+        if(matches == null) return 0;
+        //sums userGain of all bets in list
+        return matches.stream().mapToDouble(m -> m.getTotalGain()).sum();
+    }
+    /**
+     * calculates the total loss for the list of match currently used
+     * @return double summed loss
+     */
+    public double getTotalLossForMatches(){
+        if(matches == null) return 0;
+        //sums userGain of all bets in list
+        return matches.stream().mapToDouble(m -> m.getTotalLoss()).sum();
+    }
+    
+    /**
+     * calculates the total gain for the list of match currently used
+     * @return double summed gain
+     */
+    public double getTotalGainForResults(){
+        if(results == null) return 0;
+        //sums userGain of all bets in list
+        return results.stream().mapToDouble(r -> r.getTotalGain()).sum();
+    }
+    /**
+     * calculates the total loss for the list of match currently used
+     * @return double summed loss
+     */
+    public double getTotalLossForResults(){
+        if(results == null) return 0;
+        //sums userGain of all bets in list
+        return results.stream().mapToDouble(r -> r.getTotalLoss()).sum();
     }
 
 }

@@ -21,6 +21,11 @@ public class Match {
     private Team awayTeam;
     private Result result;
     
+    private double totalGain;
+
+   
+    private double totalLoss;
+    
     /**
      * default constructor, used by "newMatch.xhtml"
      */
@@ -128,6 +133,22 @@ public class Match {
      */
     public int getResultId() {
         return resultId;
+    }
+    
+     public double getTotalGain() {
+        return totalGain;
+    }
+
+    public double getTotalLoss() {
+        return totalLoss;
+    }
+
+    public void setTotalGain(double totalGain) {
+        this.totalGain = totalGain;
+    }
+
+    public void setTotalLoss(double totalLoss) {
+        this.totalLoss = totalLoss;
     }
     
 }

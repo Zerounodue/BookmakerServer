@@ -37,7 +37,7 @@
                 </c:when>
                 <c:otherwise>
                     <!--display if data is available-->
-                    <h:dataTable value="#{matchBean.matches}" var="match" class="table table-hover table-bordered">
+                    <h:dataTable value="#{matchBean.matches}" var="match" class="table table-hover">
                         <h:column>
                             <f:facet name="header">#{messages.matchHomeTeam}</f:facet>
                             <h:outputText value="#{teams[match.homeTeam.name]}" />
@@ -56,10 +56,21 @@
                             <f:facet name="header">#{messages.matchFinished}</f:facet>
                             <h:outputText value="#{messages[match.finished]}" />
                         </h:column>
+                         <h:column>
+                            <f:facet name="header">#{messages.totalGain}</f:facet>
+                            <h:outputText value="#{match.totalGain}" />
+                            <f:facet name="footer" ><strong>#{matchBean.totalGainForMatches}</strong></f:facet>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{messages.totalLoss}</f:facet>
+                            <h:outputText value="#{match.totalLoss}" />
+                            <f:facet name="footer" ><strong>#{matchBean.totalLossForMatches}</strong></f:facet>
+                        </h:column>
                         <h:column>
                             <f:facet name="header">#{messages.matchResults}</f:facet>
                             <h:outputLink value="results.xhtml?matchId=#{match.id}">#{messages.matchBets}</h:outputLink>
                         </h:column>
+                        
                         
                     </h:dataTable>
                 </c:otherwise>
