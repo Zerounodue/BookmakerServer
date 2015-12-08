@@ -55,11 +55,23 @@
                             </h:column>
                             <h:column>
                                 <f:facet name="header">#{messages.resultOccured}</f:facet>
-                                <h:form rendered="#{not result.occured}">
-                                    <h:commandButton id="btn_setResultForMatch" class="btn btn-default" action="#{matchBean.setResultForMatchByResultId(result.id)}" value="#{messages.resultSetOccured}" />
-                                </h:form>
-                                <h:outputText rendered="#{result.occured}" value="#{messages[result.occured]}"/>
+                                <h:panelGroup rendered="#{result.finished}">
+                                    <h:outputText rendered="#{result.occured}" value="#{messages[result.occured]}"/>
+                                    <h:outputText rendered="#{not result.occured}" value="#{messages[result.occured]}"/>
+                                </h:panelGroup>
+                                
+                                <h:outputText rendered="#{not result.finished}" value="#{messages.resultMatchDidNotYetStart}"/>
+                               
+                               
                             </h:column>
+                            
+                            <h:column>
+                                <f:facet name="header">#{messages.resultSetResult}</f:facet>
+                                <h:form rendered="#{result.finished}">
+                                    <h:commandButton rendered="#{not result.occured}" id="btn_setResultTrueForMatch" class="btn btn-default" action="#{matchBean.setResultForMatchByResultId(result.id)}" value="#{messages.resultSetOccured}" />
+                                </h:form>
+                            </h:column>
+                            
                         </c:if>
                     </c:if>
                 </h:dataTable>

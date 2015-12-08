@@ -6,6 +6,7 @@
 package model;
 
 import java.sql.Timestamp;
+import java.util.Calendar;
 
 /**
  *
@@ -126,6 +127,13 @@ public class Match {
      */
     public boolean isFinished() {
         return finished;
+    }
+    /**
+     * @return if match is not finished and time is past
+     */
+    public boolean startedAndFinished() {
+        Timestamp currentTimestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
+        return ((!finished) && (currentTimestamp.after(time)));
     }
 
     /**

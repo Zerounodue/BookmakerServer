@@ -22,13 +22,16 @@
             <h:commandButton value="#{messages.matchUpcomingMatches}" class="btn btn-default">
                 <f:ajax listener="#{matchBean.getUpcomingMatches()}" execute="@this" render="pnl_bMatches" />
             </h:commandButton>
-            <h:commandButton value="#{messages.matchMatchesWithoutResult}" class="btn btn-default">
-                <f:ajax  listener="#{matchBean.getMatchesWithoutResult()}" execute="@this" render="pnl_bMatches" />
+            <h:commandButton value="#{messages.matchStartedButNotFinished}" class="btn btn-default">
+                <f:ajax  listener="#{matchBean.getMatchStartedButNotFinished()}" execute="@this" render="pnl_bMatches" />
+            </h:commandButton>
+            <h:commandButton value="#{messages.matchFinishedMatches}" class="btn btn-default">
+                <f:ajax  listener="#{matchBean.getFinishedMatches()}" execute="@this" render="pnl_bMatches" />
             </h:commandButton>
             <h:commandButton action="newMatch.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeNewMatch}" />
         </h:form>
-        
-            <h:panelGroup id="pnl_bMatches">
+
+        <h:panelGroup id="pnl_bMatches">
             <h2>#{messages.matchUpcomingMatches}</h2>
             <c:choose>
                 <c:when test="#{empty matchBean.matches}">
@@ -36,8 +39,11 @@
                     <h:outputText value="#{messages.matchNoMatches}"/>
                 </c:when>
                 <c:otherwise>
+                    <div>
+                        <h:messages for="tbl_bMatches" globalOnly="true" errorClass="has-error" warnClass="has-warning" infoClass="info" />
+                    </div>
                     <!--display if data is available-->
-                    <h:dataTable value="#{matchBean.matches}" var="match" class="table table-hover">
+                    <h:dataTable id="tbl_bMatches" value="#{matchBean.matches}" var="match" class="table table-hover">
                         <h:column>
                             <f:facet name="header">#{messages.matchHomeTeam}</f:facet>
                             <h:outputText value="#{teams[match.homeTeam.name]}" />
@@ -56,13 +62,13 @@
                             <f:facet name="header">#{messages.matchFinished}</f:facet>
                             <h:outputText value="#{messages[match.finished]}" />
                         </h:column>
-                         <h:column>
-                            <f:facet name="header">#{messages.totalGain}</f:facet>
+                        <h:column>
+                            <f:facet name="header">#{messages.matchTotalGain}</f:facet>
                             <h:outputText value="#{match.totalGain}" />
                             <f:facet name="footer" ><strong>#{matchBean.totalGainForMatches}</strong></f:facet>
                         </h:column>
                         <h:column>
-                            <f:facet name="header">#{messages.totalLoss}</f:facet>
+                            <f:facet name="header">#{messages.matchTotalLoss}</f:facet>
                             <h:outputText value="#{match.totalLoss}" />
                             <f:facet name="footer" ><strong>#{matchBean.totalLossForMatches}</strong></f:facet>
                         </h:column>
@@ -70,12 +76,18 @@
                             <f:facet name="header">#{messages.matchResults}</f:facet>
                             <h:outputLink value="results.xhtml?matchId=#{match.id}">#{messages.matchBets}</h:outputLink>
                         </h:column>
-                        
-                        
+                        <h:column>
+                            <f:facet name="header">#{messages.matchSetFinished}</f:facet>
+                            <h:form rendered="#{match.startedAndFinished()}">
+                                <h:commandButton  id="btn_setFinished" class="btn btn-default" action="#{matchBean.setMatchFinishedByMatchId(match.id)}" value="#{messages.matchSetFinished}" />
+                            </h:form>
+                        </h:column>
+
+
                     </h:dataTable>
                 </c:otherwise>
             </c:choose>
-                </h:panelGroup>
+        </h:panelGroup>
 
     </ui:define>
 </ui:composition>

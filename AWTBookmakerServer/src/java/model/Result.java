@@ -21,6 +21,7 @@ public class Result {
     //TODO implement
     private double totalGain;
     private double totalLoss;
+    private boolean finished;
     
     private Match match;
     //private List<Bet> bets;
@@ -191,6 +192,14 @@ public class Result {
         this.match = match;
     }
 
+    public void setFinished(boolean finished) {
+        this.finished = finished;
+    }
 
+    public boolean getFinished() {
+        return finished;
+    }
+
+    
     
 }

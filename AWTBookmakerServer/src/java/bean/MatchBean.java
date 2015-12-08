@@ -43,9 +43,11 @@ public class MatchBean {
     //websites
     private final static String HOME_SITE = "/home.xhtml?faces-redirect=true";
     private final static String BOOKMAKER_RESULTS_SITE = "/bookmaker/results.xhtml?faces-redirect=true";
+    private final static String BOOKMAKER_MATCHES_SITE = "/bookmaker/matches.xhtml?faces-redirect=true";
 
     //components to display error messages
     private final static String TABLE_BOOKMAKER_RESULTS = "tbl_bResults";
+    private final static String TABLE_BOOKMAKER_MATCHES = "tbl_bMatches";
     
     private final static String MESSAGES_BUNDLE = "messages";
     
@@ -59,7 +61,7 @@ public class MatchBean {
     private final static String SELECT_ALL_FROM_BETS
             = "SELECT b.id, b.amount, b.userFK, b.resultFK FROM bets b ";
     private final static String SELECT_ALL_FROM_RESULTS_AND_AMOUNT_SUM
-            = "SELECT r.id, r.name, r.oddNumerator, r.oddDenominator, r.occured, r.matchFK, (SELECT sum(bets.amount) FROM bets INNER JOIN results ON bets.resultFK = results.id where results.id =r.id ) as amountSum FROM results r ";
+            = "SELECT r.id, r.name, r.oddNumerator, r.oddDenominator, r.occured, r.matchFK, m.finished, (SELECT sum(bets.amount) FROM bets INNER JOIN results ON bets.resultFK = results.id where results.id =r.id ) as amountSum FROM results r ";
     private final static String SELECT_ALL_FROM_TEAMS
             = "Select t.id, t.name from teams t ";
     private final static String UPDATE_USER_BALANCE_FOR_RESULT_ID =
@@ -83,10 +85,14 @@ public class MatchBean {
             + ") userGain "
             + "SET u.balance = (u.balance + userGain.gain) "
             + "WHERE u.id = userGain.uID ";
-    private final static String SELECT_COUNT_IF_MATCH_STARTED = "SELECT COUNT(m.id) as started "
+    private final static String SELECT_COUNT_IF_MATCH_STARTED_BY_RESULT_ID = "SELECT COUNT(m.id) as started "
             + "FROM results r "
-            + "INNER JOIN matches m ON r.matchFK = m.id "
-            + "WHERE r.id = 1 "
+            + "INNER JOIN matches m ON r.matchFK = m.id " 
+            + "WHERE r.id = ? "
+            + "AND m.time < ? ";
+    private final static String SELECT_COUNT_IF_MATCH_STARTED_BY_MATCH_ID = "SELECT COUNT(m.id) as started "
+            + "FROM matches m "
+            + "WHERE m.id = ? "
             + "AND m.time < ? ";
     
     //forms
@@ -95,9 +101,6 @@ public class MatchBean {
 
     private int matchId;
     private int resultId;
-    private String homeTeam;
-    private String awayTeam;
-    private Match match;
 
     //values for newMatch form
     private int newMatchHomeTeamId;
@@ -231,20 +234,23 @@ public class MatchBean {
      * Gets all matches where finished is set to 0
      * @return List or Match object or null
      */
-    public List<Match> getMatchesWithoutResult() {
+    public List<Match> getMatchStartedButNotFinished() {
         matches = null;
         //get connection to DB
         Connection conn = DBHelper.getDBConnection();
         if (conn != null) {
             ResultSet rs = null;
             PreparedStatement s = null;
-
+            
             try {
+                Timestamp currentTimestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
                 String sql = SELECT_ALL_FROM_MATCHES_AND_TEAM_NAME
-                        + "WHERE m.finished = 0 "
+                        + "WHERE m.finished = 0 AND m.time < ? "
                         + "ORDER BY m.time asc ";
-
+                
+                
                 s = conn.prepareStatement(sql);
+                s.setTimestamp(1, currentTimestamp);
                 rs = s.executeQuery();
                 if (rs != null) {
                     matches = new ArrayList<>();
@@ -282,14 +288,14 @@ public class MatchBean {
     /**
      * Sets the result by a given result id.
      * Will set the match to finished = 1
-     * Will set the result to occured = 1
+     * Will set the result to occured = 1 
      * Will update all the user's balance who placed a bet on this result
      * @param id id of the result to set
      * @return String Website to redirect to or null
      * if null is returned, an error message is displayed on the website
      */
     public String setResultForMatchByResultId(int id) {
-        //check if id smaller 1
+        //check if id smaller 1 
         if (id < 1) {
             return HOME_SITE;
         }
@@ -308,11 +314,12 @@ public class MatchBean {
 
             try {
                 //TODO check if match already started...
-                String sql = SELECT_COUNT_IF_MATCH_STARTED;
+                String sql = SELECT_COUNT_IF_MATCH_STARTED_BY_RESULT_ID;
                 Timestamp currentTimestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
                 
                 s = conn.prepareStatement(sql);
-                s.setTimestamp(1, currentTimestamp);
+                s.setInt(1, id);
+                s.setTimestamp(2, currentTimestamp);
                 rs = s.executeQuery();
                 
                 int started = 0;
@@ -348,9 +355,9 @@ public class MatchBean {
                     return null;
                 }
                 
-                //-----update result
+                //-----update result                
                 sql = "UPDATE results r SET r.occured = 1 WHERE r.id = ?";
-                
+                       
                 s = conn.prepareStatement(sql);
                 s.setInt(1, id);
                 res = s.executeUpdate();
@@ -495,10 +502,10 @@ public class MatchBean {
                         boolean occured = rs.getBoolean("occured");
                         int mId = rs.getInt("matchFK");
                         double amountSum = rs.getDouble("amountSum");
+                        boolean finished= rs.getBoolean("finished");
 
                         Result r = new Result(rId, name, oddN, oddD, occured, mId);
-                        
-                        
+                        r.setFinished(finished);
                         r.setTotalGain(amountSum);
                         r.setTotalLoss((amountSum*oddN )/oddD);
                         getResults().add(r);
@@ -536,37 +543,7 @@ public class MatchBean {
      * @return List of Result objects
      */
     public List<Result> getResultsWithTotalOddsByMatchId(int id) {
-        results = null;
-        //TODO get data from view
-        
-        /*
-        double gain = 0.0;
-
-        //get connection to DB
-        Connection conn = DBHelper.getDBConnection();
-        if (conn != null) {
-            ResultSet rs = null;
-            PreparedStatement s = null;
-
-            try {
-               
-                String sql = "SELECT SUM(amount) as gain FROM gainview WHERE matchID = "+matchID+" AND resultID = "+resultID;
-
-                s = conn.prepareStatement(sql);
-                rs = s.executeQuery();
-                if (rs != null) {
-                    while (rs.next()) {
-                         gain = rs.getDouble("gain"); 
-                    }
-                }
-            } catch (SQLException e) {
-                Logger.getLogger(MatchBean.class.getName()).log(Level.SEVERE, null, e);
-            } finally {
-                DBHelper.closeConnection(rs, s, conn);
-            }
-        }
-        return gain;
-        */
+       //TODO remoove method?
         return getResultsByMatchId(id);
     }
 
@@ -794,6 +771,145 @@ public class MatchBean {
 
         newMatchResults.add(nr);
     }
+        
+       
+    /**
+     * Gets all matches where finished is set to 1
+     * @return List or Match object or null
+     */
+    public List<Match> getFinishedMatches() {
+        matches = null;
+        //get connection to DB
+        Connection conn = DBHelper.getDBConnection();
+        if (conn != null) {
+            ResultSet rs = null;
+            PreparedStatement s = null;
+            
+            try {
+               
+                String sql = SELECT_ALL_FROM_MATCHES_AND_TEAM_NAME
+                        + "WHERE m.finished = 1 "
+                        + "ORDER BY m.time asc ";
+                
+                
+                s = conn.prepareStatement(sql);
+                rs = s.executeQuery();
+                if (rs != null) {
+                    matches = new ArrayList<>();
+
+                    while (rs.next()) {
+                        int id = rs.getInt("id");
+                        int htId = rs.getInt("homeTeamFK");
+                        String htName = rs.getString("homeTeamName");
+                        int atId = rs.getInt("awayTeamFK");
+                        String atName = rs.getString("awayTeamName");
+                        Timestamp ts = rs.getTimestamp("time");
+                        boolean finished = rs.getBoolean("finished");
+                        double totalGain = rs.getDouble("totalGain");
+                        double totalLoss = rs.getDouble("totalLoss");
+                        //result will be null by upcoming matches
+                        Match m = new Match(id, ts, new Team(htId, htName), new Team(atId, atName), 0, finished);
+                        m.setTotalGain(totalGain);
+                        m.setTotalLoss(totalLoss);
+                        getMatches().add(m);
+                    }
+
+                }
+
+            } catch (SQLException e) {
+                matches = null;
+            } finally {
+                DBHelper.closeConnection(rs, s, conn);
+            }
+
+        }
+
+        return getMatches();
+    }
+    
+    
+    
+    /**
+     * Sets the match to finished by a given match id.
+     * Will set the match to finished = 1 
+     * @param id id of the match to set
+     * @return String Website to redirect to or null
+     * if null is returned, an error message is displayed on the website
+     */
+    public String setMatchFinishedByMatchId(int id) {
+        //check if id smaller 1 
+        if (id < 1) {
+            return HOME_SITE;
+        }
+
+        //check if user is admin
+        if (lbean.getUser() == null || !lbean.getUser().isAdmin()) {
+            return HOME_SITE;
+        }
+
+        Connection conn = DBHelper.getDBConnection();
+        if (conn != null) {
+            
+            int res;
+            PreparedStatement s = null;
+            ResultSet rs = null;
+
+            try {
+                //TODO check if match already started...
+                String sql = SELECT_COUNT_IF_MATCH_STARTED_BY_MATCH_ID;
+                Timestamp currentTimestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
+                
+                s = conn.prepareStatement(sql);
+                s.setInt(1, id);
+                s.setTimestamp(2, currentTimestamp);
+                rs = s.executeQuery();
+                
+                int started = 0;
+                
+                if (rs != null) {
+                    while(rs.next()){
+                        started = rs.getInt("started");
+                    }
+                }
+                
+                if(started < 1){
+                    MessageHelper.addMessageToComponent(TABLE_BOOKMAKER_MATCHES, MESSAGES_BUNDLE, "matchMatchDidNotYetStart", FacesMessage.SEVERITY_WARN);
+                    return null;
+                }
+
+                //-----update match
+                sql = "UPDATE matches m "
+                        + "SET m.finished = 1 "
+                        + "WHERE m.id = ?";
+
+                s = conn.prepareStatement(sql);
+                s.setInt(1, id);
+                res = s.executeUpdate();
+                
+                if (res < 1) {
+                    
+                    MessageHelper.addMessageToComponent(TABLE_BOOKMAKER_MATCHES, MESSAGES_BUNDLE, "matchErrDB", FacesMessage.SEVERITY_ERROR);
+                    return null;
+                }
+                
+            } catch (SQLException e) {
+                MessageHelper.addMessageToComponent(TABLE_BOOKMAKER_MATCHES, MESSAGES_BUNDLE, "matchErrDB", FacesMessage.SEVERITY_ERROR);
+               
+                return null;
+            } finally {
+                DBHelper.closeConnection(rs, s, conn);
+            }
+
+            //everything was ok, display the same page again
+            return BOOKMAKER_MATCHES_SITE;
+
+        } else {
+            MessageHelper.addMessageToComponent(TABLE_BOOKMAKER_MATCHES, MESSAGES_BUNDLE, "matchErrDB", FacesMessage.SEVERITY_ERROR);
+            return null;
+        }
+
+    }
+    
 
     /**
      * removes a match item from the list which is displayed on the client this
@@ -1110,5 +1226,6 @@ public class MatchBean {
         //sums userGain of all bets in list
         return results.stream().mapToDouble(r -> r.getTotalLoss()).sum();
     }
+    
 
 }
