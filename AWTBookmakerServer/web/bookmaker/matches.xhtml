@@ -32,7 +32,7 @@
         </h:form>
 
         <h:panelGroup id="pnl_bMatches">
-            <h2>#{messages.matchUpcomingMatches}</h2>
+            <h2>#{matchBean.bookmakerMatchesTitle}</h2>
             <c:choose>
                 <c:when test="#{empty matchBean.matches}">
                     <!--in case no data is available-->

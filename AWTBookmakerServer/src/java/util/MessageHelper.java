@@ -34,4 +34,18 @@ public class MessageHelper {
         context.addMessage(componentId, new FacesMessage(severity, errorMsg, errorDetail));
     }
 
+    public static String getMessage(String msgBundle, String msgKey){
+        String m = "";
+        
+        FacesContext context = FacesContext.getCurrentInstance();
+        
+        try{
+            m = context.getApplication().getResourceBundle(context, msgBundle).getString(msgKey);
+        }catch(Exception e){
+            //do nothing
+        }
+        
+        return m;
+    }
+    
 }

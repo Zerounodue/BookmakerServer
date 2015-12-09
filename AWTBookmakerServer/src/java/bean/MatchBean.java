@@ -118,6 +118,10 @@ public class MatchBean {
     private List<Team> teams = null;
 
     private final DecimalFormat df = new DecimalFormat("#.00");
+    
+    //used to display the title in the matches website
+    private String bookmakerMatchesTitle = MessageHelper.getMessage(MESSAGES_BUNDLE, "matchUpcomingMatches");
+    
 
     /**
      * Returns all matches, including the teams for a match
@@ -172,7 +176,8 @@ public class MatchBean {
                 DBHelper.closeConnection(rs, s, conn);
             }
         }
-
+        //set title for matches website for bookmaker
+        bookmakerMatchesTitle = MessageHelper.getMessage(MESSAGES_BUNDLE, "matchAllMatches");
         return getMatches();
     }
 
@@ -226,7 +231,9 @@ public class MatchBean {
                 DBHelper.closeConnection(rs, s, conn);
             }
         }
-
+        //set title for matches website for bookmaker
+        bookmakerMatchesTitle = MessageHelper.getMessage(MESSAGES_BUNDLE, "matchUpcomingMatches");
+        
         return getMatches();
     }
 
@@ -281,7 +288,9 @@ public class MatchBean {
             }
 
         }
-
+        //set title for matches website for bookmaker
+        bookmakerMatchesTitle = MessageHelper.getMessage(MESSAGES_BUNDLE, "matchStartedButNotFinished");
+        
         return getMatches();
     }
 
@@ -823,7 +832,9 @@ public class MatchBean {
             }
 
         }
-
+        //set title for matches website for bookmaker
+        bookmakerMatchesTitle = MessageHelper.getMessage(MESSAGES_BUNDLE, "matchFinishedMatches");
+        
         return getMatches();
     }
     
@@ -1225,6 +1236,13 @@ public class MatchBean {
         if(results == null) return 0;
         //sums userGain of all bets in list
         return results.stream().mapToDouble(r -> r.getTotalLoss()).sum();
+    }
+
+    /**
+     * @return the bookmakerMatchesTitle
+     */
+    public String getBookmakerMatchesTitle() {
+        return bookmakerMatchesTitle;
     }
     
 
