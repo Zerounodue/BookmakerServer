@@ -49,25 +49,25 @@
             </header>
             <!--guest-->
             <h:form rendered="#{empty loginBean.user}">
-                <h2>#{messages.loginWelcome}
+                <h1 style="text-align: center">#{messages.loginWelcome}
                     <h:commandButton style="float: right"  id="btn_login" action="/login.xhtml?faces-redirect=true" class="btn btn-primary" value="#{messages.loginLogin}" />
                     <h:commandButton style="float: right;margin-right: 10px" id="btn_register" action="/register.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.loginRegister}" />
                 
                 
-                </h2>
+                </h1>
             </h:form>
             <!--logged in -->
             <h:form rendered="#{not empty loginBean.user}" class="form-inline"> 
                 
-                <h2>
+                <h1 style="text-align: center">
                     <!-- logged in as user -->
                     <h:outputText rendered="#{not loginBean.user.admin}" value="#{messages.loginWelcome} #{loginBean.user.name}"/>
                     <!-- logged in as admin -->
-                    <h:outputText rendered="#{loginBean.user.admin}" value="#{messages.loginWelcome} #{loginBean.user.name}" class="bg-danger"/>
+                    <h:outputText rendered="#{loginBean.user.admin}" value="#{messages.loginWelcomeAdmin} #{loginBean.user.name}" style="text-decoration: underline;"/>
                
                     
                 <h:commandButton style="float:right; margin-right: 20px" id="btn_logout" action="#{loginBean.logout}" class="btn btn-primary" value="#{messages.homeLogout}" />
-               </h2> 
+               </h1> 
                <div >
                     <h3 >#{messages.userBalance}: #{loginBean.user.balance}
                     <h:commandButton style="margin-left:30px" id="btn_chargeBalance" action="gambler/chargeBalance.xhtml?faces-redirect=true&amp;showMessage=false" class="btn btn-default" value="#{messages.homeCharge}" /></h3>

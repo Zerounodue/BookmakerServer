@@ -487,18 +487,18 @@ public class MatchBean {
             PreparedStatement s = null;
 
             try {
-                Timestamp currentTimestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
+                //Timestamp currentTimestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
 
                 String sql = SELECT_ALL_FROM_RESULTS_AND_AMOUNT_SUM
                         + "INNER JOIN matches m ON r.matchFK = m.id "
                         //if user is logged in get his bets too
                         //+ "INNER JOIN bets b ON r.id=b.resultFK"
                         //make sure only matches that are not already finished will be displayed
-                        + "WHERE r.matchFK = ? AND m.time > ?";
+                        + "WHERE r.matchFK = ?";// AND m.time > ?";
 
                 s = conn.prepareStatement(sql);
                 s.setInt(1, id);
-                s.setTimestamp(2, currentTimestamp);
+                //s.setTimestamp(2, currentTimestamp);
                 rs = s.executeQuery();
                 if (rs != null) {
                     results = new ArrayList<>();
