@@ -27,11 +27,13 @@
             </style>
         </h:head>
         <h:body>
-            <header class="navbar navbar-default navbar-fixed-top">
-                <div class="container">
-                    <div class="navbar-header">
-                        <h:link outcome="/home.xhtml" class="navbar-brand">#{messages.applicationName}</h:link>
-                    </div>
+            <header  class="navbar navbar-default navbar-fixed-top">
+                <div class="container" >
+
+                    <h:link title="Home" class="pull-left" outcome="/home.xhtml" >
+                        <h:graphicImage style="height: 45px;width: 40px; margin-right: 10px" value="/resources/images/Logo.png"   />
+                    </h:link>
+                    <h:link class="navbar-brand" outcome="/home.xhtml" >#{messages.applicationName}</h:link>
                     <h:form id="navLocaleForm" class="navbar-right">
                         <ul class="nav navbar-nav">
                             <li>
@@ -66,7 +68,7 @@
                 <div >
                     <h:panelGroup rendered="#{not loginBean.user.admin}">
                         <h3 >#{messages.userBalance}: #{loginBean.user.balance}
-                            <h:commandButton style="margin-left:30px" id="btn_chargeBalance" action="gambler/chargeBalance.xhtml?faces-redirect=true&amp;showMessage=false" class="btn btn-default" value="#{messages.homeCharge}" /></h3>
+                            <h:commandButton style="margin-left:30px" id="btn_chargeBalance" action="/gambler/chargeBalance.xhtml?faces-redirect=true&amp;showMessage=false" class="btn btn-default" value="#{messages.homeCharge}" /></h3>
                     </h:panelGroup>
                 </div>
             </h:form>

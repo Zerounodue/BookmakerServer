@@ -15,23 +15,26 @@
     
     <ui:define name="content" id="content_bMatches">
         <!--buttons to display different kinds of matches-->
+        <h:panelGroup id="h2_bookmakerMatchesTitle">
+        <h2 >#{matchBean.bookmakerMatchesTitle}</h2>
+        </h:panelGroup>
         <nav class="navbar navbar-default" style="margin-top: 30px;">
 
     <!-- Brand and toggle get grouped for better mobile display -->
 
-        
+                    
         <h:form id="frm_bMatches" class="navbar-form navbar-left" style="width: 100%">
             <h:commandButton style="margin-right: 20px;" value="#{messages.matchAllMatches}" class="btn btn-default">
-                <f:ajax listener="#{matchBean.getAllMatches()}" execute="@this" render="pnl_bMatches" />
+                <f:ajax listener="#{matchBean.getAllMatches()}" execute="@this" render=":pnl_bMatches h2_bookmakerMatchesTitle" />
             </h:commandButton>
             <h:commandButton style="margin-right: 20px;" value="#{messages.matchUpcomingMatches}" class="btn btn-default">
-                <f:ajax listener="#{matchBean.getUpcomingMatches()}" execute="@this" render="pnl_bMatches" />
+                <f:ajax listener="#{matchBean.getUpcomingMatches()}" execute="@this" render=":pnl_bMatches h2_bookmakerMatchesTitle" />
             </h:commandButton>
             <h:commandButton style="margin-right: 20px;" value="#{messages.matchStartedButNotFinished}" class="btn btn-default">
-                <f:ajax  listener="#{matchBean.getMatchStartedButNotFinished()}" execute="@this" render="pnl_bMatches" />
+                <f:ajax  listener="#{matchBean.getMatchStartedButNotFinished()}" execute="@this" render=":pnl_bMatches h2_bookmakerMatchesTitle" />
             </h:commandButton>
             <h:commandButton style="margin-right: 20px;" value="#{messages.matchFinishedMatches}" class="btn btn-default">
-                <f:ajax  listener="#{matchBean.getFinishedMatches()}" execute="@this" render="pnl_bMatches" />
+                <f:ajax  listener="#{matchBean.getFinishedMatches()}" execute="@this" render=":pnl_bMatches h2_bookmakerMatchesTitle" />
             </h:commandButton>
             
             <h:commandButton  style="float:right"  action="newMatch.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeNewMatch}" />
@@ -41,7 +44,6 @@
        </nav>
 
         <h:panelGroup id="pnl_bMatches">
-            <h2>#{matchBean.bookmakerMatchesTitle}</h2>
             <c:choose>
                 <c:when test="#{empty matchBean.matches}">
                     <!--in case no data is available-->
