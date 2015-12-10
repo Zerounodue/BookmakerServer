@@ -37,12 +37,13 @@
                 </h:inputText>
             </div>
             <div class="form-group">
-                <h:outputLabel for="validationCode">#{messages.chargeBalanceCreditCardNumber}</h:outputLabel>
+                <h:outputLabel for="validationCode">#{messages.chargeCVV}</h:outputLabel>
                 <h:inputText class="form-control" id="validationCode" value="#{userBean.validationCode}">
                     <f:passThroughAttribute name="required" value="required" />
                 </h:inputText>
+                <a href="https://www.cvvnumber.com/cvv.html" target="_blank" style="font-size:11px">What is my CVV code?</a>
             </div>
-            <h:commandButton id="btn_frmChargeBalance" class="btn btn-default" action="#{userBean.chargeBalance()}" value="#{messages.chargeBalanceCharge}" />
+            <h:commandButton id="btn_frmChargeBalance" class="btn btn-primary" action="#{userBean.chargeBalance()}" value="#{messages.chargeBalanceCharge}" />
         </h:form>
     </ui:define>
 </ui:composition>

@@ -12,24 +12,33 @@
             <f:viewAction action="/home.xhtml?faces-redirect=true" />
         </c:if>
     </f:metadata>
-
+    
     <ui:define name="content" id="content_bMatches">
         <!--buttons to display different kinds of matches-->
-        <h:form id="frm_bMatches">
-            <h:commandButton value="#{messages.matchAllMatches}" class="btn btn-default">
+        <nav class="navbar navbar-default" style="margin-top: 30px;">
+
+    <!-- Brand and toggle get grouped for better mobile display -->
+
+        
+        <h:form id="frm_bMatches" class="navbar-form navbar-left" style="width: 100%">
+            <h:commandButton style="margin-right: 20px;" value="#{messages.matchAllMatches}" class="btn btn-default">
                 <f:ajax listener="#{matchBean.getAllMatches()}" execute="@this" render="pnl_bMatches" />
             </h:commandButton>
-            <h:commandButton value="#{messages.matchUpcomingMatches}" class="btn btn-default">
+            <h:commandButton style="margin-right: 20px;" value="#{messages.matchUpcomingMatches}" class="btn btn-default">
                 <f:ajax listener="#{matchBean.getUpcomingMatches()}" execute="@this" render="pnl_bMatches" />
             </h:commandButton>
-            <h:commandButton value="#{messages.matchStartedButNotFinished}" class="btn btn-default">
+            <h:commandButton style="margin-right: 20px;" value="#{messages.matchStartedButNotFinished}" class="btn btn-default">
                 <f:ajax  listener="#{matchBean.getMatchStartedButNotFinished()}" execute="@this" render="pnl_bMatches" />
             </h:commandButton>
-            <h:commandButton value="#{messages.matchFinishedMatches}" class="btn btn-default">
+            <h:commandButton style="margin-right: 20px;" value="#{messages.matchFinishedMatches}" class="btn btn-default">
                 <f:ajax  listener="#{matchBean.getFinishedMatches()}" execute="@this" render="pnl_bMatches" />
             </h:commandButton>
-            <h:commandButton action="newMatch.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeNewMatch}" />
+            
+            <h:commandButton  style="float:right"  action="newMatch.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeNewMatch}" />
+            
+            
         </h:form>
+       </nav>
 
         <h:panelGroup id="pnl_bMatches">
             <h2>#{matchBean.bookmakerMatchesTitle}</h2>
@@ -88,6 +97,6 @@
                 </c:otherwise>
             </c:choose>
         </h:panelGroup>
-
+    
     </ui:define>
 </ui:composition>

@@ -21,14 +21,17 @@
         <div>
             <h:messages for="frm_bet" globalOnly="true" errorClass="bg-danger" warnClass="text-danger" infoClass="text-info" />
         </div>
-        <h:form id="frm_bet">
+        <h:form id="frm_bet" class="form-inline" style="margin-top: 50px">
             <div class="form-group">
-                <h:outputLabel for="betAmount">#{messages.betAmount}</h:outputLabel>
-                <h:inputText class="form-control" id="betAmount" value="#{userBean.betAmount}" converterMessage="#{messages.betAmountMustBeANumber}">
-                    <f:passThroughAttribute name="required" value="required" />
-                </h:inputText>
-            </div>
-            <h:commandButton id="btn_frmChargeBalance" class="btn btn-default" action="#{userBean.bet()}" value="#{messages.betBetForResult}" />
-        </h:form>
+                <h:outputLabel  for="betAmount">#{messages.betAmount}:</h:outputLabel>
+                <div class="input-group" style="margin-left: 5px; margin-right: 20px">
+                    <div class="input-group-addon">CHF</div>
+                    <h:inputText  class="form-control" id="betAmount" value="#{userBean.betAmount}" converterMessage="#{messages.betAmountMustBeANumber}">
+                        <f:passThroughAttribute name="required" value="required" />
+                    </h:inputText>
+                </div>
+            
+            <h:commandButton id="btn_frmChargeBalance" class="btn btn-primary" action="#{userBean.bet()}" value="#{messages.betBetForResult}" />
+        </div></h:form>
     </ui:define>
 </ui:composition>

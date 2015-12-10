@@ -6,6 +6,8 @@
 package bean;
 
 import java.math.BigDecimal;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,6 +20,8 @@ import model.Role;
 import model.User;
 import util.DBHelper;
 import util.MessageHelper;
+import util.PasswordHash;
+import static util.PasswordHash.validatePassword;
 
 /**
  *
@@ -61,8 +65,9 @@ public class LoginBean {
      * Tries to log the user in
      * @return String Website to redirect to or null
      * if null is returned, an error message is displayed on the website
+     * @throws java.security.NoSuchAlgorithmException
      */
-    public String login() {
+    public String login() throws NoSuchAlgorithmException, InvalidKeySpecException {
         //check if user is already logged in
 
         //check user data to make sure they contain values and passwords are equal
@@ -76,9 +81,10 @@ public class LoginBean {
 
             try {
                 this.user = getUserFromDB(conn, true);
-                if (getUser() == null) {
+                if (getUser() == null || !(validatePassword(password, user.getPassword()))) {
                     //log the user in
                     MessageHelper.addMessageToComponent("frm_login", "messages", "loginUsernameAndPasswordNotFound", FacesMessage.SEVERITY_WARN);
+                    this.user=null;
                     return null;
                 //might want to add the user's bets?
                 }else{
@@ -117,7 +123,7 @@ public class LoginBean {
      * @return String Website to redirect to or null
      * if null is returned, an error message is displayed on the website
      */
-    public String register() {
+    public String register() throws NoSuchAlgorithmException, InvalidKeySpecException {
         //check user data to make sure they contain values and passwords are equal
         if (username == null || password == null || username.length() == 0 || password.length() == 0) {
             MessageHelper.addMessageToComponent("frm_register", "messages", "registerErrNameOrPasswordEmpty", FacesMessage.SEVERITY_WARN);
@@ -144,9 +150,10 @@ public class LoginBean {
                 String sql = "INSERT INTO users (name, password) "
                         + "VALUES (?, ?)";
                 s = conn.prepareStatement(sql);
-
+                //PasswordHash ph = new PasswordHash();
+                String hashedPassword= PasswordHash.createHash(password);
                 s.setString(1, username);
-                s.setString(2, password);
+                s.setString(2, hashedPassword);
 
                 res = s.executeUpdate();
 
@@ -175,22 +182,22 @@ public class LoginBean {
      * @return User object or null
      * @throws SQLException 
      */
-    private User getUserFromDB(Connection conn, boolean withPW) throws SQLException {
+    private User getUserFromDB(Connection conn, boolean withPW) throws SQLException, NoSuchAlgorithmException, InvalidKeySpecException {
         User u = null;
 
         ResultSet rs = null;
         PreparedStatement s = null;
 
-        String sql = "SELECT id, name, balance, roleFK FROM users "
+        String sql = "SELECT id, name, balance, roleFK, password FROM users "
                 + "WHERE name = ?";
         if (withPW) {
-            sql += " AND password = ?";
+            //sql += " AND password = ?";
         }
 
         s = conn.prepareStatement(sql);
         s.setString(1, username);
         if (withPW) {
-            s.setString(2, password);
+            //s.setString(2, PasswordHash.createHash(password));
         }
 
         rs = s.executeQuery();
@@ -201,8 +208,11 @@ public class LoginBean {
                 String name = rs.getString("name");
                 BigDecimal balance = rs.getBigDecimal("balance");
                 int roleId = rs.getInt("roleFK");
-
+                String hashedPassword= rs.getString("password");
                 u = new User(id, name, balance, new Role(roleId));
+                if (withPW) {
+                    u.setPassword(hashedPassword);
+                }
             }
         }
 

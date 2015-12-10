@@ -75,11 +75,12 @@ and open the template in the editor.
                     </div>
                 </div>
             </div>
-            <h:commandButton type="submit"  id="btn_subNewMatch" class="btn btn-default" action="#{matchBean.newMatch()}" value="#{messages.newMatchCreateNewMatch}" />
+            <h:commandButton style="margin-bottom:30px" type="submit"  id="btn_subNewMatch" class="btn btn-primary btn-lg btn-block" action="#{matchBean.newMatch()}" value="#{messages.newMatchCreateNewMatch}" />
         </h:form>
         <!--results-->
-        <div class="panel panel-default">
-            <h:form id="frm_newResult">
+
+        <h:form id="frm_newResult" class="form-inline">
+            <div class="panel panel-default">
                 <div class="panel-heading">#{messages.newMatchResults}</div>
                 <div class="panel-body">
                     <h:dataTable id="dt_results" value="#{matchBean.newMatchResults}" var="result" class="table table-hover table-bordered">
@@ -103,24 +104,27 @@ and open the template in the editor.
                     </h:dataTable>
                 </div>
                 <div class="panel-footer">
-                    <h:outputLabel for="name" value="#{messages.newMatchName}" />
-                    <h:inputText id="name" value="#{matchBean.newMatchResult.name}" >
-                        <f:passThroughAttribute name="required" value="required" />
-                    </h:inputText>
-                    <h:outputLabel for="oddNumerator" value="#{messages.newMatchOddNumerator}" />
-                    <h:inputText id="oddNumerator" value="#{matchBean.newMatchResult.oddNumerator}" converterMessage="#{messages.newMatchOddNEnterDigitsOnly}">
-                        <f:passThroughAttribute name="required" value="required" />
-                    </h:inputText>
-                    <h:outputLabel for="oddDenominator" value="#{messages.newMatchOddDenominator}" />
-                    <h:inputText id="oddDenominator" value="#{matchBean.newMatchResult.oddDenominator}" converterMessage="#{messages.newMatchOddDEnterDigitsOnly}">
-                        <f:passThroughAttribute name="required" value="required" />
-                    </h:inputText>
-                    <h:commandButton value="#{messages.newMatchAddNewResult}" class="btn btn-default">
-                        <f:ajax listener="#{matchBean.addResultToNewMatch()}" execute="frm_newResult" render="frm_newResult frm_newResultMessage msg_oddN msg_oddD" />
-                    </h:commandButton>
+                    <div class="form-group">
+                        <h:outputLabel style="margin-right:5px"  for="name" value="#{messages.newMatchName}" />   
+                        <h:inputText style="margin-right:20px"  class="form-control" id="name" value="#{matchBean.newMatchResult.name}" >
+                            <f:passThroughAttribute name="required" value="required" />
+                        </h:inputText>
+                        <h:outputLabel style="margin-right:5px" for="oddNumerator" value="#{messages.newMatchOddNumerator}" />
+                        <h:inputText style="margin-right:20px" class="form-control" id="oddNumerator" value="#{matchBean.newMatchResult.oddNumerator}" converterMessage="#{messages.newMatchOddNEnterDigitsOnly}">
+                            <f:passThroughAttribute name="required" value="required" />
+                        </h:inputText>
+                        <h:outputLabel style="margin-right:5px" for="oddDenominator" value="#{messages.newMatchOddDenominator}" />
+                        <h:inputText style="margin-right:20px" class="form-control" id="oddDenominator" value="#{matchBean.newMatchResult.oddDenominator}" converterMessage="#{messages.newMatchOddDEnterDigitsOnly}">
+                            <f:passThroughAttribute name="required" value="required" />
+                        </h:inputText>
+                        <h:commandButton value="#{messages.newMatchAddNewResult}"  class="btn btn-primary">
+                            <f:ajax listener="#{matchBean.addResultToNewMatch()}" execute="frm_newResult" render="frm_newResult frm_newResultMessage msg_oddN msg_oddD" />
+                        </h:commandButton>
+                    </div>
                 </div>
-            </h:form>
-        </div>
+            </div>
+        </h:form>
+
         <div>
             <h:messages id="frm_newResultMessage" for="frm_newResult" errorClass="has-error" warnClass="has-warning" infoClass="info" />
             <br />

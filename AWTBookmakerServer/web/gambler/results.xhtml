@@ -22,7 +22,7 @@
             </c:when>
             <c:otherwise>
                 <!--display if data is available-->
-                <h:dataTable value="#{matchBean.results}" var="result" class="table table-hover table-bordered">
+                <h:dataTable value="#{matchBean.results}" var="result" class="table table-hover ">
                     <h:column>
                         <f:facet name="header">#{messages.resultDescription}</f:facet>
                         <h:outputText value="#{result.name}" />

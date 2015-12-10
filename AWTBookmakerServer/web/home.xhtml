@@ -7,19 +7,22 @@
                 xmlns:h="http://java.sun.com/jsf/html">
 
     <ui:define name="contentHeader">
-        <h:form>
+        <nav class="navbar navbar-default" style="margin-top: 30px;">
+        <h:form class="navbar-form navbar-left" style="width: 100%">
             <c:choose>
                 <c:when test="#{not empty loginBean.user}">
                     <c:choose>
                         <!--buttons for bookmaker-->
                         <c:when test="#{loginBean.user.admin}">
-                            <h:commandButton id="btn_newMatch" action="bookmaker/newMatch.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeNewMatch}" />
                             <h:commandButton id="btn_upcomingMatches" action="/bookmaker/matches.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeShowMatches}" />
+                            <h:commandButton id="btn_newMatch" action="bookmaker/newMatch.xhtml?faces-redirect=true" style="float:right" class="btn btn-default" value="#{messages.homeNewMatch}" />
+                            
                         </c:when>
                         <!--buttons for gambler-->
                         <c:otherwise>
-                            <h:commandButton id="btn_ownBets" action="gambler/bets.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeOwnBets}" />
                             <h:commandButton id="btn_upcomingMatches" action="/gambler/matches.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeShowMatches}" />
+                            <h:commandButton id="btn_ownBets" action="gambler/bets.xhtml?faces-redirect=true" style="float:right" class="btn btn-default" value="#{messages.homeOwnBets}" />
+                            
                         </c:otherwise>
                     </c:choose>
                 </c:when>
@@ -29,6 +32,7 @@
                 </c:otherwise>
             </c:choose>
         </h:form>
+        </nav>
     </ui:define>
     <!--<ui:define name="content">
         <ui:include src="/match/matches.xhtml" />

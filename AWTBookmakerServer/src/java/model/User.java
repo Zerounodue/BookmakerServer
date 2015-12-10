@@ -18,6 +18,7 @@ public class User {
     private BigDecimal balance;
     private Role role;
     private boolean isAdmin = false;
+    private String password;
     
     private List<Bet> bets;
     
@@ -92,6 +93,14 @@ public class User {
 
     public boolean isAdmin() {
         return isAdmin;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     
