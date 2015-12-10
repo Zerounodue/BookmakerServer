@@ -83,12 +83,14 @@
                         </h:column>
                         <h:column>
                             <f:facet name="header">#{messages.matchResults}</f:facet>
-                            <h:outputLink value="results.xhtml?matchId=#{match.id}">#{messages.matchBets}</h:outputLink>
+                            <h:outputLink value="results.xhtml?matchId=#{match.id}">#{messages.matchShowResult}</h:outputLink>
                         </h:column>
-                        <h:column>
+                        <h:column id="aaa">
                             <f:facet name="header">#{messages.matchSetFinished}</f:facet>
-                            <h:form rendered="#{match.startedAndFinished()}">
-                                <h:commandButton  id="btn_setFinished" class="btn btn-default" action="#{matchBean.setMatchFinishedByMatchId(match.id)}" value="#{messages.matchSetFinished}" />
+                            <h:form id="my"  rendered="#{match.startedAndFinished()}">
+                                <h:commandButton  id="btn_setFinished" class="btn btn-default" action="#{matchBean.setMatchFinishedByMatchId(match.id)}"    value="#{messages.matchSetFinished}" >
+                                    <f:ajax execute="@this" render="@pnl_bMatches :xpnl_bMatches"/>
+                                </h:commandButton>
                             </h:form>
                         </h:column>
 

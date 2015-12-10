@@ -24,11 +24,24 @@
         <!--display message when redirected from bet.xhtml-->
         <h:outputText class="bg-info" rendered="#{userBean.showNeedToChargeBalanceToBetMessage}" value="#{messages.chargeBalanceShowNeedToChargeBalanceToBetMessage}" />
         <h:form id="frm_chargeBalance">
+            
+
             <div class="form-group">
                 <h:outputLabel for="amount">#{messages.chargeBalanceAmount}</h:outputLabel>
-                <h:inputText class="form-control" id="amount" value="#{userBean.amount}" converterMessage="#{messages.chargeBalanceEnterDigitsOnly}">
+                
+                
+                 <div class="input-group" >
+                    <div class="input-group-addon">CHF</div>
+                    <h:inputText class="form-control" id="amount" value="#{userBean.amount}" converterMessage="#{messages.chargeBalanceEnterDigitsOnly}">
                     <f:passThroughAttribute name="required" value="required" />
                 </h:inputText>
+                </div>
+                
+                
+                
+                
+                
+                
             </div>
             <div class="form-group">
                 <h:outputLabel for="creditCardNumber">#{messages.chargeBalanceCreditCardNumber}</h:outputLabel>
@@ -37,11 +50,12 @@
                 </h:inputText>
             </div>
             <div class="form-group">
-                <h:outputLabel for="validationCode">#{messages.chargeCVV}</h:outputLabel>
+                <h:outputLabel for="validationCode">#{messages.chargeBalanceCVV}</h:outputLabel>
                 <h:inputText class="form-control" id="validationCode" value="#{userBean.validationCode}">
                     <f:passThroughAttribute name="required" value="required" />
                 </h:inputText>
-                <a href="https://www.cvvnumber.com/cvv.html" target="_blank" style="font-size:11px">What is my CVV code?</a>
+                <h:outputLink target="_blank" style="font-size:11px" value="https://www.cvvnumber.com/cvv.html">#{messages.chargeBalanceMyCVV}</h:outputLink>
+                
             </div>
             <h:commandButton id="btn_frmChargeBalance" class="btn btn-primary" action="#{userBean.chargeBalance()}" value="#{messages.chargeBalanceCharge}" />
         </h:form>

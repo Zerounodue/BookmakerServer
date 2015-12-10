@@ -122,6 +122,12 @@ public class MatchBean {
     //used to display the title in the matches website
     private String bookmakerMatchesTitle = MessageHelper.getMessage(MESSAGES_BUNDLE, "matchUpcomingMatches");
     
+    
+
+    private enum bookmakerMatchesEnum { ALL, UPCOMING, STARTED, FINISHED}
+    private bookmakerMatchesEnum bookmakerMatchesId;
+    
+    
 
     /**
      * Returns all matches, including the teams for a match
@@ -178,6 +184,7 @@ public class MatchBean {
         }
         //set title for matches website for bookmaker
         bookmakerMatchesTitle = MessageHelper.getMessage(MESSAGES_BUNDLE, "matchAllMatches");
+        bookmakerMatchesId=bookmakerMatchesEnum.ALL;
         return getMatches();
     }
 
@@ -233,7 +240,7 @@ public class MatchBean {
         }
         //set title for matches website for bookmaker
         bookmakerMatchesTitle = MessageHelper.getMessage(MESSAGES_BUNDLE, "matchUpcomingMatches");
-        
+        bookmakerMatchesId=bookmakerMatchesEnum.UPCOMING;
         return getMatches();
     }
 
@@ -290,7 +297,7 @@ public class MatchBean {
         }
         //set title for matches website for bookmaker
         bookmakerMatchesTitle = MessageHelper.getMessage(MESSAGES_BUNDLE, "matchStartedButNotFinished");
-        
+        bookmakerMatchesId=bookmakerMatchesEnum.STARTED;
         return getMatches();
     }
 
@@ -834,7 +841,7 @@ public class MatchBean {
         }
         //set title for matches website for bookmaker
         bookmakerMatchesTitle = MessageHelper.getMessage(MESSAGES_BUNDLE, "matchFinishedMatches");
-        
+        bookmakerMatchesId=bookmakerMatchesEnum.FINISHED;
         return getMatches();
     }
     
@@ -909,6 +916,18 @@ public class MatchBean {
                 return null;
             } finally {
                 DBHelper.closeConnection(rs, s, conn);
+            }
+            
+            switch (bookmakerMatchesId){
+                case ALL:
+                    getAllMatches();
+                    break;
+                    
+                case STARTED:
+                    getMatchStartedButNotFinished();
+                    break;
+                default:
+                    throw new AssertionError(bookmakerMatchesId.name());
             }
 
             //everything was ok, display the same page again
