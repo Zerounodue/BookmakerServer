@@ -107,8 +107,8 @@ public class MatchBean {
     private int newMatchAwayTeamId;
     private Timestamp newMatchTime;
     private Date newMatchDate;
-    private int newMatchHours;
-    private int newMatchMinutes;
+    private int newMatchHours =12;
+    private int newMatchMinutes=30;
     private Result newMatchResult = new Result();
     private List<Result> newMatchResults;
 
@@ -261,8 +261,7 @@ public class MatchBean {
                 String sql = SELECT_ALL_FROM_MATCHES_AND_TEAM_NAME
                         + "WHERE m.finished = 0 AND m.time < ? "
                         + "ORDER BY m.time asc ";
-                
-                
+
                 s = conn.prepareStatement(sql);
                 s.setTimestamp(1, currentTimestamp);
                 rs = s.executeQuery();
@@ -349,8 +348,7 @@ public class MatchBean {
                 if(started < 1){
                     MessageHelper.addMessageToComponent(TABLE_BOOKMAKER_RESULTS, MESSAGES_BUNDLE, "resultMatchDidNotYetStart", FacesMessage.SEVERITY_WARN);
                     return null;
-                }
-                
+                }                
                 
                 //will change more than one table
                 conn.setAutoCommit(false);
@@ -479,23 +477,20 @@ public class MatchBean {
     }
     
     /**
-     * Gets all results for the specified match id
+     * Gets all results for the specified match id, including the total gain and loss
      * @param id id of the match for which the results should be loaded
      * @return List of Result objects
      */
-    public List<Result> getResultsByMatchId(int id) {
+    public List<Result> getResultsWithTotalOddsByMatchId(int id) {
         results = null;
- 
         
         Connection conn = DBHelper.getDBConnection();
 
         if (conn != null) {
             ResultSet rs = null;
             PreparedStatement s = null;
-
             try {
                 //Timestamp currentTimestamp = new Timestamp(Calendar.getInstance().getTime().getTime());
-
                 String sql = SELECT_ALL_FROM_RESULTS_AND_AMOUNT_SUM
                         + "INNER JOIN matches m ON r.matchFK = m.id "
                         //if user is logged in get his bets too
@@ -533,10 +528,8 @@ public class MatchBean {
                 DBHelper.closeConnection(rs, s, conn);
             }
         }
-
         return getResults();
     }
-
     /**
      * checks if the current list of results contains a result that occured
      *
@@ -547,21 +540,10 @@ public class MatchBean {
         if (results == null) {
             return false;
         }
-
         boolean a = results.stream().anyMatch(r -> r.isOccured());
-
         return results.stream().anyMatch(r -> r.isOccured());
     }
 
-    /**
-     * Gets all results for the specified match id, including the total gain and loss
-     * @param id id of the match for which the results should be loaded
-     * @return List of Result objects
-     */
-    public List<Result> getResultsWithTotalOddsByMatchId(int id) {
-       //TODO remoove method?
-        return getResultsByMatchId(id);
-    }
 
     /**
      * selects all teams from the database and returns a list of Team objects
@@ -606,7 +588,6 @@ public class MatchBean {
                 DBHelper.closeConnection(rs, s, conn);
             }
         }
-
         return teams;
     }
 
@@ -807,7 +788,6 @@ public class MatchBean {
                         + "WHERE m.finished = 1 "
                         + "ORDER BY m.time asc ";
                 
-                
                 s = conn.prepareStatement(sql);
                 rs = s.executeQuery();
                 if (rs != null) {
@@ -829,9 +809,7 @@ public class MatchBean {
                         m.setTotalLoss(totalLoss);
                         getMatches().add(m);
                     }
-
                 }
-
             } catch (SQLException e) {
                 matches = null;
             } finally {
@@ -917,12 +895,13 @@ public class MatchBean {
             } finally {
                 DBHelper.closeConnection(rs, s, conn);
             }
-            
+            // depending on witch site the user currenty is it will 
+            // redirect (reload) the same site, so the datas are
+            // reloaded from the DB and the table is updated 
             switch (bookmakerMatchesId){
                 case ALL:
                     getAllMatches();
-                    break;
-                    
+                    break;                 
                 case STARTED:
                     getMatchStartedButNotFinished();
                     break;
@@ -1263,6 +1242,4 @@ public class MatchBean {
     public String getBookmakerMatchesTitle() {
         return bookmakerMatchesTitle;
     }
-    
-
 }

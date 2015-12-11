@@ -58,16 +58,16 @@ and open the template in the editor.
                             </div>
                         </div>
                         <!--time-->
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                                <b:row>
+                        <div class="col-lg-4" > 
+                            <div class="form-group" >
+                                <b:row >
                                     <b:column>
-                                        <b:slider min="0" max="23" step="1" value="#{matchBean.newMatchHours}" label="#{messages.newMatchHours}"/>
+                                        <b:slider label="#{messages.newMatchHours}"  min="0" handle-size="md" max="23" step="1" value="#{matchBean.newMatchHours}" />   
                                     </b:column>
                                 </b:row>
                                 <b:row>
                                     <b:column>
-                                        <b:slider min="0" max="59" step="1" value="#{matchBean.newMatchMinutes}" label="#{messages.newMatchMinutes}"/>
+                                        <b:slider label="#{messages.newMatchMinutes}" min="0" max="59" step="1" value="#{matchBean.newMatchMinutes}" />
                                     </b:column>
                                 </b:row>
                             </div>

@@ -6,8 +6,11 @@
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
                 xmlns:h="http://java.sun.com/jsf/html">
 
-    <ui:define name="content">
+    <ui:define name="contentTitle">
         <h2>#{messages.matchUpcomingMatches}</h2>
+    </ui:define>
+    <ui:define name="content">
+        
         <c:choose>
             <c:when test="#{empty matchBean.upcomingMatches}">
                 <!--in case no data is available-->

@@ -66,13 +66,33 @@
                     <h:commandButton style="float:right; margin-right: 20px" id="btn_logout" action="#{loginBean.logout}" class="btn btn-primary" value="#{messages.homeLogout}" />
                 </h1> 
                 <div >
-                    <h:panelGroup rendered="#{not loginBean.user.admin}">
-                        <h3 >#{messages.userBalance}: #{loginBean.user.balance}
-                            <h:commandButton style="margin-left:30px" id="btn_chargeBalance" action="/gambler/chargeBalance.xhtml?faces-redirect=true&amp;showMessage=false" class="btn btn-default" value="#{messages.homeCharge}" /></h3>
-                    </h:panelGroup>
+
                 </div>
             </h:form>
-            <ui:insert name="contentHeader" />
+            <ui:insert name="contentTitle" />
+            <ui:insert name="contentHeader"  >
+                <h:panelGroup rendered="#{not loginBean.user.admin}">
+                    <nav class="navbar navbar-default" style="margin-top: 30px;">
+                        <h:form class="navbar-form navbar-left" style="width: 100%">
+                            <c:choose>
+                                <c:when test="#{not empty loginBean.user}">     
+                                    <h:commandButton style="margin-right: 20px;" id="btn_upcomingMatches" action="/gambler/matches.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeShowMatches}" />
+                                    <h:commandButton style="margin-right: 20px;" id="btn_ownBets" action="/gambler/bets.xhtml?faces-redirect=true"  class="btn btn-default" value="#{messages.homeOwnBets}" />  
+                                    <h:panelGroup layout="block" >
+                                        <h:commandButton style="margin-left:20px; float: right" id="btn_chargeBalance" action="/gambler/chargeBalance.xhtml?faces-redirect=true&amp;showMessage=false" class="btn btn-default" value="#{messages.homeCharge}" />
+                                        <h3 style=" float: right; padding: 0; margin:0; margin-top: 4px;">#{messages.userBalance}: #{loginBean.user.balance}</h3>
+
+                                    </h:panelGroup>
+                                </c:when>
+                                <!--guest-->
+                                <c:otherwise>
+                                    <h:commandButton id="btn_upcomingMatches" action="/guest/matches.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeShowMatches}" />
+                                </c:otherwise>
+                            </c:choose>
+                        </h:form>
+                    </nav>
+                </h:panelGroup>
+            </ui:insert>
             <ui:insert name="content" />
             <ui:insert name="contentFooter" />
         </h:body>

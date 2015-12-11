@@ -9,10 +9,12 @@
     <f:metadata>
         <f:viewParam name="matchId" value="#{matchBean.matchId}" />
     </f:metadata>
-    <ui:define name="content">
+    <ui:define name="contentTitle">
         <h2>#{messages.resultResults}</h2>
+    </ui:define>
+    <ui:define name="content"> 
         <c:choose>
-            <c:when test="#{empty matchBean.getResultsByMatchId(matchBean.matchId)}">
+            <c:when test="#{empty matchBean.getResultsWithTotalOddsByMatchId(matchBean.matchId)}">
                 <!--in case no data is available-->
                 <h:outputText value="#{messages.resultNoResults}"  />
             </c:when>

@@ -11,9 +11,11 @@
             <f:viewAction action="/home.xhtml?faces-redirect=true" />
         </c:if>
     </f:metadata>
-
-    <ui:define name="content">
+    <ui:define name="contentTitle">
         <h2>#{messages.betMyBets}</h2>
+    </ui:define>
+    <ui:define name="content">
+     
         <c:choose>
             <c:when test="#{empty userBean.betsForUser}">
                 <!--in case no data is available-->
