@@ -14,7 +14,9 @@ public class Bet {
     private double amount;
     //better use objects?
     private int userId;
+    private String userName;
     private int resultId;
+    private String resultName;
     private double userGain;
     
     private Result result;
@@ -32,14 +34,16 @@ public class Bet {
         this.amount = amount;
         this.userId = userId;
         this.result  = r;
-        this.userGain = gain;
+        this.userGain = gain;        
     }
 
-    public Bet(int id, double amount, int userId, int resultId){
+    public Bet(int id, double amount, int userId, int resultId, String userName, String resultName){
         this.id = id;
         this.amount = amount;
         this.userId = userId;
         this.resultId = resultId;
+        this.userName = userName;
+        this.resultName = resultName;
     }
     
     /**
@@ -83,5 +87,20 @@ public class Bet {
     public double getUserGain() {
         return userGain;
     }
+    
+    /**
+     * @return the result name
+     */
+    public String getResultName() {
+        return resultName;
+    }
+    /**
+     * @return the name of the user
+     */
+    public String getUserName() {
+        return userName;
+    }
+    
+    
     
 }

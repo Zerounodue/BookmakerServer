@@ -26,11 +26,11 @@
                 <h:dataTable value="#{matchBean.bets}" var="bet" class="table table-hover">
                     <h:column>
                         <f:facet name="header">#{messages.betResult}</f:facet>
-                        <h:outputText value="#{bet.resultId}" />
+                        <h:outputText value="#{bet.resultName}" />
                     </h:column>
                     <h:column>
                         <f:facet name="header">#{messages.betUser}</f:facet>
-                        <h:outputText value="#{bet.userId}" />
+                        <h:outputText value="#{bet.userName}" />
                     </h:column>
                     <h:column>
                         <f:facet name="header">#{messages.betAmount}</f:facet>

@@ -58,8 +58,18 @@ public class MatchBean {
                 + "(SELECT totalLoss from totalgainlossview WHERE mid = m.id) as totalLoss FROM matches m "
             + "INNER JOIN teams ht ON m.homeTeamFK=ht.id "
             + "INNER JOIN teams at ON m.awayTeamFK=at.id ";
+    /*
+    private final static String SELECT_ALL_FROM_MATCHES_AND_TEAM_NAME
+            = "SELECT m.id, m.homeTeamFK, m.awayTeamFK, m.time, m.finished, ht.name as homeTeamName, at.name as awayTeamName, "
+                + "(SELECT totalGain from totalgainlossview WHERE mid = m.id) as totalGain, "
+                + "(SELECT totalLoss from totalgainlossview WHERE mid = m.id) as totalLoss FROM matches m "
+            + "INNER JOIN teams ht ON m.homeTeamFK=ht.id "
+            + "INNER JOIN teams at ON m.awayTeamFK=at.id ";
+    */
+   // private final static String SELECT_ALL_FROM_BETS
+   //         = "SELECT b.id, b.amount, b.userFK, b.resultFK FROM bets b ";
     private final static String SELECT_ALL_FROM_BETS
-            = "SELECT b.id, b.amount, b.userFK, b.resultFK FROM bets b ";
+            = "SELECT b.id, b.amount, b.userFK, b.resultFK, users.name AS userName, results.name AS resultName FROM bets b INNER JOIN users ON b.userFK = users.id INNER JOIN results ON b.resultFK = results.id ";
     private final static String SELECT_ALL_FROM_RESULTS_AND_AMOUNT_SUM
             = "SELECT r.id, r.name, r.oddNumerator, r.oddDenominator, r.occured, r.matchFK, m.finished, (SELECT sum(bets.amount) FROM bets INNER JOIN results ON bets.resultFK = results.id where results.id =r.id ) as amountSum FROM results r ";
     private final static String SELECT_ALL_FROM_TEAMS
@@ -169,8 +179,9 @@ public class MatchBean {
                         
                         //result will be null by upcoming matches -> set id to 0
                         Match m = new Match(id, ts, new Team(htId, htName), new Team(atId, atName), 0, finished);
-                        m.setTotalGain(totalGain);
-                        m.setTotalLoss(totalLoss);
+                        List<Result> matchResults =getResultsWithTotalOddsByMatchId(id);
+                        m.setTotalGain(matchResults.stream().mapToDouble(r -> r.getTotalGain()).sum());
+                        m.setTotalLoss(matchResults.stream().mapToDouble(r -> r.getTotalLoss()).sum());
                         getMatches().add(m);
                     }
                 }
@@ -450,8 +461,10 @@ public class MatchBean {
                         double amount = rs.getDouble("amount");
                         int userId = rs.getInt("userFK");
                         int resultFK = rs.getInt("resultFK");
+                        String userName = rs.getString("userName");
+                        String resultName = rs.getString("resultName");
 
-                        Bet b = new Bet(betId, amount, userId, resultFK);
+                        Bet b = new Bet(betId, amount, userId, resultFK, userName, resultName);
                         getBets().add(b);
                     }
                 }
@@ -517,8 +530,22 @@ public class MatchBean {
 
                         Result r = new Result(rId, name, oddN, oddD, occured, mId);
                         r.setFinished(finished);
-                        r.setTotalGain(amountSum);
-                        r.setTotalLoss((amountSum*oddN )/oddD);
+                        //if the match is not finished, the total gain and loss cant be
+                        //calculated so its displayed the maximum loss and gani
+                        if(!finished){
+                            r.setTotalGain(amountSum);
+                            r.setTotalLoss((amountSum*oddN )/oddD);
+                        }
+                        else{//the match is finisched, chech if the result is occoured
+                            if(!occured){//bookmaker wins
+                                r.setTotalGain(amountSum);
+                                r.setTotalLoss(0);
+                            }
+                            else{//gamble wins
+                                r.setTotalGain(0);
+                                r.setTotalLoss((amountSum*oddN )/oddD);
+                            }
+                        }  
                         getResults().add(r);
                     }
                 }
@@ -805,8 +832,9 @@ public class MatchBean {
                         double totalLoss = rs.getDouble("totalLoss");
                         //result will be null by upcoming matches
                         Match m = new Match(id, ts, new Team(htId, htName), new Team(atId, atName), 0, finished);
-                        m.setTotalGain(totalGain);
-                        m.setTotalLoss(totalLoss);
+                        List<Result> matchResults =getResultsWithTotalOddsByMatchId(id);
+                        m.setTotalGain(matchResults.stream().mapToDouble(r -> r.getTotalGain()).sum());
+                        m.setTotalLoss(matchResults.stream().mapToDouble(r -> r.getTotalLoss()).sum());
                         getMatches().add(m);
                     }
                 }

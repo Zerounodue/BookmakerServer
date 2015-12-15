@@ -65,12 +65,13 @@
                                
                             </h:column>
                             
-                            <h:column>
+                            <h:column >
                                 <f:facet name="header">#{messages.resultSetResult}</f:facet>
                                 <h:form rendered="#{result.finished}">
                                     <h:commandButton rendered="#{not result.occured}" id="btn_setResultTrueForMatch" class="btn btn-default" action="#{matchBean.setResultForMatchByResultId(result.id)}" value="#{messages.resultSetOccured}" />
                                 </h:form>
                             </h:column>
+                               
                             
                         </c:if>
                     </c:if>

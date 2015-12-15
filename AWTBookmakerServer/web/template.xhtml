@@ -3,11 +3,11 @@
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" >
     <!--might not be needed-->
     <f:loadBundle basename="main.Messages" var="messages" />
 
-    <f:view locale="#{loginBean.locale}">
+    <f:view locale="#{loginBean.locale}" >
         <h:head>
             <meta charset="UTF-8" />
             <title>#{messages.applicationName}</title>
@@ -26,7 +26,7 @@
                 }
             </style>
         </h:head>
-        <h:body>
+        <h:body  style="height: 100%">
             <header  class="navbar navbar-default navbar-fixed-top">
                 <div class="container" >
 
@@ -94,7 +94,9 @@
                 </h:panelGroup>
             </ui:insert>
             <ui:insert name="content" />
-            <ui:insert name="contentFooter" />
+          
+            <ui:insert name="contentFooter"  />
+       
         </h:body>
     </f:view>
 </html>

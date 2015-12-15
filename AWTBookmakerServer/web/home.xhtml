@@ -15,17 +15,22 @@
                     <c:choose>
                         <c:when test="#{not empty loginBean.user}">
 
-                            <h:commandButton id="btn_upcomingMatches" action="/bookmaker/matches.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeShowMatches}" />
+                            <!--<h:commandButton id="btn_upcomingMatches" action="/bookmaker/matches.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeShowMatches}" />-->
+                            <h:commandButton id="btn_upcomingMatches" action="/bookmaker/matches.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeShowMatches}" >
+                             <f:ajax listener="#{matchBean.getAllMatches()}" execute="@this" render=":pnl_bMatches h2_bookmakerMatchesTitle" />
+                            </h:commandButton>
                             <h:commandButton id="btn_newMatch" action="bookmaker/newMatch.xhtml?faces-redirect=true" style="float:right" class="btn btn-default" value="#{messages.homeNewMatch}" />
                         </c:when>
                     </c:choose>
                     
+                    
                 </h:form>
             </nav>
+            
+           
         </h:panelGroup>
+        
     </ui:define>
 
-    <!--<ui:define name="content">
-        <ui:include src="/match/matches.xhtml" />
-    </ui:define>-->
+  
 </ui:composition>

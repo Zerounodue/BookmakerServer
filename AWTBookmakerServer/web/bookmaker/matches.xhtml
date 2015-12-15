@@ -89,9 +89,9 @@
                         </h:column>
                         <h:column id="aaa">
                             <f:facet name="header">#{messages.matchSetFinished}</f:facet>
-                            <h:form id="my"  rendered="#{match.startedAndFinished()}">
+                            <h:form id="setFinishedForm"  rendered="#{match.startedAndFinished()}">
                                 <h:commandButton  id="btn_setFinished" class="btn btn-default" action="#{matchBean.setMatchFinishedByMatchId(match.id)}"    value="#{messages.matchSetFinished}" >
-                                    <f:ajax execute="@this" render="@pnl_bMatches :xpnl_bMatches"/>
+                                    <f:ajax execute="@this" render="@pnl_bMatches :xpnl_bMatches :setFinishedForm"/>
                                 </h:commandButton>
                             </h:form>
                         </h:column>
