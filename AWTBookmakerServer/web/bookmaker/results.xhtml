@@ -62,7 +62,7 @@
                             </h:column>
                             <h:column>
                                 <f:facet name="header">#{messages.resultLoss}</f:facet>
-                                <!--<h:outputText value="#{matchBean.getLoss(result.matchId, result.id)}" />-->
+                                
                                 <h:outputText value="#{result.totalLoss}" />
                                 <f:facet name="footer" ><strong>#{matchBean.totalLossForResults}</strong></f:facet>
                             </h:column>
@@ -76,10 +76,7 @@
                                     <h:outputText rendered="#{result.occured}" value="#{messages[result.occured]}"/>
                                     <h:outputText rendered="#{not result.occured}" value="#{messages[result.occured]}"/>
                                 </h:panelGroup>
-
                                 <h:outputText rendered="#{not result.finished}" value="#{messages.resultMatchDidNotYetStart}"/>
-
-
                             </h:column>
 
                             <h:column >

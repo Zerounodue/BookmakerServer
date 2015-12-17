@@ -108,6 +108,9 @@ public class MatchBean {
     //forms
     private final static String FORM_NEW_MATCH = "frm_newMatch";
     private final static String FORM_NEW_RESULT = "frm_newResult";
+    
+    private final static int DEFAULT_TIME_SLIDER_MINUTES = 30;
+    private final static int DEFAULT_TIME_SLIDER_HOURS = 12;
 
     private int matchId;
     private int resultId;
@@ -117,8 +120,8 @@ public class MatchBean {
     private int newMatchAwayTeamId;
     private Timestamp newMatchTime;
     private Date newMatchDate;
-    private int newMatchHours =12;
-    private int newMatchMinutes=30;
+    private int newMatchHours =DEFAULT_TIME_SLIDER_HOURS;
+    private int newMatchMinutes=DEFAULT_TIME_SLIDER_MINUTES;
     private Result newMatchResult = new Result();
     private List<Result> newMatchResults;
 
@@ -969,9 +972,9 @@ public class MatchBean {
     private void resetVariables() {
         newMatchResults = null;
         newMatchResult = null;
-        newMatchResult = new Result(); // create newMatchResult, it cant be null
-        newMatchHours = 12;
-        newMatchMinutes = 30;
+        newMatchResult = new Result(); // create newMatchResult, it can't be null
+        newMatchHours = DEFAULT_TIME_SLIDER_HOURS; //12
+        newMatchMinutes = DEFAULT_TIME_SLIDER_MINUTES;//30
         newMatchAwayTeamId = newMatchHomeTeamId = 0;
         newMatchDate = null;
         newMatchTime = null;
@@ -1152,87 +1155,7 @@ public class MatchBean {
     public void setNewMatchResult(Result newMatchResult) {
         this.newMatchResult = newMatchResult;
     }
-    
-
-    /**
-     * calculates the possible gain if a given result happen
-     * called from results.xhtml
-     * 
-     * @param matchID the match id to get the gains
-     * @param resultID the result id to get the gains
-     * @return  the gain for this result
-     */
-    /*
-    public double getBetAmount(int matchID, int resultID) {
-        
-        double gain = 0.0;
-
-        //get connection to DB
-        Connection conn = DBHelper.getDBConnection();
-        if (conn != null) {
-            ResultSet rs = null;
-            PreparedStatement s = null;
-
-            try {
-               
-                String sql = "SELECT amount) as gain FROM gainview WHERE matchID = "+matchID+" AND resultID = "+resultID;
-
-                s = conn.prepareStatement(sql);
-                rs = s.executeQuery();
-                if (rs != null) {
-                    while (rs.next()) {
-                         gain = rs.getDouble("gain"); 
-                    }
-                }
-            } catch (SQLException e) {
-                Logger.getLogger(MatchBean.class.getName()).log(Level.SEVERE, null, e);
-            } finally {
-                DBHelper.closeConnection(rs, s, conn);
-            }
-        }
-        return gain;
-    }
-    /**
-     * calculates the possible loss if a given result happen
-     * called from results.xhtml
-     * 
-     * @param matchID the match id to get the gains
-     * @param resultID the result id to get the gains
-     * @return  the loss for this result
-     */
-    /*
-    public double getLoss(int matchID, int resultID) {
-        double loss = 0.0;
-        
-        //get connection to DB
-        Connection conn = DBHelper.getDBConnection();
-        if (conn != null) {
-            ResultSet rs = null;
-            PreparedStatement s = null;
-
-            try {
-                String sql = "SELECT SUM(((amount * oddNumerator) / oddDenominator)) AS loss FROM lossview WHERE matchID = "+matchID+" AND resultID = "+resultID;
-
-                s = conn.prepareStatement(sql);
-                rs = s.executeQuery();
-                if (rs != null) {
-                    while (rs.next()) {
-                         loss = rs.getDouble("loss");   
-                    }
-                }
-
-            } catch (SQLException e) {
-                matches = null;
-                Logger.getLogger(MatchBean.class.getName()).log(Level.SEVERE, null, e);
-            } finally {
-                DBHelper.closeConnection(rs, s, conn);
-            }
-        }
-        return loss;
-    }
-    */
-    
-    
+      
     /**
      * calculates the total gain for the list of match currently used
      * @return double summed gain
