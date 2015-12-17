@@ -62,7 +62,7 @@ and open the template in the editor.
                             <div class="form-group" >
                                 <b:row >
                                     <b:column>
-                                        <b:slider label="#{messages.newMatchHours}"  min="0" handle-size="md" max="23" step="1" value="#{matchBean.newMatchHours}" />   
+                                        <b:slider label="#{messages.newMatchHours}"  min="0" max="23" step="1" value="#{matchBean.newMatchHours}" />   
                                     </b:column>
                                 </b:row>
                                 <b:row>
@@ -78,6 +78,13 @@ and open the template in the editor.
             <h:commandButton style="margin-bottom:30px" type="submit"  id="btn_subNewMatch" class="btn btn-primary btn-lg btn-block" action="#{matchBean.newMatch()}" value="#{messages.newMatchCreateNewMatch}" />
         </h:form>
         <!--results-->
+        <div>
+            <h:messages id="frm_newResultMessage" for="frm_newResult" errorClass="has-error" warnClass="has-warning" infoClass="info" />
+            <br />
+            <h:message id="msg_oddN" for="oddNumerator" errorClass="has-error" warnClass="has-warning" infoClass="info"/>
+            <br />
+            <h:message id="msg_oddD" for="oddDenominator" errorClass="has-error" warnClass="has-warning" infoClass="info"/>
+        </div>
 
         <h:form id="frm_newResult" class="form-inline">
             <div class="panel panel-default">
@@ -106,15 +113,15 @@ and open the template in the editor.
                 <div class="panel-footer">
                     <div class="form-group">
                         <h:outputLabel style="margin-right:5px"  for="name" value="#{messages.newMatchName}" />   
-                        <h:inputText style="margin-right:20px"  class="form-control" id="name" value="#{matchBean.newMatchResult.name}" >
+                        <h:inputText style="margin-right:20px" maxlength="50"  class="form-control" id="name" value="#{matchBean.newMatchResult.name}" >
                             <f:passThroughAttribute name="required" value="required" />
                         </h:inputText>
                         <h:outputLabel style="margin-right:5px" for="oddNumerator" value="#{messages.newMatchOddNumerator}" />
-                        <h:inputText style="margin-right:20px" class="form-control" id="oddNumerator" value="#{matchBean.newMatchResult.oddNumerator}" converterMessage="#{messages.newMatchOddNEnterDigitsOnly}">
+                        <h:inputText style="margin-right:20px" maxlength="10" class="form-control" id="oddNumerator" value="#{matchBean.newMatchResult.oddNumerator}" converterMessage="#{messages.newMatchOddNEnterDigitsOnly}">
                             <f:passThroughAttribute name="required" value="required" />
                         </h:inputText>
-                        <h:outputLabel style="margin-right:5px" for="oddDenominator" value="#{messages.newMatchOddDenominator}" />
-                        <h:inputText style="margin-right:20px" class="form-control" id="oddDenominator" value="#{matchBean.newMatchResult.oddDenominator}" converterMessage="#{messages.newMatchOddDEnterDigitsOnly}">
+                        <h:outputLabel style="margin-right:5px"  for="oddDenominator" value="#{messages.newMatchOddDenominator}" />
+                        <h:inputText style="margin-right:20px" maxlength="10" class="form-control" id="oddDenominator" value="#{matchBean.newMatchResult.oddDenominator}" converterMessage="#{messages.newMatchOddDEnterDigitsOnly}">
                             <f:passThroughAttribute name="required" value="required" />
                         </h:inputText>
                         <h:commandButton value="#{messages.newMatchAddNewResult}"  class="btn btn-primary">
@@ -125,12 +132,5 @@ and open the template in the editor.
             </div>
         </h:form>
 
-        <div>
-            <h:messages id="frm_newResultMessage" for="frm_newResult" errorClass="has-error" warnClass="has-warning" infoClass="info" />
-            <br />
-            <h:message id="msg_oddN" for="oddNumerator" errorClass="has-error" warnClass="has-warning" infoClass="info"/>
-            <br />
-            <h:message id="msg_oddD" for="oddDenominator" errorClass="has-error" warnClass="has-warning" infoClass="info"/>
-        </div>
     </ui:define>
 </ui:composition>

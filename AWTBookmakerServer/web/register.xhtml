@@ -14,19 +14,19 @@
         <h:form id="frm_register">
             <div class="form-group">
                 <h:outputLabel for="username">#{messages.loginUsername}</h:outputLabel>
-                <h:inputText class="form-control" id="username" value="#{loginBean.username}">
+                <h:inputText class="form-control" id="username" maxlength="30" value="#{loginBean.username}">
                     <f:passThroughAttribute name="required" value="required" />
                 </h:inputText>
             </div>
             <div class="form-group">
                 <h:outputLabel for="password">#{messages.registerPassword}</h:outputLabel>
-                <h:inputSecret class="form-control" id="password" value="#{loginBean.password}">
+                <h:inputSecret class="form-control" maxlength="30" id="password" value="#{loginBean.password}">
                     <f:passThroughAttribute name="required" value="required" />
                 </h:inputSecret>
             </div>
                 <div class="form-group">
                 <h:outputLabel for="password2">#{messages.registerRepeatPassword}</h:outputLabel>
-                <h:inputSecret class="form-control" id="password2" value="#{loginBean.password2}">
+                <h:inputSecret class="form-control" maxlength="30" id="password2" value="#{loginBean.password2}">
                     <f:passThroughAttribute name="required" value="required" />
                 </h:inputSecret>
             </div>

@@ -14,13 +14,13 @@
         <h:form id="frm_login">
             <div class="form-group">
                 <h:outputLabel for="username">#{messages.loginUsername}</h:outputLabel>
-                <h:inputText class="form-control" id="username" value="#{loginBean.username}">
+                <h:inputText class="form-control" maxlength="30" id="username" value="#{loginBean.username}">
                     <f:passThroughAttribute name="required" value="required" />
                 </h:inputText>
             </div>
             <div class="form-group">
                 <h:outputLabel for="password">#{messages.loginPassword}</h:outputLabel>
-                <h:inputSecret class="form-control" id="password" value="#{loginBean.password}">
+                <h:inputSecret class="form-control" maxlength="30" id="password" value="#{loginBean.password}">
                     <f:passThroughAttribute name="required" value="required" />
                 </h:inputSecret>
             </div>

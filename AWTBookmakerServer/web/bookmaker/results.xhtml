@@ -13,8 +13,25 @@
         </c:if>
         <f:viewParam name="matchId" value="#{matchBean.matchId}" />
     </f:metadata>
+
     <ui:define name="content">
         <h2>#{messages.resultResults}</h2>
+        <nav class="navbar navbar-default" style="margin-top: 30px;">
+            <h:form class="navbar-form navbar-left" style="width: 100%">
+                <c:choose>
+                    <c:when test="#{not empty loginBean.user}">
+
+                            <!--<h:commandButton id="btn_upcomingMatches" action="/bookmaker/matches.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeShowMatches}" />-->
+                        <h:commandButton id="btn_upcomingMatches" action="/bookmaker/matches.xhtml?faces-redirect=true" class="btn btn-default" value="#{messages.homeShowMatches}" >
+                            <f:ajax listener="#{matchBean.getAllMatches()}" execute="@this" render=":pnl_bMatches h2_bookmakerMatchesTitle" />
+                        </h:commandButton>
+                        <h:commandButton id="btn_newMatch" action="/bookmaker/newMatch.xhtml?faces-redirect=true" style="float:right" class="btn btn-default" value="#{messages.homeNewMatch}" />
+                    </c:when>
+                </c:choose>
+
+
+            </h:form>
+        </nav>
         <c:choose>
             <c:when test="#{empty matchBean.getResultsWithTotalOddsByMatchId(matchBean.matchId)}">
                 <!--in case no data is available-->
@@ -59,20 +76,20 @@
                                     <h:outputText rendered="#{result.occured}" value="#{messages[result.occured]}"/>
                                     <h:outputText rendered="#{not result.occured}" value="#{messages[result.occured]}"/>
                                 </h:panelGroup>
-                                
+
                                 <h:outputText rendered="#{not result.finished}" value="#{messages.resultMatchDidNotYetStart}"/>
-                               
-                               
+
+
                             </h:column>
-                            
+
                             <h:column >
                                 <f:facet name="header">#{messages.resultSetResult}</f:facet>
                                 <h:form rendered="#{result.finished}">
                                     <h:commandButton rendered="#{not result.occured}" id="btn_setResultTrueForMatch" class="btn btn-default" action="#{matchBean.setResultForMatchByResultId(result.id)}" value="#{messages.resultSetOccured}" />
                                 </h:form>
                             </h:column>
-                               
-                            
+
+
                         </c:if>
                     </c:if>
                 </h:dataTable>

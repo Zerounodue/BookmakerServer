@@ -13,9 +13,9 @@ import java.util.List;
  */
 public class Result {
     private int id;
-    private String name;
-    private double oddNumerator;
-    private double oddDenominator;
+    private String name ="";
+    private double oddNumerator=0;
+    private double oddDenominator=0;
     private boolean occured;
     private int matchId;
     //TODO implement

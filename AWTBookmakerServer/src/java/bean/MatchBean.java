@@ -236,8 +236,9 @@ public class MatchBean {
                         double totalLoss = rs.getDouble("totalLoss");
                         //result will be null by upcoming matches -> set id to 0
                         Match m = new Match(id, ts, new Team(htId, htName), new Team(atId, atName), 0, finished);
-                        m.setTotalGain(totalGain);
-                        m.setTotalLoss(totalLoss);
+                        List<Result> matchResults =getResultsWithTotalOddsByMatchId(id);
+                        m.setTotalGain(matchResults.stream().mapToDouble(r -> r.getTotalGain()).sum());
+                        m.setTotalLoss(matchResults.stream().mapToDouble(r -> r.getTotalLoss()).sum());
                         getMatches().add(m);
                     }
                 }
@@ -291,8 +292,9 @@ public class MatchBean {
                         double totalLoss = rs.getDouble("totalLoss");
                         //result will be null by upcoming matches
                         Match m = new Match(id, ts, new Team(htId, htName), new Team(atId, atName), 0, finished);
-                        m.setTotalGain(totalGain);
-                        m.setTotalLoss(totalLoss);
+                        List<Result> matchResults =getResultsWithTotalOddsByMatchId(id);
+                        m.setTotalGain(matchResults.stream().mapToDouble(r -> r.getTotalGain()).sum());
+                        m.setTotalLoss(matchResults.stream().mapToDouble(r -> r.getTotalLoss()).sum());
                         getMatches().add(m);
                     }
 
@@ -835,6 +837,7 @@ public class MatchBean {
                         List<Result> matchResults =getResultsWithTotalOddsByMatchId(id);
                         m.setTotalGain(matchResults.stream().mapToDouble(r -> r.getTotalGain()).sum());
                         m.setTotalLoss(matchResults.stream().mapToDouble(r -> r.getTotalLoss()).sum());
+                        
                         getMatches().add(m);
                     }
                 }
@@ -966,9 +969,13 @@ public class MatchBean {
     private void resetVariables() {
         newMatchResults = null;
         newMatchResult = null;
-        newMatchAwayTeamId = newMatchHomeTeamId = newMatchHours = newMatchMinutes = 0;
+        newMatchResult = new Result(); // create newMatchResult, it cant be null
+        newMatchHours = 12;
+        newMatchMinutes = 30;
+        newMatchAwayTeamId = newMatchHomeTeamId = 0;
         newMatchDate = null;
         newMatchTime = null;
+        
     }
 
     /**
