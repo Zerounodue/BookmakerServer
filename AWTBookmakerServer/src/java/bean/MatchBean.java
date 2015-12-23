@@ -203,7 +203,7 @@ public class MatchBean {
     }
 
     /**
-     * Gets all matches with a start time > than now
+     * Gets all matches with a start time greater than now
      * @return list of Match objects or null
      */
     public List<Match> getUpcomingMatches() {
@@ -582,7 +582,7 @@ public class MatchBean {
      * will only query the teams once, then store them in a variable and return
      * the variable
      *
-     * @return List<Team> a list of Team objects from the database
+     * @return List of Team objects from the database
      */
     public List<Team> getAllTeams() {
         //load teams only once
