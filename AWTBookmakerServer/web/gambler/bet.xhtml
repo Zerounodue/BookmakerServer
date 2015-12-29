@@ -15,9 +15,11 @@
         <f:viewParam name="resultName" value="#{userBean.resultName}" />
         <f:viewParam name="betAmount" value="#{userBean.betAmount}" />
     </f:metadata>
-
-    <ui:define name="content">
+    <ui:define name="contentTitle">
         <h2>#{messages.betBetForResult}: #{userBean.resultName}</h2>
+    </ui:define>
+    <ui:define name="content">
+        
         <div>
             <h:messages for="frm_bet" globalOnly="true" errorClass="bg-danger" warnClass="text-danger" infoClass="text-info" />
         </div>

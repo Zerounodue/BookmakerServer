@@ -15,8 +15,8 @@ import model.Role;
 import model.User;
 import util.DBHelper;
 import util.MessageHelper;
-import util.PasswordHash;
-import static util.PasswordHash.validatePassword;
+import util.PasswordHelper;
+import static util.PasswordHelper.validatePassword;
 
 /**
  *
@@ -145,8 +145,8 @@ public class LoginBean {
                 String sql = "INSERT INTO users (name, password) "
                         + "VALUES (?, ?)";
                 s = conn.prepareStatement(sql);
-                //PasswordHash ph = new PasswordHash();
-                String hashedPassword= PasswordHash.createHash(password);
+                //PasswordHash ph = new PasswordHelper();
+                String hashedPassword= PasswordHelper.createHash(password);
                 s.setString(1, username);
                 s.setString(2, hashedPassword);
 
@@ -192,7 +192,7 @@ public class LoginBean {
         s = conn.prepareStatement(sql);
         s.setString(1, username);
         if (withPW) {
-            //s.setString(2, PasswordHash.createHash(password));
+            //s.setString(2, PasswordHelper.createHash(password));
         }
 
         rs = s.executeQuery();

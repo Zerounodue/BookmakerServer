@@ -41,7 +41,7 @@ import java.security.spec.InvalidKeySpecException;
  * Modified by Elia Kocher
  * Main methode removed
  */
-public class PasswordHash
+public class PasswordHelper
 {
     public static final String PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA1";
 
@@ -201,7 +201,7 @@ public class PasswordHash
         {
             // Print out 10 hashes
             for(int i = 0; i < 10; i++)
-                System.out.println(PasswordHash.createHash("p\r\nassw0Rd!"));
+                System.out.println(PasswordHelper.createHash("p\r\nassw0Rd!"));
 
             // Test password validation
             boolean failure = false;
@@ -229,7 +229,7 @@ public class PasswordHash
                 System.out.println("TESTS FAILED!");
             else{
                 String password= "q";
-                String haschedPassword= PasswordHash.createHash(password);
+                String haschedPassword= PasswordHelper.createHash(password);
                 if(validatePassword(password, haschedPassword)){
                     System.out.println("works");
                     System.out.println(haschedPassword);
