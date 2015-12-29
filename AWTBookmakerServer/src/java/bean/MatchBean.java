@@ -26,7 +26,7 @@ import util.MessageHelper;
 
 /**
  *
- * @author bizki
+ * @author Philippe Lüthi & Elia Kocher
  */
 @ManagedBean
 @SessionScoped

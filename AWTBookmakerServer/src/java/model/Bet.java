@@ -1,13 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package model;
 
 /**
  *
- * @author bizki
+ * @author Philippe Lüthi & Elia Kocher
  */
 public class Bet {
     private int id;
@@ -36,7 +32,15 @@ public class Bet {
         this.result  = r;
         this.userGain = gain;        
     }
-
+    /**
+     * constructor used to when displaying bets for a user
+     * @param id id of bet
+     * @param amount amount for bet
+     * @param userId id of user who placed this bet
+     * @param resultId id of the result
+     * @param userName name of the user who bets
+     * @param resultName name of the result of this bet
+     */
     public Bet(int id, double amount, int userId, int resultId, String userName, String resultName){
         this.id = id;
         this.amount = amount;

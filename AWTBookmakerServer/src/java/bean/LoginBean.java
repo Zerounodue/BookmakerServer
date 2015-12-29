@@ -20,7 +20,7 @@ import static util.PasswordHelper.validatePassword;
 
 /**
  *
- * @author bizki
+ * @author Philippe Lüthi & Elia Kocher
  */
 @ManagedBean(name="loginBean", eager=true)
 @SessionScoped
