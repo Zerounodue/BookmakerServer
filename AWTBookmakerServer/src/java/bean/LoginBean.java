@@ -20,7 +20,7 @@ import static util.PasswordHelper.validatePassword;
 
 /**
  *
- * @author Philippe Lüthi & Elia Kocher
+ * @author Philippe Lüthi and Elia Kocher
  */
 @ManagedBean(name="loginBean", eager=true)
 @SessionScoped
@@ -61,6 +61,7 @@ public class LoginBean {
      * @return String Website to redirect to or null
      * if null is returned, an error message is displayed on the website
      * @throws java.security.NoSuchAlgorithmException
+     * @throws java.security.spec.InvalidKeySpecException
      */
     public String login() throws NoSuchAlgorithmException, InvalidKeySpecException {
         //check if user is already logged in
@@ -117,6 +118,8 @@ public class LoginBean {
      * Tries to create a new user
      * @return String Website to redirect to or null
      * if null is returned, an error message is displayed on the website
+     * @throws java.security.NoSuchAlgorithmException
+     * @throws java.security.spec.InvalidKeySpecException
      */
     public String register() throws NoSuchAlgorithmException, InvalidKeySpecException {
         //check user data to make sure they contain values and passwords are equal

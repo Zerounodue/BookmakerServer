@@ -14,6 +14,13 @@ import javax.faces.context.FacesContext;
  */
 public class MessageHelper {
 
+    /**
+     * create a warn message
+     * @param componentId the component id
+     * @param msgBundle message bundle
+     * @param msgKey the key of the message
+     * @param severity the severity of the message
+     */
     public static void addMessageToComponent(String componentId, String msgBundle, String msgKey, FacesMessage.Severity severity) {
         //http://www.javabeat.net/jsf-2-message-messages/
 
@@ -34,6 +41,12 @@ public class MessageHelper {
         context.addMessage(componentId, new FacesMessage(severity, errorMsg, errorDetail));
     }
 
+    /**
+     *
+     * @param msgBundle message bundle
+     * @param msgKey the key of the message
+     * @return the message
+     */
     public static String getMessage(String msgBundle, String msgKey){
         String m = "";
         

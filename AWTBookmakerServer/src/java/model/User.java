@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  *
- * @author Philippe Lüthi & Elia Kocher
+ * @author Philippe Lüthi and Elia Kocher
  */
 public class User {
     private int id;
@@ -18,7 +18,13 @@ public class User {
     
     private List<Bet> bets;
     
-    
+    /**
+     *
+     * @param id id of the user
+     * @param n name of the user
+     * @param b balance of the user
+     * @param r role of the user
+     */
     public User(int id, String n, BigDecimal b, Role r){
         this.id = id;
         this.name = n;
@@ -28,6 +34,14 @@ public class User {
         this.isAdmin= (r.getId()==1);
     }
     
+    /**
+     *
+     * @param id id of the user
+     * @param n name of the user
+     * @param b balance of the user
+     * @param r role of the user
+     * @param bets list of bets
+     */
     public User(int id, String n, BigDecimal b, Role r, List<Bet> bets){
         this.id = id;
         this.name = n;
@@ -87,14 +101,26 @@ public class User {
         return role;
     }
 
+    /**
+     *
+     * @return true if user is admin
+     */
     public boolean isAdmin() {
         return isAdmin;
     }
 
+    /**
+     *
+     * @return the user password
+     */
     public String getPassword() {
         return password;
     }
 
+    /**
+     *
+     * @param password password to set
+     */
     public void setPassword(String password) {
         this.password = password;
     }

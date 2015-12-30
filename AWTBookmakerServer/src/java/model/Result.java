@@ -3,7 +3,7 @@ package model;
 
 /**
  *
- * @author Philippe Lüthi & Elia Kocher
+ * @author Philippe Lüthi and Elia Kocher
  */
 public class Result {
     private int id;
@@ -20,6 +20,9 @@ public class Result {
     private Match match;
     //private List<Bet> bets;
     
+    /**
+     * default constructor
+     */
     public Result(){
         
     }
@@ -185,11 +188,15 @@ public class Result {
     public void setMatch(Match match) {
         this.match = match;
     }
-
+    /**
+     * @param finished the finished flag to set
+     */
     public void setFinished(boolean finished) {
         this.finished = finished;
     }
-
+    /**
+     * @return the finished flag
+     */
     public boolean getFinished() {
         return finished;
     }

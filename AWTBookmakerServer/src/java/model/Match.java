@@ -6,7 +6,7 @@ import java.util.Calendar;
 
 /**
  *
- * @author Philippe Lüthi & Elia Kocher
+ * @author Philippe Lüthi and Elia Kocher
  */
 public class Match {
     private int id;
@@ -29,7 +29,15 @@ public class Match {
     public Match(){
         
     }
-    
+    /**
+     * constructor used when displaying a match
+     * @param id id of match
+     * @param t timestamp when match starts
+     * @param ht Team homeTeam
+     * @param at Team awayTeam
+     * @param r resultId
+     * @param finished finished flag
+     */
     public Match(int id, Timestamp t, Team ht, Team at, int r, boolean finished){
         this.id = id;
         this.time = t;
@@ -38,7 +46,15 @@ public class Match {
         this.resultId = r;
         this.finished = finished;
     }
-    
+    /**
+     * constructor used when displaying a match
+     * @param id id of match
+     * @param t timestamp when match starts
+     * @param ht Team homeTeam
+     * @param at Team awayTeam
+     * @param r Result
+     * @param finished finished flag
+     */
     public Match(int id, Timestamp t, Team ht, Team at, Result r, boolean finished){
         this.id = id;
         this.time = t;
@@ -138,19 +154,27 @@ public class Match {
     public int getResultId() {
         return resultId;
     }
-    
-     public double getTotalGain() {
+     /**
+     * @return the totslGain
+     */
+    public double getTotalGain() {
         return totalGain;
     }
-
+     /**
+     * @return the totalLoss
+     */
     public double getTotalLoss() {
         return totalLoss;
     }
-
+    /**
+     * @param totalGain the totalGain to set
+     */
     public void setTotalGain(double totalGain) {
         this.totalGain = totalGain;
     }
-
+    /**
+     * @param totalLoss the totalLoss to set
+     */
     public void setTotalLoss(double totalLoss) {
         this.totalLoss = totalLoss;
     }
