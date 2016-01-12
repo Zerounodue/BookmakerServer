@@ -5,9 +5,11 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html">
 
-    <ui:define name="contentHeader"></ui:define>
+     <ui:define name="contentTitle">
+         <h2>#{messages.registerTitle}</h2>
+    </ui:define>
     <ui:define name="content">
-        <h2>#{messages.registerTitle}</h2>
+        
             <div>
                 <h:messages for="frm_register" globalOnly="true" errorClass="bg-danger" warnClass="text-danger" infoClass="text-info" />
             </div>
