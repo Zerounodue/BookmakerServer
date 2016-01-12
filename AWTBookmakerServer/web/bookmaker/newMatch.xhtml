@@ -117,11 +117,11 @@ and open the template in the editor.
                             <f:passThroughAttribute name="required" value="required" />
                         </h:inputText>
                         <h:outputLabel style="margin-right:5px" for="oddNumerator" value="#{messages.newMatchOddNumerator}" />
-                        <h:inputText style="margin-right:20px" maxlength="10" class="form-control" id="oddNumerator" value="#{matchBean.newMatchResult.oddNumerator}" converterMessage="#{messages.newMatchOddNEnterDigitsOnly}">
+                        <h:inputText style="margin-right:20px" maxlength="4" class="form-control" id="oddNumerator" value="#{matchBean.newMatchResult.oddNumerator}" converterMessage="#{messages.newMatchOddNEnterDigitsOnly}">
                             <f:passThroughAttribute name="required" value="required" />
                         </h:inputText>
                         <h:outputLabel style="margin-right:5px"  for="oddDenominator" value="#{messages.newMatchOddDenominator}" />
-                        <h:inputText style="margin-right:20px" maxlength="10" class="form-control" id="oddDenominator" value="#{matchBean.newMatchResult.oddDenominator}" converterMessage="#{messages.newMatchOddDEnterDigitsOnly}">
+                        <h:inputText style="margin-right:20px" maxlength="4" class="form-control" id="oddDenominator" value="#{matchBean.newMatchResult.oddDenominator}" converterMessage="#{messages.newMatchOddDEnterDigitsOnly}">
                             <f:passThroughAttribute name="required" value="required" />
                         </h:inputText>
                         <h:commandButton value="#{messages.newMatchAddNewResult}"  class="btn btn-primary">
