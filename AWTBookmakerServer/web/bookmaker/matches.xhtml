@@ -87,11 +87,10 @@
                             <f:facet name="header">#{messages.matchResults}</f:facet>
                             <h:outputLink value="results.xhtml?matchId=#{match.id}">#{messages.matchShowResult}</h:outputLink>
                         </h:column>
-                        <h:column id="aaa">
+                        <h:column >
                             <f:facet name="header">#{messages.matchSetFinished}</f:facet>
-                            <h:form id="setFinishedForm"  rendered="#{match.startedAndFinished()}">
-                                <h:commandButton  id="btn_setFinished" class="btn btn-default" action="#{matchBean.setMatchFinishedByMatchId(match.id)}" value="#{messages.matchSetFinished}" />
-                                   
+                            <h:form>                             
+                                <h:commandButton  rendered="#{match.startedAndFinished()}" id="btn_setFinished" class="btn btn-default" action="#{matchBean.setMatchFinishedByMatchId(match.id)}" value="#{messages.matchSetFinished}" /> 
                             </h:form>
                         </h:column>
                     </h:dataTable>
